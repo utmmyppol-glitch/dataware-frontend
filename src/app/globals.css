@@ -1,0 +1,761 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================
+   DATAWARE DESIGN SYSTEM — Dark Navy + Mint
+   ========================================== */
+@layer base {
+  :root {
+    /* ── Backgrounds ── */
+    --bg-hero: #0b1220;
+    --bg-dark: #111827;
+    --bg-dark-2: #1e293b;
+    --bg-navy: #0f172a;
+
+    --bg-white: #ffffff;
+    --bg-ivory: #fcfbf8;
+    --bg-soft: #f7f8f9;
+    --bg-grid: #f4f7f8;
+    --bg-panel: #f8fafb;
+    --bg-light: #f8fafc;
+
+    /* ── Brand Accent (mint = CTA only) ── */
+    --accent: #36c88a;
+    --accent-hover: #2ba876;
+    --accent-pale: #e9f9f1;
+    --accent-glow: rgba(54, 200, 138, 0.15);
+    --accent-shadow: rgba(54, 200, 138, 0.28);
+
+    /* Data visualization colors */
+    --teal: #00a7a7;
+    --cyan: #43b5e8;
+    --blue: #3578f6;
+
+    /* ── Text on light ── */
+    --ink: #0f172a;
+    --ink-2: #334155;
+    --ink-muted: #64748b;
+    --ink-caption: #94a3b8;
+
+    /* ── Text on dark ── */
+    --ink-light: #f1f5f9;
+    --ink-light-2: rgba(255, 255, 255, 0.7);
+    --ink-light-muted: rgba(255, 255, 255, 0.45);
+
+    /* ── Borders (3-tier) ── */
+    --line-soft: #edf2f7;
+    --line: #dfe6ee;
+    --line-strong: #cad5e2;
+    --line-dark: rgba(255, 255, 255, 0.08);
+    --line-dark-2: rgba(255, 255, 255, 0.15);
+
+    /* ── Shadows (3-tier) ── */
+    --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --shadow-xl: 0 40px 80px rgba(15, 23, 42, 0.12);
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06);
+    --shadow-card-hover: 0 16px 48px rgba(0, 0, 0, 0.12);
+    --shadow-accent: 0 8px 24px rgba(54, 200, 138, 0.28);
+
+    /* ── Radius ── */
+    --radius-xs: 6px;
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-xl: 24px;
+
+    /* ── Spacing ── */
+    --space-8: 8px;
+    --space-12: 12px;
+    --space-16: 16px;
+    --space-24: 24px;
+    --space-32: 32px;
+    --space-48: 48px;
+    --space-64: 64px;
+    --space-96: 96px;
+    --space-120: 120px;
+
+    /* ── Layout ── */
+    --section-width: 1320px;
+    --content-width: 1240px;
+    --text-width: 560px;
+    --image-width: 640px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--bg-white);
+    color: var(--ink-2);
+    font-family: "Noto Sans KR", "Malgun Gothic", "Spoqa Han Sans", sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--ink);
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: #ffffff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-soft);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+}
+
+/* ==========================================
+   DESIGN DEVICES — guide lines, corner markers, annotations
+   ========================================== */
+
+/* Thin geometric guide line (horizontal) */
+.guide-line {
+  height: 1px;
+  background: #e2e8f0;
+  position: relative;
+}
+.guide-line::before,
+.guide-line::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #cbd5e1;
+  border-radius: 50%;
+  background: #fff;
+}
+.guide-line::before { left: 0; }
+.guide-line::after { right: 0; }
+
+/* Corner marker — small L-shaped brackets */
+.corner-mark {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+.corner-mark--tl { top: 0; left: 0; border-top: 1px solid #cbd5e1; border-left: 1px solid #cbd5e1; }
+.corner-mark--tr { top: 0; right: 0; border-top: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; }
+.corner-mark--bl { bottom: 0; left: 0; border-bottom: 1px solid #cbd5e1; border-left: 1px solid #cbd5e1; }
+.corner-mark--br { bottom: 0; right: 0; border-bottom: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; }
+
+/* Section index — small mono number */
+.section-idx {
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Micro label — tiny uppercase caption */
+.micro-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+/* Editorial period — large accent dot after title */
+.editorial-dot {
+  color: #36c88a;
+}
+
+/* Floating chip — small indicator */
+.floating-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  color: #64748b;
+}
+
+/* Vertical connector line */
+.v-connector {
+  width: 1px;
+  background: linear-gradient(180deg, transparent, #e2e8f0, transparent);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ==========================================
+   LAYOUT UTILITIES
+   ========================================== */
+@layer components {
+  .wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 4vw, 56px);
+  }
+
+  /* Section spacing */
+  .section-pad {
+    padding-top: clamp(48px, 6vw, 80px);
+    padding-bottom: clamp(48px, 6vw, 80px);
+  }
+
+  .section-pad-sm {
+    padding-top: clamp(36px, 4vw, 60px);
+    padding-bottom: clamp(36px, 4vw, 60px);
+  }
+
+  /* Dark section */
+  .section-dark {
+    background-color: var(--bg-navy);
+    color: var(--ink-light);
+  }
+  .section-dark h1,
+  .section-dark h2,
+  .section-dark h3,
+  .section-dark h4 {
+    color: var(--ink-light);
+  }
+
+  /* ── Typography ── */
+  .headline-xl {
+    font-size: clamp(36px, 5.5vw, 56px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .headline-lg {
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .headline-md {
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .eyebrow {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+
+  .body-lg {
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--bg-white);
+    border: 1px solid var(--line);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.2s;
+    box-shadow: var(--shadow-card);
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--accent);
+  }
+
+  .card-dark {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--line-dark);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.2s;
+  }
+  .card-dark:hover {
+    transform: translateY(-4px);
+    border-color: rgba(54, 200, 138, 0.4);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+  }
+
+  /* ── Buttons ── */
+  .btn-accent {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 16px 32px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: var(--shadow-accent);
+  }
+  .btn-accent:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(54, 200, 138, 0.35);
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 16px;
+    padding: 16px 32px;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-outline-light {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    font-size: 16px;
+    padding: 16px 32px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-outline-light:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Badges ── */
+  .badge-new {
+    display: inline-block;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-gs {
+    display: inline-block;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--accent-pale);
+    letter-spacing: 0.02em;
+  }
+}
+
+/* ==========================================
+   DECORATIVE ELEMENTS
+   ========================================== */
+
+/* Blobs */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: blobDrift 20s ease-in-out infinite;
+}
+.blob-accent {
+  background: radial-gradient(circle, rgba(54, 200, 138, 0.12) 0%, transparent 70%);
+}
+.blob-blue {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+}
+.blob-purple {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, transparent 70%);
+}
+.blob-cyan {
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.06) 0%, transparent 70%);
+}
+
+@keyframes blobDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(20px, -30px) scale(1.05); }
+  66% { transform: translate(-15px, 15px) scale(0.95); }
+}
+
+/* Grid background for dark sections */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(54, 200, 138, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(54, 200, 138, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent), #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ==========================================
+   GLASSMORPHISM & GLOW (래퍼런스: 전기블루 비즈니스 프레젠테이션)
+   ========================================== */
+
+/* Glass card — for overlays on dark backgrounds */
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+/* Glow border card — neon accent edge */
+.glow-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(54, 200, 138, 0.2);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+.glow-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(54,200,138,0.15), transparent 50%, rgba(34,211,238,0.1));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.glow-card:hover {
+  border-color: rgba(54, 200, 138, 0.5);
+  box-shadow: 0 0 30px rgba(54, 200, 138, 0.1), 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+.glow-card:hover::before {
+  opacity: 1;
+}
+
+/* Ambient glow spot */
+.glow-spot {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(60px);
+}
+.glow-spot-accent {
+  background: radial-gradient(circle, rgba(54, 200, 138, 0.15) 0%, transparent 70%);
+}
+.glow-spot-cyan {
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 70%);
+}
+
+/* 3D tilt card */
+.tilt-3d {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: perspective(1000px) rotateY(-4deg) rotateX(2deg);
+}
+.tilt-3d:hover {
+  transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+}
+
+/* Big number display (래퍼런스: 14일, 70%, 01-04) */
+.big-number {
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  background: linear-gradient(180deg, var(--accent) 0%, rgba(54,200,138,0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Neon line separator */
+.neon-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), rgba(34,211,238,0.5), transparent);
+  border: none;
+}
+
+/* Marquee with edge fade */
+.marquee-container {
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+
+/* ==========================================
+   SCROLL ANIMATIONS
+   ========================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ==========================================
+   KEYFRAMES
+   ========================================== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes hubPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(54, 200, 138, 0.4), 0 0 60px rgba(54,200,138,0.08), inset 0 0 40px rgba(54,200,138,0.04); }
+  50% { box-shadow: 0 0 0 20px rgba(54, 200, 138, 0), 0 0 80px rgba(54,200,138,0.12), inset 0 0 40px rgba(54,200,138,0.04); }
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(54, 200, 138, 0.4); }
+  70% { box-shadow: 0 0 0 16px rgba(54, 200, 138, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(54, 200, 138, 0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes geoFloat {
+  0%, 100% { transform: translate(0, 0) rotate(45deg); }
+  50% { transform: translate(-6px, -20px) rotate(43deg); }
+}
+
+.dropdown-enter {
+  animation: dropdownEnter 0.18s ease-out forwards;
+}
+
+@keyframes dropdownEnter {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   NEON GLOW EFFECTS (Fxology style)
+   ========================================== */
+
+/* Neon border card — hover시 보더가 빛남 */
+.neon-card {
+  position: relative;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: border-color 0.4s, box-shadow 0.4s, transform 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.neon-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(54,200,138,0) 0%, rgba(54,200,138,0.3) 50%, rgba(54,200,138,0) 100%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: 0;
+  pointer-events: none;
+}
+.neon-card:hover {
+  border-color: rgba(54,200,138,0.4);
+  box-shadow: 0 0 40px rgba(54,200,138,0.08), 0 16px 48px rgba(0,0,0,0.3);
+  transform: translateY(-6px);
+}
+.neon-card:hover::before {
+  opacity: 1;
+}
+
+/* Neon border running animation */
+@keyframes neonBorderRun {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.neon-border-anim {
+  position: relative;
+}
+.neon-border-anim::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, rgba(54,200,138,0.5), transparent, rgba(34,211,238,0.3), transparent);
+  background-size: 200% 100%;
+  animation: neonBorderRun 4s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  padding: 1px;
+}
+
+/* Glow text */
+.glow-text {
+  text-shadow: 0 0 20px rgba(54,200,138,0.3), 0 0 60px rgba(54,200,138,0.1);
+}
+
+/* Center glow line (vertical) */
+.center-glow-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, transparent, rgba(54,200,138,0.4), rgba(54,200,138,0.6), rgba(54,200,138,0.4), transparent);
+  pointer-events: none;
+  filter: blur(1px);
+}
+.center-glow-line::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, transparent, rgba(54,200,138,0.06), rgba(54,200,138,0.08), rgba(54,200,138,0.06), transparent);
+  pointer-events: none;
+}
+
+/* ==========================================
+   3D SECTION FLIP (Biocomputer style)
+   ========================================== */
+.flip-section {
+  perspective: 1200px;
+  overflow: hidden;
+}
+.flip-section-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Count-up stat emphasis */
+.stat-glow {
+  font-weight: 700;
+  background: linear-gradient(135deg, #36c88a 0%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(54,200,138,0.3));
+}
+
+/* Dot grid background pattern */
+.dot-grid-bg {
+  background-image: radial-gradient(rgba(54,200,138,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Glass card (enhanced) */
+.glass-card {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+/* Trusted-by logo grid responsive */
+@media (max-width: 1024px) {
+  .trusted-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 640px) {
+  .trusted-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .trusted-grid > div {
+    height: 90px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .wrap {
+    padding: 0 20px;
+  }
+}
+
+/* Page transition fade for pagination */
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-fade {
+  animation: pageFadeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transition: none; opacity: 1; transform: none; }
+  .blob { animation: none; }
+  * { animation-duration: 0.01ms !important; }
+}
