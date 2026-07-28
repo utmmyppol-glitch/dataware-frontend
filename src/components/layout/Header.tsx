@@ -27,6 +27,7 @@ const DATAWARE_PRODUCTS = [
 const SUPPORT_LINKS = [
   { label: '공지사항', href: '/resources/notices', desc: '최신 소식 및 업데이트' },
   { label: '다운로드 신청', href: '/download', desc: 'DA# 무료 다운로드 · 소개서' },
+  { label: '파트너 제휴', href: '/partner', desc: '솔루션 파트너 프로그램 안내' },
 ];
 
 const EDUCATION_LINKS = [
@@ -37,11 +38,11 @@ const EDUCATION_LINKS = [
 
 const NAV_ITEMS = [
   { label: 'DATAWARE', href: '/products', dropdownType: 'dataware' as const },
+  { label: '교육', href: '/education', dropdownType: 'education' as const },
+  { label: '고객지원', href: '/resources', dropdownType: 'support' as const },
   { label: '데이터 진단', href: '/diagnosis', dropdownType: null },
   { label: '가격안내', href: '/pricing', dropdownType: null },
   { label: '고객사례', href: '/customers', dropdownType: null },
-  { label: '교육', href: '/education', dropdownType: 'education' as const },
-  { label: '고객지원', href: '/resources', dropdownType: 'support' as const },
   { label: '이벤트', href: '/events', dropdownType: null },
 ];
 
@@ -124,10 +125,10 @@ export default function Header() {
 
       {/* ── Main Navigation ── */}
       <nav style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e6e8ec' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[68px]">
+        <div style={{ maxWidth: 1600, margin: '0 auto', padding: '0 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72 }}>
 
           {/* Logo */}
-          <Link href="/" className="flex items-center shrink-0">
+          <Link href="/" className="flex items-center shrink-0" style={{ marginRight: 48 }}>
             <Image
               src="/images/dataware-logo.png"
               alt="DATAWARE™"
@@ -139,7 +140,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Nav */}
-          <ul ref={dropdownRef} className="hidden md:flex items-center gap-1">
+          <ul ref={dropdownRef} className="hidden lg:flex items-center gap-6" style={{ whiteSpace: 'nowrap' }}>
             {NAV_ITEMS.map((item) =>
               item.dropdownType ? (
                 <li key={item.href} className="relative">
@@ -165,104 +166,65 @@ export default function Header() {
                     </svg>
                   </button>
 
-                  {/* DATAWARE Dropdown */}
+                  {/* DATAWARE Dropdown — 그룹핑 */}
                   {activeDropdown === 'dataware' && item.dropdownType === 'dataware' && (
                     <div
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[700px] overflow-hidden"
+                      className="absolute top-full left-0 mt-2 overflow-hidden"
                       style={{
+                        width: 520,
                         backgroundColor: '#ffffff',
                         border: '1px solid #e6e8ec',
                         boxShadow: '0 12px 32px rgba(0,0,0,.10)',
-                        borderRadius: '0',
                         animation: 'dropdownEnter 0.18s ease-out',
                       }}
                       onMouseEnter={handleMouseEnter}
                       onMouseLeave={handleMouseLeave}
                     >
-                      {/* Dropdown header */}
-                      <div
-                        className="px-6 py-4 flex items-center justify-between"
-                        style={{ borderBottom: '1px solid #e6e8ec' }}
-                      >
-                        <div>
-                          <p className="font-bold text-sm" style={{ color: '#111111' }}>DATAWARE 제품 라인업</p>
-                          <p className="text-xs mt-0.5" style={{ color: '#888d94' }}>데이터 거버넌스 All-in-One Package</p>
-                        </div>
-                        <Link
-                          href="/products"
-                          onClick={() => setDropdownOpen(false)}
-                          className="text-xs flex items-center gap-1 transition-colors"
-                          style={{ color: '#36c88a' }}
-                          onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#2ba876'; }}
-                          onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#36c88a'; }}
-                        >
-                          전체보기
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </Link>
-                      </div>
-
-                      {/* Product grid */}
-                      <div className="grid grid-cols-2 gap-1 p-4">
-                        {DATAWARE_PRODUCTS.map((product) => (
-                          <Link
-                            key={product.slug}
-                            href={`/products/${product.slug}`}
-                            onClick={() => setDropdownOpen(false)}
-                            className="flex items-center gap-3 px-4 py-3 transition-colors duration-150 group"
-                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f6f8fa')}
-                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-                          >
-                            {/* Letter-initial badge */}
-                            <span
-                              className="w-9 h-9 flex items-center justify-center shrink-0 font-bold"
-                              style={{
-                                color: product.color,
-                                backgroundColor: product.color + '18',
-                                fontSize: product.initial.length > 1 ? '10px' : '14px',
-                                letterSpacing: product.initial.length > 1 ? '-0.5px' : '0',
-                              }}
-                            >
-                              {product.initial}
-                            </span>
-                            <div className="min-w-0">
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-bold" style={{ color: '#111111' }}>
-                                  {product.name}
-                                </span>
-                              </div>
-                              <p className="text-xs truncate mt-0.5" style={{ color: '#888d94' }}>{product.subtitle}</p>
-                            </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr' }}>
+                        {/* 좌: 카테고리 */}
+                        <div style={{ background: '#f8f9fa', borderRight: '1px solid #e6e8ec', padding: '20px 0' }}>
+                          <Link href="/products" onClick={() => setDropdownOpen(false)}
+                            style={{ display: 'block', padding: '10px 20px', fontSize: 13, fontWeight: 700, color: '#36c88a', textDecoration: 'none' }}>
+                            전체보기 →
                           </Link>
-                        ))}
-                      </div>
-
-                      {/* CTA footer — prominent */}
-                      <div
-                        className="mx-4 mb-4 px-5 py-4 flex items-center justify-between"
-                        style={{
-                          background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%)',
-                          border: '1px solid rgba(54,200,138,.25)',
-                        }}
-                      >
-                        <div>
-                          <p className="text-sm font-bold" style={{ color: '#ffffff' }}>DA# 무료 체험하기</p>
-                          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>개인용 DA# 무료 다운로드 · 설치 즉시 사용</p>
+                          <div style={{ margin: '8px 20px', height: 1, background: '#e6e8ec' }} />
+                          <p style={{ padding: '10px 20px 6px', fontSize: 10, fontWeight: 600, color: '#98A2B3', letterSpacing: '0.08em' }}>DATA</p>
+                          {DATAWARE_PRODUCTS.map(p => (
+                            <Link key={p.slug} href={`/products/${p.slug}`} onClick={() => setDropdownOpen(false)}
+                              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 20px', fontSize: 13, fontWeight: 600, color: '#33363b', textDecoration: 'none', transition: 'background 0.15s' }}
+                              onMouseEnter={e => { e.currentTarget.style.background = '#eef0f2'; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>
+                              <span style={{ width: 4, height: 4, background: p.color, flexShrink: 0 }} />
+                              {p.name}
+                            </Link>
+                          ))}
                         </div>
-                        <Link
-                          href="/download"
-                          onClick={() => setDropdownOpen(false)}
-                          className="text-sm font-bold text-white px-5 py-2.5 transition-all shrink-0"
-                          style={{
-                            backgroundColor: '#36c88a',
-                            boxShadow: '0 6px 18px rgba(54,200,138,.35)',
-                          }}
-                          onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#2ba876'; }}
-                          onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#36c88a'; }}
-                        >
-                          무료 다운로드
-                        </Link>
+                        {/* 우: 상세 + CTA */}
+                        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column' }}>
+                          <p style={{ fontSize: 14, fontWeight: 700, color: '#111', marginBottom: 4 }}>DATAWARE™</p>
+                          <p style={{ fontSize: 12, color: '#888d94', marginBottom: 16 }}>데이터 거버넌스 All-in-One Package</p>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 0, marginBottom: 'auto' }}>
+                            {[
+                              { label: '데이터 진단', href: '/diagnosis', desc: '거버넌스 성숙도 진단' },
+                              { label: '가격안내', href: '/pricing', desc: '라이선스 비교' },
+                              { label: '다운로드', href: '/download', desc: 'DA# 무료 체험' },
+                            ].map((link, i) => (
+                              <Link key={link.href} href={link.href} onClick={() => setDropdownOpen(false)}
+                                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < 2 ? '1px solid #f0f1f3' : 'none', textDecoration: 'none', transition: 'padding-left 0.15s' }}
+                                onMouseEnter={e => { e.currentTarget.style.paddingLeft = '4px'; }}
+                                onMouseLeave={e => { e.currentTarget.style.paddingLeft = '0'; }}>
+                                <span style={{ fontSize: 13, fontWeight: 600, color: '#33363b' }}>{link.label}</span>
+                                <span style={{ fontSize: 11, color: '#b0b4bc' }}>{link.desc}</span>
+                              </Link>
+                            ))}
+                          </div>
+                          <Link href="/contact" onClick={() => setDropdownOpen(false)}
+                            style={{ display: 'block', marginTop: 16, padding: '12px', background: '#0B1220', textAlign: 'center', fontSize: 13, fontWeight: 700, color: '#fff', textDecoration: 'none', transition: 'background 0.2s' }}
+                            onMouseEnter={e => { e.currentTarget.style.background = '#36c88a'; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = '#0B1220'; }}>
+                            도입문의 →
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -365,22 +327,8 @@ export default function Header() {
             )}
           </ul>
 
-          {/* Right: Search + CTA + Mobile toggle */}
-          <div className="flex items-center gap-6">
-            {/* Search toggle */}
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="hidden md:flex items-center justify-center w-9 h-9 mr-2 rounded-lg transition-colors"
-              style={{ color: '#888d94' }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#36c88a'; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#888d94'; }}
-              aria-label="검색"
-            >
-              <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
-
+          {/* Right: CTA + Search + Mobile toggle */}
+          <div className="flex items-center gap-4" style={{ marginLeft: 48 }}>
             <Link
               href="/contact"
               className="hidden md:inline-flex items-center gap-2 text-[15px] font-semibold text-white transition-all duration-200"
@@ -398,6 +346,20 @@ export default function Header() {
               </svg>
               도입문의
             </Link>
+
+            {/* Search toggle */}
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="hidden md:flex items-center justify-center w-9 h-9 rounded-lg transition-colors"
+              style={{ color: '#888d94' }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#36c88a'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#888d94'; }}
+              aria-label="검색"
+            >
+              <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
 
             {/* Mobile menu button */}
             <button
