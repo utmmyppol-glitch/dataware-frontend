@@ -52,6 +52,16 @@ export const api = {
       body: JSON.stringify(data),
     }),
 
+  // Inquiry with file attachment
+  submitInquiryWithFile: async (formData: FormData): Promise<InquiryResponse> => {
+    const response = await fetch(`${API_BASE_URL}/inquiries`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+    return response.json();
+  },
+
   // Download
   submitDownload: (data: DownloadRequest) =>
     fetchApi<{ message: string; id: number }>('/downloads', {

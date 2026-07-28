@@ -5,14 +5,14 @@ import { ProductResponse } from '@/lib/api';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 
 const PRODUCT_COLORS: Record<string, string> = {
-  'dataware': '#3b82f6',
-  'da-sharp': '#36c88a',
-  'meta-sharp': '#8b5cf6',
-  'dq-sharp': '#10b981',
-  'ap-sharp': '#f59e0b',
-  'df-sharp': '#06b6d4',
-  'ett-sharp': '#ec4899',
-  'dp-sharp': '#6366f1',
+  'dataware': '#36c88a',
+  'da-sharp': '#6b8cae',
+  'meta-sharp': '#8a7cb8',
+  'dq-sharp': '#5b9a7d',
+  'ap-sharp': '#c4975a',
+  'df-sharp': '#5a9aaa',
+  'ett-sharp': '#b07a8a',
+  'dp-sharp': '#b8a060',
 };
 
 export default function ProductsPageClient({ products }: { products: ProductResponse[] }) {
@@ -67,46 +67,36 @@ export default function ProductsPageClient({ products }: { products: ProductResp
             제품 라인업
           </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20 }}>
-            {products.map((product) => {
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            {products.map((product, i) => {
               const color = PRODUCT_COLORS[product.slug] || '#36c88a';
               return (
                 <Link
                   key={product.id}
                   href={`/products/${product.slug}`}
                   data-anim
-                  className="card"
                   style={{
-                    display: 'flex', flexDirection: 'column', gap: 14,
-                    padding: '28px 24px', borderRadius: 0,
-                    textDecoration: 'none', borderTop: `3px solid ${color}`,
+                    display: 'grid', gridTemplateColumns: '200px 1fr auto',
+                    gap: 24, alignItems: 'center',
+                    padding: '28px 0',
+                    borderBottom: i < products.length - 1 ? '1px solid #e6e8ec' : 'none',
+                    textDecoration: 'none',
+                    transition: 'padding-left 0.2s',
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.paddingLeft = '12px'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.paddingLeft = '0'; }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span
-                      style={{
-                        width: 44, height: 44,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        backgroundColor: `${color}15`, color: color,
-                        fontSize: 18, fontWeight: 900,
-                      }}
-                    >
-                      {product.name.charAt(0)}
-                    </span>
-                    {product.certification && (
-                      <span style={{ fontSize: 10, fontWeight: 700, color: color, backgroundColor: `${color}12`, padding: '3px 8px' }}>
-                        {product.certification}
-                      </span>
-                    )}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ width: 4, height: 32, background: color, flexShrink: 0 }} />
+                    <div>
+                      <h3 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a' }}>{product.name}</h3>
+                      {product.certification && (
+                        <span style={{ fontSize: 10, color: color, fontWeight: 600 }}>{product.certification}</span>
+                      )}
+                    </div>
                   </div>
-                  <h3 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a' }}>{product.name}</h3>
-                  <p style={{ fontSize: 14, color: '#64748b' }}>{product.subtitle}</p>
-                  <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {product.description}
-                  </p>
-                  <div style={{ marginTop: 'auto', fontSize: 13, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
-                    자세히 보기 →
-                  </div>
+                  <p style={{ fontSize: 14, color: '#64748b', lineHeight: 1.5 }}>{product.subtitle}</p>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: color, flexShrink: 0 }}>자세히 →</span>
                 </Link>
               );
             })}

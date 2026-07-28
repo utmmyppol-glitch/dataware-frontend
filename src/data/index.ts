@@ -28,7 +28,13 @@ export {
 } from './customers';
 export {
   DOWNLOAD_CARDS,
+  DOWNLOAD_PAGE,
 } from './forms';
+export {
+  SOLUTIONS,
+  type Solution,
+  type Feature,
+} from './molecular-data';
 export {
   COMPANY,
   COPY,

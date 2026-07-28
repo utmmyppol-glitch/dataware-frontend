@@ -254,22 +254,22 @@ export default function VideosPage() {
                 시리즈
               </span>
             </div>
-            <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#ffffff', margin: '0 0 4px' }}>
+            <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#ffffff', margin: '0 0 6px' }}>
               DA#5 런칭 세미나 · 튜토리얼 시리즈
             </h2>
-            <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', margin: 0 }}>
+            <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.6)', margin: 0 }}>
               세미나 6편 + 튜토리얼 6편 · 엔코아 전문 강사진 · 2021년 11월 진행
             </p>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
             {[
-              { label: '총 강의', value: '12편' },
-              { label: '세미나', value: '6편' },
-              { label: '튜토리얼', value: '6편' },
+              { label: '총 강의', value: `${VIDEOS.length}편` },
+              { label: '세미나', value: `${VIDEOS.filter(v => v.tag === '세미나').length}편` },
+              { label: '튜토리얼', value: `${VIDEOS.filter(v => v.tag === '튜토리얼').length}편` },
             ].map((stat) => (
               <div key={stat.label} style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: '20px', fontWeight: '800', color: '#36c88a', margin: '0 0 2px' }}>{stat.value}</p>
-                <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', margin: 0 }}>{stat.label}</p>
+                <p style={{ fontSize: '28px', fontWeight: '800', color: '#36c88a', margin: '0 0 4px' }}>{stat.value}</p>
+                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', margin: 0 }}>{stat.label}</p>
               </div>
             ))}
           </div>
@@ -278,7 +278,7 @@ export default function VideosPage() {
 
       {/* Video Grid */}
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '36px 24px 52px' }}>
-        <div key={page} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px', minHeight: '500px' }}>
+        <div key={page} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '24px', minHeight: '500px' }}>
           {paged.map((video) => (
             <article
               key={video.id}
@@ -303,7 +303,7 @@ export default function VideosPage() {
               {/* Thumbnail / Player area */}
               <div
                 style={{
-                  height: '170px',
+                  height: '200px',
                   position: 'relative',
                   display: 'flex',
                   alignItems: 'center',
@@ -413,7 +413,7 @@ export default function VideosPage() {
                   <span style={{ fontSize: '12px', color: '#888d94' }}>{formatDate(video.date)}</span>
                 </div>
 
-                <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#111111', margin: '0 0 8px', lineHeight: 1.45 }}>
+                <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#111111', margin: '0 0 8px', lineHeight: 1.45 }}>
                   {video.title}
                 </h3>
 

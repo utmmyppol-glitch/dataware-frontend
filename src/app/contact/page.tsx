@@ -1,17 +1,18 @@
 'use client';
 
-import React, { useState, FormEvent } from 'react';
+import React, { useState, useRef, FormEvent } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { INQUIRY_CATEGORIES, COMPANY } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import ConsentSection from '@/components/forms/ConsentSection';
 
 const ACCENT = '#36c88a';
 
 const inputBase =
-  'w-full bg-white border border-[#d5d8dd] px-4 py-4 text-[16px] text-[#111111] focus:border-[#36c88a] focus:ring-1 focus:ring-[#36c88a] focus:outline-none transition-colors';
+  'w-full bg-white border border-[#d5d8dd] px-4 py-3 text-[15px] text-[#111111] focus:border-[#36c88a] focus:ring-1 focus:ring-[#36c88a] focus:outline-none transition-colors';
 const inputError =
-  'w-full bg-white border border-red-400 px-4 py-3 text-[#111111] focus:border-red-400 focus:ring-1 focus:ring-red-400 focus:outline-none transition-colors';
+  'w-full bg-white border border-red-400 px-4 py-3 text-[15px] text-[#111111] focus:border-red-400 focus:ring-1 focus:ring-red-400 focus:outline-none transition-colors';
 
 type FieldErrors = Record<string, string>;
 
@@ -19,13 +20,16 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [fileName, setFileName] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
   const contentRef = useGsapReveal() as React.RefObject<HTMLElement>;
 
   function validate(formData: FormData): FieldErrors {
     const errs: FieldErrors = {};
-    if (!String(formData.get('name') ?? '').trim()) errs.name = '이름을 입력해주세요.';
+    if (!String(formData.get('product') ?? '').trim()) errs.product = '상담 구분을 선택해주세요.';
     if (!String(formData.get('company') ?? '').trim()) errs.company = '회사명을 입력해주세요.';
+    if (!String(formData.get('name') ?? '').trim()) errs.name = '이름을 입력해주세요.';
     if (!String(formData.get('phone') ?? '').trim()) errs.phone = '연락처를 입력해주세요.';
     if (!String(formData.get('email') ?? '').trim()) errs.email = '이메일을 입력해주세요.';
     if (formData.get('consentPrivacy') !== 'on') errs.consentPrivacy = '개인정보 수집 및 이용에 동의해주세요.';
@@ -39,17 +43,34 @@ export default function ContactPage() {
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setErrors({});
     setLoading(true);
+
     try {
-      await api.submitInquiry({
-        name: formData.get('name') as string,
-        company: formData.get('company') as string,
-        phone: formData.get('phone') as string,
-        email: formData.get('email') as string,
-        message: formData.get('message') as string,
-        product: formData.get('product') as string,
-        consentPrivacy: formData.get('consentPrivacy') === 'on',
-        consentThirdParty: formData.get('consentThirdParty') === 'on',
-      });
+      const file = formData.get('file') as File;
+      if (file && file.size > 0) {
+        const submitData = new FormData();
+        submitData.append('name', formData.get('name') as string);
+        submitData.append('company', formData.get('company') as string);
+        submitData.append('phone', formData.get('phone') as string);
+        submitData.append('email', formData.get('email') as string);
+        submitData.append('message', formData.get('message') as string);
+        submitData.append('product', formData.get('product') as string);
+        submitData.append('consentPrivacy', 'true');
+        submitData.append('consentThirdParty', 'true');
+        submitData.append('consentMarketing', 'false');
+        submitData.append('file', file);
+        await api.submitInquiryWithFile(submitData);
+      } else {
+        await api.submitInquiry({
+          name: formData.get('name') as string,
+          company: formData.get('company') as string,
+          phone: formData.get('phone') as string,
+          email: formData.get('email') as string,
+          message: formData.get('message') as string,
+          product: formData.get('product') as string,
+          consentPrivacy: true,
+          consentThirdParty: true,
+        });
+      }
       setSubmitted(true);
     } catch {
       setErrors({ submit: '문의 접수 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' });
@@ -75,160 +96,162 @@ export default function ContactPage() {
 
   return (
     <>
-      {/* ═══ HERO ═══ */}
-      <section ref={heroRef} style={{ position: 'relative', backgroundColor: '#0B1220', overflow: 'hidden', paddingTop: 120, paddingBottom: 72 }}>
+      {/* ═══ HERO (컴팩트) ═══ */}
+      <section ref={heroRef} style={{ position: 'relative', backgroundColor: '#0B1220', overflow: 'hidden', paddingTop: 100, paddingBottom: 48 }}>
         <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
           <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px)', backgroundSize: '72px 72px' }} />
-          {[5, 95].map(p => <div key={p} style={{ position: 'absolute', left: `${p}%`, top: 0, bottom: 0, width: '1px', background: 'rgba(255,255,255,0.025)' }} />)}
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, transparent 15%, ${ACCENT}40, transparent 85%)` }} />
-          <div style={{ position: 'absolute', top: 16, left: 16, width: 20, height: 20, borderTop: `1px solid ${ACCENT}20`, borderLeft: `1px solid ${ACCENT}20` }} />
-          <div style={{ position: 'absolute', top: 16, right: 16, width: 20, height: 20, borderTop: `1px solid ${ACCENT}20`, borderRight: `1px solid ${ACCENT}20` }} />
-          <div style={{ position: 'absolute', bottom: 16, left: 16, width: 20, height: 20, borderBottom: `1px solid ${ACCENT}20`, borderLeft: `1px solid ${ACCENT}20` }} />
-          <div style={{ position: 'absolute', bottom: 16, right: 16, width: 20, height: 20, borderBottom: `1px solid ${ACCENT}20`, borderRight: `1px solid ${ACCENT}20` }} />
-          <div style={{ position: 'absolute', bottom: '-8%', right: '-1%', fontSize: 'clamp(120px, 18vw, 300px)', fontWeight: 900, color: 'rgba(255,255,255,0.015)', letterSpacing: '-0.06em', lineHeight: 0.85 }}>CONTACT</div>
         </div>
-
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <span data-hero style={{ fontSize: 10, fontWeight: 500, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.14em', display: 'block', marginBottom: 12 }}>CONTACT US</span>
-          <h1 data-hero style={{ fontSize: 'clamp(40px, 6vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 0.95, marginBottom: 20 }}>
+          <h1 data-hero style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 16 }}>
             도입문의<span style={{ color: ACCENT }}>.</span>
           </h1>
-          <p data-hero style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', lineHeight: 1.75, maxWidth: 480, margin: '0 auto 40px' }}>
-            DA# 도입에 관한 문의를 남겨주세요.
+          <p data-hero style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
+            DA# 도입에 관한 문의를 남겨주세요. &nbsp;|&nbsp; TEL {COMPANY.tel} &nbsp;|&nbsp; {COMPANY.email}
           </p>
-          <div data-hero style={{ display: 'flex', justifyContent: 'center', gap: 40 }}>
-            {[
-              { label: 'TEL', value: COMPANY.tel },
-              { label: 'E-MAIL', value: COMPANY.email },
-              { label: '영업시간', value: '평일 09:00 - 18:00' },
-            ].map(info => (
-              <div key={info.label}>
-                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.1em', display: 'block', marginBottom: 4 }}>{info.label}</span>
-                <span style={{ fontSize: 14, fontWeight: 600, color: '#F9FAFB' }}>{info.value}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
-      {/* ═══ FORM — 중앙 큼지막하게 ═══ */}
-      <section ref={contentRef} style={{ position: 'relative', backgroundColor: '#F7F7F5', overflow: 'hidden' }}>
-        <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(15,23,42,0.012) 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
-          <div style={{ position: 'absolute', top: 16, left: 16, width: 16, height: 16, borderTop: '1px solid rgba(15,23,42,0.04)', borderLeft: '1px solid rgba(15,23,42,0.04)' }} />
-          <div style={{ position: 'absolute', bottom: 16, right: 16, width: 16, height: 16, borderBottom: '1px solid rgba(15,23,42,0.04)', borderRight: '1px solid rgba(15,23,42,0.04)' }} />
-        </div>
+      {/* ═══ FORM (화면 꽉 차게) ═══ */}
+      <section ref={contentRef} style={{ backgroundColor: '#ffffff' }}>
+        <div style={{ maxWidth: '860px', margin: '0 auto', padding: '48px 24px 64px' }}>
+          <h2 data-anim style={{ fontSize: 22, fontWeight: 700, color: ACCENT, textAlign: 'center', marginBottom: 32 }}>도입문의</h2>
 
-        <div style={{ maxWidth: '720px', margin: '0 auto', padding: '80px 24px', position: 'relative', zIndex: 1 }}>
-          <div data-anim style={{ backgroundColor: '#fff', padding: 'clamp(40px, 6vw, 72px)', border: '1px solid rgba(15,23,42,0.06)', boxShadow: '0 16px 64px rgba(0,0,0,0.06)' }}>
-            <div style={{ textAlign: 'center', marginBottom: 40 }}>
-              <span style={{ fontSize: 10, fontWeight: 500, color: '#98A2B3', letterSpacing: '0.14em' }}>INQUIRY FORM</span>
-              <h2 style={{ fontSize: 24, fontWeight: 700, color: '#101828', marginTop: 8 }}>문의 양식</h2>
-              <div style={{ width: 40, height: 2, backgroundColor: ACCENT, margin: '16px auto 0', opacity: 0.6 }} />
+          <form onSubmit={handleSubmit} noValidate>
+            {/* 구분 */}
+            <div style={{ marginBottom: 20 }}>
+              <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>구분 <span style={{ color: '#ef4444' }}>*</span></label>
+              <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>상담 구분을 선택해주세요.</p>
+              <select name="product" className={errors.product ? inputError : inputBase} style={{ appearance: 'auto' }}>
+                <option value="">상담 구분 선택</option>
+                {INQUIRY_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              </select>
+              {errors.product && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.product}</p>}
             </div>
 
-            <form onSubmit={handleSubmit} noValidate>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5" style={{ marginBottom: 20 }}>
-                <div>
-                  <label className="block text-sm font-semibold mb-2" style={{ color: '#101828' }}>이름 <span style={{ color: ACCENT }}>*</span></label>
-                  <input name="name" placeholder="홍길동" className={errors.name ? inputError : inputBase} />
-                  {errors.name && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.name}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-2" style={{ color: '#101828' }}>회사명 <span style={{ color: ACCENT }}>*</span></label>
-                  <input name="company" placeholder="주식회사 OOO" className={errors.company ? inputError : inputBase} />
-                  {errors.company && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.company}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-2" style={{ color: '#101828' }}>연락처 <span style={{ color: ACCENT }}>*</span></label>
-                  <input name="phone" placeholder="010-0000-0000" className={errors.phone ? inputError : inputBase} />
-                  {errors.phone && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.phone}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-2" style={{ color: '#101828' }}>이메일 <span style={{ color: ACCENT }}>*</span></label>
-                  <input name="email" type="email" placeholder="example@company.com" className={errors.email ? inputError : inputBase} />
-                  {errors.email && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.email}</p>}
-                </div>
+            {/* 회사명 + 이름 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4" style={{ marginBottom: 20 }}>
+              <div>
+                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>회사명 <span style={{ color: '#ef4444' }}>*</span></label>
+                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>회사명을 입력해주세요.</p>
+                <input name="company" className={errors.company ? inputError : inputBase} />
+                {errors.company && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.company}</p>}
               </div>
-
-              <div style={{ marginBottom: 20 }}>
-                <label className="block text-sm font-semibold mb-2" style={{ color: '#101828' }}>구분 <span style={{ color: ACCENT }}>*</span></label>
-                <select name="product" className={inputBase} style={{ appearance: 'auto' }}>
-                  <option value="">상담 구분을 선택해주세요.</option>
-                  {INQUIRY_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                </select>
+              <div>
+                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>이름 <span style={{ color: '#ef4444' }}>*</span></label>
+                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>이름을 입력해주세요.</p>
+                <input name="name" className={errors.name ? inputError : inputBase} />
+                {errors.name && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.name}</p>}
               </div>
+            </div>
 
-              <div style={{ marginBottom: 28 }}>
-                <label className="block text-sm font-semibold mb-2" style={{ color: '#101828' }}>문의 내용</label>
-                <textarea name="message" rows={5} placeholder="문의하실 내용을 자유롭게 작성해주세요." className={`${inputBase} resize-none`} />
+            {/* 연락처 + 이메일 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4" style={{ marginBottom: 20 }}>
+              <div>
+                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>연락처 <span style={{ color: '#ef4444' }}>*</span></label>
+                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>ex) 010-0000-0000</p>
+                <input name="phone" className={errors.phone ? inputError : inputBase} />
+                {errors.phone && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.phone}</p>}
               </div>
-
-              {/* 동의 영역 */}
-              <div style={{ backgroundColor: '#F7F7F5', padding: '20px 24px', marginBottom: 28, border: '1px solid rgba(15,23,42,0.04)' }}>
-                <div style={{ marginBottom: 12 }}>
-                  <label className="flex items-start gap-3 cursor-pointer" style={{ fontSize: 14, color: '#475467' }}>
-                    <input type="checkbox" name="consentPrivacy" className="mt-1" style={{ accentColor: ACCENT, width: 18, height: 18 }} />
-                    <span><span style={{ color: ACCENT, fontWeight: 600 }}>[필수]</span> 개인정보 수집 및 이용에 동의합니다.</span>
-                  </label>
-                  {errors.consentPrivacy && <p className="text-xs mt-1 ml-8" style={{ color: '#ef4444' }}>{errors.consentPrivacy}</p>}
-                </div>
-                <label className="flex items-start gap-3 cursor-pointer" style={{ fontSize: 14, color: '#475467' }}>
-                  <input type="checkbox" name="consentThirdParty" className="mt-1" style={{ accentColor: ACCENT, width: 18, height: 18 }} />
-                  <span><span style={{ color: ACCENT, fontWeight: 600 }}>[필수]</span> 제3자(㈜엔코어) 정보 제공에 동의합니다.</span>
-                </label>
+              <div>
+                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>이메일 <span style={{ color: '#ef4444' }}>*</span></label>
+                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>이메일을 입력해주세요.</p>
+                <input name="email" type="email" className={errors.email ? inputError : inputBase} />
+                {errors.email && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.email}</p>}
               </div>
+            </div>
 
-              {errors.submit && <p className="text-sm text-center" style={{ color: '#ef4444', marginBottom: 16 }}>{errors.submit}</p>}
+            {/* 문의작성 */}
+            <div style={{ marginBottom: 20 }}>
+              <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>문의작성</label>
+              <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>DA#도입에 궁금하신 점을 자세히 남겨주시면 빠른 상담이 가능합니다.</p>
+              <textarea name="message" rows={4} className={`${inputBase} resize-none`} />
+            </div>
 
+            {/* 파일첨부 */}
+            <div style={{ marginBottom: 28 }}>
+              <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>파일첨부</label>
+              <p className="text-[12px] mb-2" style={{ color: '#98A2B3' }}>첨부하고자 하는 파일을 선택하여 업로드 해주세요. (jpg, png, pdf 첨부 가능)</p>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 shrink-0 transition-colors"
+                  style={{ padding: '10px 18px', backgroundColor: ACCENT, color: '#fff', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', borderRadius: 4 }}
+                  onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#2ba876'; }}
+                  onMouseLeave={e => { e.currentTarget.style.backgroundColor = ACCENT; }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  파일첨부
+                </button>
+                <span className="text-[13px] truncate" style={{ color: fileName ? '#101828' : '#98A2B3' }}>
+                  {fileName || '선택된 파일 없음'}
+                </span>
+                {fileName && (
+                  <button
+                    type="button"
+                    onClick={() => { setFileName(''); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+                    className="shrink-0 p-1"
+                    style={{ color: '#98A2B3' }}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                name="file"
+                accept=".jpg,.jpeg,.png,.pdf"
+                className="hidden"
+                onChange={(e) => setFileName(e.target.files?.[0]?.name || '')}
+              />
+            </div>
+
+            <ConsentSection errors={errors} />
+
+            {errors.submit && <p className="text-sm text-center" style={{ color: '#ef4444', marginBottom: 16 }}>{errors.submit}</p>}
+
+            {/* 제출 버튼 */}
+            <div style={{ textAlign: 'center' }}>
               <button type="submit" disabled={loading} style={{
-                width: '100%', padding: '20px', backgroundColor: loading ? '#94a3b8' : ACCENT, color: '#fff',
-                fontSize: 17, fontWeight: 700, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
-                boxShadow: loading ? 'none' : `0 8px 24px ${ACCENT}30`, transition: 'all 0.25s',
-                letterSpacing: '0.02em',
+                padding: '16px 56px', backgroundColor: loading ? '#94a3b8' : ACCENT, color: '#fff',
+                fontSize: 16, fontWeight: 700, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
+                boxShadow: loading ? 'none' : `0 6px 20px ${ACCENT}30`, transition: 'all 0.25s',
               }}
                 onMouseEnter={e => { if (!loading) { e.currentTarget.style.backgroundColor = '#2ba876'; e.currentTarget.style.transform = 'translateY(-2px)'; } }}
                 onMouseLeave={e => { if (!loading) { e.currentTarget.style.backgroundColor = ACCENT; e.currentTarget.style.transform = ''; } }}
-              >{loading ? '접수 중...' : '문의하기'}</button>
-            </form>
-          </div>
-
-          {/* 하단 회사 정보 — 작고 절제되게 */}
-          <div data-anim style={{ display: 'flex', justifyContent: 'center', gap: 32, marginTop: 40, flexWrap: 'wrap' }}>
-            {[
-              { icon: '📞', value: COMPANY.tel },
-              { icon: '✉️', value: COMPANY.email },
-              { icon: '📍', value: '서울 성동구 아차산로17길 49' },
-            ].map(info => (
-              <span key={info.value} style={{ fontSize: 13, color: '#98A2B3', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontSize: 14 }}>{info.icon}</span> {info.value}
-              </span>
-            ))}
-          </div>
+              >{loading ? '접수 중...' : '도입문의서 제출'}</button>
+            </div>
+          </form>
         </div>
       </section>
 
       {/* ═══ 2-SPLIT CTA ═══ */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: 260 }}>
-        <Link href="/download" style={{ backgroundColor: '#101828', padding: '48px 56px', textDecoration: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', transition: 'background 0.3s' }}
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ minHeight: 220 }}>
+        <Link href="/download" style={{ backgroundColor: '#101828', padding: '40px 48px', textDecoration: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', transition: 'background 0.3s' }}
           onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#1e293b'; }}
           onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#101828'; }}
         >
           <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>DOWNLOAD</span>
-          <h3 style={{ fontSize: 22, fontWeight: 700, color: '#F9FAFB', marginTop: 10, lineHeight: 1.3 }}>
-            DA# 소개서를<br />먼저 받아보세요<span style={{ color: ACCENT }}>.</span>
+          <h3 style={{ fontSize: 20, fontWeight: 700, color: '#F9FAFB', marginTop: 8, lineHeight: 1.3 }}>
+            DA# 소개서를 먼저 받아보세요<span style={{ color: ACCENT }}>.</span>
           </h3>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, fontSize: 14, fontWeight: 600, color: ACCENT }}>소개서 다운로드 →</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: ACCENT }}>소개서 다운로드 →</span>
         </Link>
-        <Link href="/education" style={{ backgroundColor: ACCENT, padding: '48px 56px', textDecoration: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', transition: 'filter 0.3s' }}
+        <Link href="/education" style={{ backgroundColor: ACCENT, padding: '40px 48px', textDecoration: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', transition: 'filter 0.3s' }}
           onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(0.92)'; }}
           onMouseLeave={e => { e.currentTarget.style.filter = ''; }}
         >
           <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em' }}>EDUCATION</span>
-          <h3 style={{ fontSize: 22, fontWeight: 700, color: '#fff', marginTop: 10, lineHeight: 1.3 }}>
-            DA# 무료교육도<br />신청하세요<span style={{ opacity: 0.6 }}>.</span>
+          <h3 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginTop: 8, lineHeight: 1.3 }}>
+            DA# 무료교육도 신청하세요<span style={{ opacity: 0.6 }}>.</span>
           </h3>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, fontSize: 14, fontWeight: 600, color: '#fff' }}>무료교육 신청 →</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: '#fff' }}>무료교육 신청 →</span>
         </Link>
       </div>
     </>

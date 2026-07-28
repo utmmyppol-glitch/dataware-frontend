@@ -391,7 +391,7 @@ export const DATAWARE_LINEUP = [
   { name: 'DA#', slug: 'da-sharp', subtitle: '데이터 모델링', isNew: false },
   { name: 'META#', slug: 'meta-sharp', subtitle: '메타데이터 관리', isNew: true, gs: true },
   { name: 'DQ#', slug: 'dq-sharp', subtitle: '데이터 품질관리', isNew: true, gs: true },
-  { name: 'AP#', slug: 'ap-sharp', subtitle: '영향도 분석', isNew: true, gs: true },
+  { name: 'AP#', slug: 'ap-sharp', subtitle: '애플리케이션 영향도 분석', isNew: true, gs: true },
   { name: 'DF#', slug: 'df-sharp', subtitle: '데이터 흐름 관리', isNew: true },
   { name: 'ETT#', slug: 'ett-sharp', subtitle: '데이터 마이그레이션', isNew: true },
   { name: 'DP#', slug: 'dp-sharp', subtitle: '데이터 포털', isNew: true },

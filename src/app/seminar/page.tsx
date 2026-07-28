@@ -4,6 +4,7 @@ import { useState, FormEvent } from 'react';
 import { api } from '@/lib/api';
 import { SEMINAR_STEPS } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import ConsentSection from '@/components/forms/ConsentSection';
 
 const inputBase =
   'w-full bg-white border border-[#d5d8dd] px-4 py-4 text-[16px] text-[#111111] focus:border-[#36c88a] focus:ring-1 focus:ring-[#36c88a] focus:outline-none transition-colors';
@@ -444,80 +445,7 @@ export default function SeminarPage() {
                 />
               </div>
 
-              {/* Consent grouped container */}
-              <div
-                style={{
-                  background: '#f1f5f9',
-                  borderRadius: '14px',
-                  padding: '24px',
-                  marginBottom: '28px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '14px',
-                }}
-              >
-                <p style={{ color: '#0f172a', fontSize: '0.875rem', fontWeight: 600, marginBottom: '4px' }}>
-                  개인정보 동의
-                </p>
-                <div>
-                  <label
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '10px',
-                      cursor: 'pointer',
-                      color: '#475569',
-                      fontSize: '0.875rem',
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      name="consentPrivacy"
-                      style={{ marginTop: '2px', accentColor: '#36c88a', flexShrink: 0 }}
-                    />
-                    <span>[필수] 개인정보 수집 및 이용에 동의합니다.</span>
-                  </label>
-                  {errors.consentPrivacy && (
-                    <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '4px', paddingLeft: '22px' }}>
-                      {errors.consentPrivacy}
-                    </p>
-                  )}
-                </div>
-                <label
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '10px',
-                    cursor: 'pointer',
-                    color: '#475569',
-                    fontSize: '0.875rem',
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    name="consentThirdParty"
-                    style={{ marginTop: '2px', accentColor: '#36c88a', flexShrink: 0 }}
-                  />
-                  <span>[필수] 제3자(㈜엔코아) 정보 제공에 동의합니다.</span>
-                </label>
-                <label
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '10px',
-                    cursor: 'pointer',
-                    color: '#475569',
-                    fontSize: '0.875rem',
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    name="consentMarketing"
-                    style={{ marginTop: '2px', accentColor: '#36c88a', flexShrink: 0 }}
-                  />
-                  <span>[선택] 세미나개최, 제품 업데이트 소식 정보수신에 동의합니다.</span>
-                </label>
-              </div>
+              <ConsentSection errors={errors} />
 
               {errors.submit && (
                 <p style={{ color: '#ef4444', fontSize: '0.875rem', textAlign: 'center', marginBottom: '16px' }}>
@@ -552,7 +480,7 @@ export default function SeminarPage() {
                   if (!loading) (e.currentTarget as HTMLButtonElement).style.opacity = '1';
                 }}
               >
-                {loading ? '신청 중...' : '세미나 신청'}
+                {loading ? '신청 중...' : '세미나신청 제출'}
               </button>
             </form>
           </div>

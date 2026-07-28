@@ -2,8 +2,12 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { IMAGES, DATAWARE_LINEUP, COPY, TRUSTED_LOGOS } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import type { Solution } from '@/data/molecular-data';
+
+const MolecularU = dynamic(() => import('@/components/MolecularU'), { ssr: false });
 
 /* ── Hooks ── */
 function useCountUp(target: number, dur = 2400) {
@@ -52,6 +56,10 @@ export default function Home() {
   const s6 = useGsapReveal() as React.RefObject<HTMLElement>;
   const s7 = useGsapReveal() as React.RefObject<HTMLElement>;
 
+  const [zoomedSolution, setZoomedSolution] = useState<Solution | null>(null);
+  const [explorerMode, setExplorerMode] = useState(false);
+  const isZoomed = zoomedSolution !== null;
+
   const c1 = useCountUp(3000);
   const c2 = useCountUp(20);
   const c3 = useCountUp(80);
@@ -63,63 +71,123 @@ export default function Home() {
           1. HERO — 좌: 카피+메트릭 / 우: DA# 이미지+플로팅
           한 스크린에 핵심 메시지 + 수치 + 제품 + CTA 전부 보임
           ═══════════════════════════════════════════════════════ */}
-      <section ref={heroRef} style={{ position: 'relative', height: '100vh', backgroundColor: '#0B1220', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-        <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
+      <section ref={heroRef} style={{ minHeight: '100vh', background: '#fff', position: 'relative', overflow: 'hidden' }}>
+        {/* DA 워터마크 */}
+        <div aria-hidden="true" style={{ position: 'absolute', bottom: '-5%', right: '-2%', zIndex: 1, opacity: 0.04, pointerEvents: 'none' }}>
+          <img src="/images/da-watermark.png" alt="" style={{ width: 'clamp(300px, 35vw, 500px)', height: 'auto' }} />
         </div>
+        <div style={{
+          position: 'relative',
+          minHeight: '100vh', zIndex: 2,
+        }}>
+          <div
+            className="hero-main-content"
+            style={{
+              width: '100%',
+              padding: '72px clamp(32px, 5vw, 72px) 40px clamp(20px, 3vw, 48px)',
+              display: 'grid',
+              gridTemplateColumns: explorerMode && !isZoomed ? '1fr' : 'minmax(0, 0.38fr) minmax(0, 0.62fr)',
+              alignItems: 'center',
+              gap: 'clamp(24px, 3vw, 48px)',
+              maxWidth: explorerMode && !isZoomed ? 1000 : 1520,
+              margin: '0 auto',
+              transition: 'max-width .5s ease, grid-template-columns .5s ease',
+            }}
+          >
+            {/* ═══ LEFT ═══ */}
+            <div style={{
+              position: 'relative', minWidth: 0,
+              display: explorerMode && !isZoomed ? 'none' : 'block',
+            }}>
+              <div style={{
+                opacity: explorerMode ? 0 : 1,
+                transform: explorerMode ? 'translateY(-10px)' : 'translateY(0)',
+                transition: 'opacity .5s ease, transform .5s ease',
+                pointerEvents: explorerMode ? 'none' : 'auto',
+                position: explorerMode ? 'absolute' : 'relative',
+                visibility: explorerMode ? 'hidden' : 'visible',
+                width: '100%',
+              }}>
+                {/* Eyebrow */}
+                <div data-hero style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, fontSize: 12, fontWeight: 600, letterSpacing: '.12em', color: '#36c88a' }}>
+                  <span style={{ width: 20, height: 1.5, background: '#36c88a' }} />
+                  ENTERPRISE DATA PLATFORM
+                </div>
 
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingTop: '140px', position: 'relative', zIndex: 2 }}>
-          <div className="hero-grid" style={{ flex: 1, display: 'grid', alignItems: 'center', maxWidth: '1320px', margin: '0 auto', width: '100%', padding: '0 clamp(24px, 4vw, 56px)' }}>
-            {/* LEFT */}
-            <div>
-              <div data-hero style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '32px' }}>
-                <div style={{ width: '6px', height: '6px', backgroundColor: '#36c88a' }} />
-                <span style={{ fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.06em' }}>Enterprise Data Platform</span>
-              </div>
+                <h2 data-hero style={{ fontWeight: 900, fontSize: 'clamp(36px, 5.5vw, 64px)', lineHeight: 1.05, letterSpacing: '-0.05em', color: '#111', margin: '0 0 22px' }}>
+                  {COPY.heroDA.line1}<br />{COPY.heroDA.line2}<br />{COPY.heroDA.line3.replace('.', '')}<span style={{ color: '#36c88a' }}>.</span>
+                </h2>
 
-              <h1 data-hero style={{ fontSize: 'clamp(48px, 5.5vw, 72px)', fontWeight: 900, color: '#F9FAFB', lineHeight: 0.95, letterSpacing: '-0.04em', marginBottom: '28px' }}>
-                {COPY.heroDA.line1}<br />{COPY.heroDA.line2}<br />{COPY.heroDA.line3.replace('.', '')}<span style={{ color: '#36c88a' }}>.</span>
-              </h1>
+                <p data-hero style={{ fontWeight: 400, fontSize: 'clamp(15px, 1.4vw, 17px)', lineHeight: 1.75, color: '#676767', maxWidth: 640, margin: '0 0 24px' }}>{COPY.heroDA.subtitle}</p>
 
-              <p data-hero style={{ fontSize: '20px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, marginBottom: '40px', maxWidth: '400px' }}>{COPY.heroDA.subtitle}</p>
+                {/* Hint */}
+                <div data-hero style={{ fontSize: 13, color: '#676767', marginBottom: 28, display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: 'rgba(54,200,138,.04)', border: '1px solid rgba(54,200,138,.1)' }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#36c88a', boxShadow: '0 0 0 3px rgba(54,200,138,.15)' }} />
+                  민트 노드에 올려 살펴보고, 클릭해 안으로 들어가 보세요
+                </div>
 
-              <div data-hero style={{ display: 'flex', gap: '16px', marginBottom: '32px', flexWrap: 'wrap' }}>
-                <Link href="/download" style={{ padding: '18px 36px', backgroundColor: '#36c88a', color: '#fff', fontSize: '18px', fontWeight: 700, textDecoration: 'none', transition: 'opacity 0.2s' }}
-                  onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; }}
-                  onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
-                >무료 체험하기</Link>
-                <Link href="/contact" style={{ padding: '18px 36px', border: '1px solid rgba(255,255,255,0.2)', color: '#F9FAFB', fontSize: '18px', fontWeight: 700, textDecoration: 'none', transition: 'border-color 0.2s' }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#36c88a'; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; }}
-                >도입문의 →</Link>
-              </div>
+                {/* CTAs */}
+                <div data-hero style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+                  <Link href="/contact" className="hero-cta-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '18px 36px', backgroundColor: '#36c88a', color: '#fff', fontWeight: 700, fontSize: 15, textDecoration: 'none', boxShadow: '0 4px 20px -4px rgba(54,200,138,.35)', transition: 'transform .2s, box-shadow .2s' }}>
+                    도입문의하기<span style={{ fontSize: 15 }}>&rarr;</span>
+                  </Link>
+                  <Link href="/download" className="hero-cta-secondary" style={{ display: 'inline-flex', alignItems: 'center', padding: '18px 36px', border: '1.5px solid #d5d8dd', background: 'transparent', color: '#111', fontWeight: 700, fontSize: 15, textDecoration: 'none', transition: 'transform .2s, background .2s, color .2s' }}>
+                    다운로드 신청하기
+                  </Link>
+                </div>
 
-              {/* 메트릭 — 히어로 안에 */}
-              <div data-hero style={{ display: 'flex', gap: '32px' }}>
-                {[
-                  { ref: c1.ref, val: `${c1.n.toLocaleString()}+`, label: '도입 기업' },
-                  { ref: c2.ref, val: `${c2.n}+`, label: '업력' },
-                  { ref: undefined, val: 'GS 1등급', label: '인증' },
-                ].map((s, i) => (
-                  <div key={i}>
-                    <span ref={s.ref} style={{ fontSize: '28px', fontWeight: 800, color: '#F9FAFB', display: 'block' }}>{s.val}</span>
-                    <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.35)' }}>{s.label}</span>
-                  </div>
-                ))}
+                {/* Stats */}
+                <div data-hero style={{ display: 'flex', gap: 0, marginTop: 36, paddingTop: 28, borderTop: '1px solid #e6e8ec' }}>
+                  {[
+                    { num: '3,000', label: '도입 기업', accent: true, ref: c1.ref },
+                    { num: '20', label: '업력', accent: true, ref: c2.ref },
+                    { num: 'GS 1등급', label: '인증', accent: false, ref: undefined },
+                  ].map((s, i) => (
+                    <div key={i} style={{ flex: 1, paddingLeft: i > 0 ? 24 : 0, borderLeft: i > 0 ? '1px solid #e6e8ec' : 'none' }}>
+                      <span ref={s.ref} style={{ fontSize: 28, fontWeight: 800, color: '#111', lineHeight: 1, display: 'block' }}>
+                        {s.accent ? <>{s.num}<span style={{ color: '#36c88a' }}>+</span></> : s.num}
+                      </span>
+                      <div style={{ fontSize: 12, color: '#676767', marginTop: 6, letterSpacing: '.04em' }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* RIGHT — DA# 이미지 */}
-            <div data-hero className="hidden lg:block" style={{ position: 'relative' }}>
-              {/* 배경 레이어 — 원본 사이트와 동일한 구성 */}
-              <img src={IMAGES.hero.da.bg} alt="" style={{ position: 'absolute', top: '-10%', right: '-5%', width: '110%', height: 'auto', opacity: 0.3, pointerEvents: 'none' }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
-              <img src={IMAGES.hero.da.img} alt="DA#" style={{ width: '100%', height: 'auto', display: 'block', position: 'relative', zIndex: 2 }} />
-              {/* 3개 어드밴티지 아이콘 — 원본 사이트 구성 */}
-              <div style={{ display: 'flex', gap: '12px', marginTop: '20px', position: 'relative', zIndex: 2 }}>
-                {[IMAGES.hero.da.advantage1, IMAGES.hero.da.advantage2, IMAGES.hero.da.advantage3].map((src, i) => (
-                  <img key={i} src={src} alt="" style={{ height: '56px', objectFit: 'contain' }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} loading="lazy" />
-                ))}
-              </div>
+            {/* ═══ RIGHT: Molecular U ═══ */}
+            <div
+              className="hero-molecular-area"
+              style={{
+                position: 'relative',
+                minHeight: isZoomed ? 'calc(100vh - 120px)' : explorerMode ? 'calc(100vh - 180px)' : 700,
+                height: isZoomed ? 'calc(100vh - 120px)' : explorerMode ? 'calc(100vh - 180px)' : 'clamp(600px, 72vh, 960px)',
+                overflow: 'visible',
+                transition: 'min-height .4s ease, height .4s ease',
+              }}
+            >
+              {/* Explorer mode header */}
+              {explorerMode && !isZoomed && (
+                <div style={{
+                  position: 'absolute', top: 8, left: 0, right: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16,
+                  zIndex: 20, animation: 'detailFadeIn .4s ease-out',
+                }}>
+                  <button onClick={() => { setZoomedSolution(null); setExplorerMode(false); }} style={{
+                    background: 'none', border: '1px solid #d5d8dd', padding: '8px 20px',
+                    fontSize: 13, fontWeight: 600, color: '#676767', cursor: 'pointer', transition: 'all .2s',
+                  }}>← 메인으로 돌아가기</button>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: '#111', letterSpacing: '-0.02em' }}>
+                    솔루션을 선택하세요
+                  </span>
+                </div>
+              )}
+              <MolecularU
+                onZoom={(sol) => { setZoomedSolution(sol); setExplorerMode(false); }}
+                onClose={() => { setZoomedSolution(null); setExplorerMode(true); }}
+                onBrochure={() => { window.location.href = '/download'; }}
+                onContact={() => { window.location.href = '/contact'; }}
+                zoomedSolution={zoomedSolution}
+              />
             </div>
           </div>
         </div>
@@ -133,31 +201,44 @@ export default function Home() {
         <div style={{ maxWidth: '1080px', margin: '0 auto', padding: 'clamp(56px, 8vw, 96px) clamp(24px, 4vw, 56px)' }}>
           {/* 상단: eyebrow + 제목 + 신뢰 지표 */}
           <div data-anim style={{ textAlign: 'center', marginBottom: '48px' }}>
-            <p style={{ fontSize: '13px', fontWeight: 600, color: '#98A2B3', letterSpacing: '0.12em', marginBottom: '16px' }}>TRUSTED BY ENTERPRISES</p>
-            <h2 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 800, color: '#111214', lineHeight: 1.3, marginBottom: '32px' }}>
+            <p style={{ fontSize: '14px', fontWeight: 600, color: '#98A2B3', letterSpacing: '0.12em', marginBottom: '16px' }}>TRUSTED BY ENTERPRISES</p>
+            <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 900, color: '#111214', lineHeight: 1.15, marginBottom: '36px' }}>
               국내 주요 기업의 데이터 환경을 함께합니다<span style={{ color: '#36c88a' }}>.</span>
             </h2>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 'clamp(32px, 5vw, 64px)', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 'clamp(40px, 6vw, 72px)', flexWrap: 'wrap' }}>
               {[
                 { value: '3,000+', label: '도입 기업' },
                 { value: '20년+', label: '데이터 전문성' },
                 { value: 'GS 인증', label: '1등급' },
               ].map(stat => (
                 <div key={stat.label} style={{ textAlign: 'center' }}>
-                  <span style={{ fontSize: '20px', fontWeight: 800, color: '#111214', display: 'block' }}>{stat.value}</span>
-                  <span style={{ fontSize: '13px', color: '#98A2B3' }}>{stat.label}</span>
+                  <span style={{ fontSize: '28px', fontWeight: 800, color: '#111214', display: 'block' }}>{stat.value}</span>
+                  <span style={{ fontSize: '15px', color: '#98A2B3' }}>{stat.label}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* 고객사 로고 마퀴 — 무한 스크롤 */}
-          <div data-anim style={{ overflow: 'hidden', position: 'relative', maskImage: 'linear-gradient(90deg, transparent, black 8%, black 92%, transparent)', WebkitMaskImage: 'linear-gradient(90deg, transparent, black 8%, black 92%, transparent)' }}>
-            <div style={{ display: 'flex', gap: '56px', alignItems: 'center', animation: 'marquee 40s linear infinite', width: 'max-content' }}>
-              {[...TRUSTED_LOGOS, ...TRUSTED_LOGOS].map((logo, i) => (
-                <img key={i} src={logo.image} alt={logo.name} style={{ height: '44px', objectFit: 'contain', flexShrink: 0, opacity: 0.7 }} loading="lazy" />
-              ))}
-            </div>
+          {/* 고객사 로고 — 원본처럼 크고 유기적 배치 + 플로팅 애니메이션 */}
+          <div data-anim style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '56px 80px', padding: '24px 0 16px' }}>
+            {TRUSTED_LOGOS.map((logo, i) => (
+              <img
+                key={logo.id}
+                src={logo.image}
+                alt={logo.name}
+                className="client-logo-float"
+                style={{
+                  height: 'clamp(60px, 10vw, 100px)',
+                  objectFit: 'contain',
+                  opacity: 0.85,
+                  transition: 'opacity 0.3s, transform 0.3s',
+                  animation: `clientFloat ${3 + (i % 3) * 0.8}s ease-in-out ${(i * 0.3) % 2}s infinite alternate`,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1.12)'; }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = ''; }}
+                loading="lazy"
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -377,24 +458,26 @@ export default function Home() {
             </p>
           </div>
 
-          {/* 고객사 로고 마퀴 — 무한 스크롤 (2줄) */}
-          <div data-anim style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {/* 1줄: 왼쪽으로 스크롤 */}
-            <div style={{ overflow: 'hidden', position: 'relative', maskImage: 'linear-gradient(90deg, transparent, black 8%, black 92%, transparent)', WebkitMaskImage: 'linear-gradient(90deg, transparent, black 8%, black 92%, transparent)' }}>
-              <div style={{ display: 'flex', gap: '64px', alignItems: 'center', animation: 'marquee 35s linear infinite', width: 'max-content' }}>
-                {[...TRUSTED_LOGOS, ...TRUSTED_LOGOS].map((logo, i) => (
-                  <img key={`row1-${i}`} src={logo.image} alt={logo.name} style={{ height: '48px', objectFit: 'contain', flexShrink: 0, opacity: 0.85 }} loading="lazy" />
-                ))}
-              </div>
-            </div>
-            {/* 2줄: 오른쪽으로 스크롤 (역방향) */}
-            <div style={{ overflow: 'hidden', position: 'relative', maskImage: 'linear-gradient(90deg, transparent, black 8%, black 92%, transparent)', WebkitMaskImage: 'linear-gradient(90deg, transparent, black 8%, black 92%, transparent)' }}>
-              <div style={{ display: 'flex', gap: '64px', alignItems: 'center', animation: 'marquee 35s linear infinite reverse', width: 'max-content' }}>
-                {[...IMAGES.clientLogoNumbered, ...IMAGES.clientLogoNumbered].map((src: string, i: number) => (
-                  <img key={`row2-${i}`} src={src} alt="" style={{ height: '48px', objectFit: 'contain', flexShrink: 0, opacity: 0.85 }} loading="lazy" />
-                ))}
-              </div>
-            </div>
+          {/* 고객사 로고 — 크고 유기적 + 플로팅 */}
+          <div data-anim style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '56px 80px', padding: '24px 0 16px' }}>
+            {TRUSTED_LOGOS.map((logo, i) => (
+              <img
+                key={logo.id}
+                src={logo.image}
+                alt={logo.name}
+                className="client-logo-float"
+                style={{
+                  height: 'clamp(60px, 10vw, 100px)',
+                  objectFit: 'contain',
+                  opacity: 0.85,
+                  transition: 'opacity 0.3s, transform 0.3s',
+                  animation: `clientFloat ${3 + (i % 3) * 0.8}s ease-in-out ${(i * 0.3) % 2}s infinite alternate`,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1.12)'; }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = ''; }}
+                loading="lazy"
+              />
+            ))}
           </div>
 
           <div data-anim style={{ textAlign: 'center', marginTop: '48px' }}>
@@ -408,39 +491,94 @@ export default function Home() {
 
 
       {/* ═══════════════════════════════════════════════════════
-          8. NEWS + CTA — 비대칭 그리드 + 2분할 CTA
+          8. 유니온시스템즈 소식 — 강의 카드 + 공지
           ═══════════════════════════════════════════════════════ */}
-      <section ref={s7} style={{ backgroundColor: '#F7F6F2', borderTop: '1px solid #E7E2D8' }}>
+      <section ref={s7} style={{ backgroundColor: '#fff', borderTop: '1px solid #E7E2D8' }}>
         <div style={{ maxWidth: '1320px', margin: '0 auto', padding: 'clamp(64px, 8vw, 100px) clamp(24px, 4vw, 56px)' }}>
-          <div data-anim style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px' }}>
-            <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 900, color: '#111214' }}>{COPY.newsSection}<span style={{ color: '#36c88a' }}>.</span></h2>
-            <Link href="/resources/notices" style={{ fontSize: '18px', fontWeight: 600, color: '#36c88a', textDecoration: 'none' }}>전체 보기 →</Link>
+          <div data-anim style={{ textAlign: 'center', marginBottom: '56px' }}>
+            <p style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.12em', marginBottom: '16px' }}>NEWS & LECTURES</p>
+            <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 900, color: '#111214', lineHeight: 1.15, marginBottom: '12px' }}>
+              유니온시스템즈 소식<span style={{ color: '#36c88a' }}>.</span>
+            </h2>
+            <p style={{ fontSize: '18px', color: '#6B655C' }}>성장하는 유니온시스템즈의 소식과 유용한 강의들을 만나보세요!</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '20px' }}>
-            <Link href="/resources/notices" data-anim style={{ padding: '48px', backgroundColor: '#fff', border: '1px solid #E7E2D8', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: '280px', transition: 'border-color 0.3s', textDecoration: 'none' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = '#36c88a'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = '#E7E2D8'; }}
-            >
-              <span style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', marginBottom: '16px' }}>공지</span>
-              <h3 style={{ fontSize: '22px', fontWeight: 700, color: '#111214', lineHeight: 1.3, marginBottom: '12px' }}>DA#_DQ_Edition 조달청 나라장터 등록</h3>
-              <p style={{ fontSize: '16px', color: '#98A2B3' }}>2021.11.22</p>
-            </Link>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {[
-                { tag: '리뷰', title: '[리뷰] 데이터 품질진단 DA# DQ_Edition', date: '2021.06.02', href: '/resources/notices' },
-                { tag: '공지', title: 'DA# DQ_Edition GS인증 1등급', date: '2021.05.30', href: '/resources/notices' },
-              ].map(a => (
-                <Link key={a.title} href={a.href} data-anim style={{ padding: '32px', backgroundColor: '#fff', border: '1px solid #E7E2D8', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', transition: 'border-color 0.3s', textDecoration: 'none' }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#36c88a'; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#E7E2D8'; }}
-                >
-                  <span style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', marginBottom: '12px' }}>{a.tag}</span>
-                  <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#111214', lineHeight: 1.4 }}>{a.title}</h3>
-                  <p style={{ fontSize: '14px', color: '#98A2B3', marginTop: '8px' }}>{a.date}</p>
-                </Link>
-              ))}
-            </div>
+          {/* 강의 카드 그리드 */}
+          <div data-anim style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '48px' }}>
+            {[
+              { title: '새로운 시대의 데이터모델링', speaker: '이화식 대표', thumb: '/images/uniondata/video-lecture_seminar_thum-01.jpg', href: 'https://www.uniondata.co.kr/da5%ec%9d%98-%eb%8b%ac%eb%9d%bc%ec%a7%84-%eb%aa%a8%eb%8d%b8%eb%a7%81-da5-%eb%9f%b0%ec%b9%ad-%ec%84%b8%eb%af%b8%eb%82%98/' },
+              { title: 'DA#5 개발스토리', speaker: '정철원 디렉터', thumb: '/images/uniondata/video-lecture_seminar_thum-02.jpg', href: 'https://www.uniondata.co.kr/da5%ec%9d%98-%eb%8b%ac%eb%9d%bc%ec%a7%84-%eb%aa%a8%eb%8d%b8%eb%a7%81-da5-%eb%9f%b0%ec%b9%ad%ec%84%b8%eb%af%b8%eb%82%98/' },
+              { title: 'DA#5 달라진 모델링', speaker: '정민수 연구원', thumb: '/images/uniondata/video-lecture_seminar_thum-03.jpg', href: 'https://www.uniondata.co.kr/da5%ec%9d%98-api-%ea%b7%b8%eb%a6%ac%ea%b3%a0-%ed%8e%b8%ec%9d%98%ea%b8%b0%eb%8a%a5-da5-%eb%9f%b0%ec%b9%ad-%ec%84%b8%eb%af%b8%eb%82%982/' },
+              { title: 'DA#5 기본구조 및 개념', speaker: '최광희 연구원', thumb: '/images/uniondata/video-lecture_seminar_thum-04.jpg', href: 'https://www.uniondata.co.kr/da5%ec%9d%98-%ea%b8%b0%eb%b3%b8%ea%b5%ac%ec%a1%b0-%eb%b0%8f-%ea%b0%9c%eb%85%90-da5-%eb%9f%b0%ec%b9%ad%ec%84%b8%eb%af%b8%eb%82%98/' },
+              { title: 'API 그리고 편의기능', speaker: '김기동 연구원', thumb: '/images/uniondata/video-lecture_seminar_thum-05.jpg', href: 'https://www.uniondata.co.kr/da5%ec%9d%98-%eb%8b%ac%eb%9d%bc%ec%a7%84-%eb%aa%a8%eb%8d%b8%eb%a7%81-da5-%eb%9f%b0%ec%b9%ad%ec%84%b8%eb%af%b8%eb%82%982/' },
+              { title: '초보자도 할 수 있는 현행모델 파헤치기', speaker: '이임형 연구원', thumb: '/images/uniondata/video-lecture_seminar_thum-06.jpg', href: 'https://www.uniondata.co.kr/da5%ec%9d%98-%ea%b8%b0%eb%b3%b8%ea%b5%ac%ec%a1%b0-%eb%b0%8f-%ea%b0%9c%eb%85%90-da5-%eb%9f%b0%ec%b9%ad%ec%84%b8%eb%af%b8%eb%82%982/' },
+            ].map((lecture) => (
+              <a
+                key={lecture.title}
+                href={lecture.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'block', textDecoration: 'none', overflow: 'hidden', border: '1px solid #E7E2D8', backgroundColor: '#fff', transition: 'box-shadow 0.3s, transform 0.3s' }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.1)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = ''; }}
+              >
+                <div style={{ position: 'relative', height: 180, overflow: 'hidden', backgroundColor: '#0b1220' }}>
+                  <img src={lecture.thumb} alt={lecture.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
+                    loading="lazy"
+                  />
+                  {/* 재생 아이콘 */}
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.15)', opacity: 0, transition: 'opacity 0.3s' }}
+                    onMouseEnter={e => { e.currentTarget.style.opacity = '1'; }}
+                    onMouseLeave={e => { e.currentTarget.style.opacity = '0'; }}
+                  >
+                    <div style={{ width: 48, height: 48, borderRadius: '50%', backgroundColor: 'rgba(54,200,138,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg width="20" height="20" fill="#fff" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                    </div>
+                  </div>
+                  <span style={{ position: 'absolute', top: 10, left: 10, fontSize: 11, fontWeight: 700, color: '#fff', backgroundColor: 'rgba(54,200,138,0.9)', padding: '3px 10px' }}>DA#5 런칭세미나</span>
+                </div>
+                <div style={{ padding: '16px 20px' }}>
+                  <h3 style={{ fontSize: 15, fontWeight: 700, color: '#111214', lineHeight: 1.4, marginBottom: 6 }}>{lecture.title}</h3>
+                  <p style={{ fontSize: 13, color: '#98A2B3', margin: 0 }}>{lecture.speaker}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          {/* 공지사항 하이라이트 — 카드형 + 썸네일 */}
+          <div data-anim style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+            {[
+              { tag: '공지', title: 'DA#_DQ_Edition 조달청 나라장터 등록', date: '2021.11.22', thumb: '/images/uniondata/0.png' },
+              { tag: '리뷰', title: '[리뷰] 데이터 품질진단 DA# DQ_Edition', date: '2021.06.02', thumb: '/images/uniondata/0-1.png' },
+              { tag: '공지', title: 'DA# DQ_Edition GS인증 1등급', date: '2021.05.30', thumb: '/images/uniondata/0000-1.png' },
+            ].map(a => (
+              <Link key={a.title} href="/resources/notices" style={{ overflow: 'hidden', backgroundColor: '#fff', border: '1px solid #E7E2D8', transition: 'box-shadow 0.3s, transform 0.3s', textDecoration: 'none', display: 'block' }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.08)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = ''; }}
+              >
+                <div style={{ height: 160, overflow: 'hidden', backgroundColor: '#f0f2f5' }}>
+                  <img src={a.thumb} alt={a.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
+                    loading="lazy"
+                  />
+                </div>
+                <div style={{ padding: '18px 22px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: '#36c88a', marginBottom: '8px', display: 'block' }}>{a.tag}</span>
+                  <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111214', lineHeight: 1.4, marginBottom: '8px' }}>{a.title}</h3>
+                  <p style={{ fontSize: '13px', color: '#98A2B3' }}>{a.date}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div data-anim style={{ textAlign: 'center', marginTop: '40px' }}>
+            <Link href="/resources/notices" style={{ fontSize: '14px', fontWeight: 600, color: '#6B655C', textDecoration: 'none', transition: 'color 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#36c88a'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#6B655C'; }}
+            >공지사항 전체 보기 →</Link>
           </div>
         </div>
       </section>
@@ -479,19 +617,10 @@ export default function Home() {
 
       <style>{`
         @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-        .hero-grid { grid-template-columns: 40% 60%; }
-        @media (max-width: 1023px) {
-          .hero-grid { grid-template-columns: 1fr !important; }
-        }
-        /* Data flow pipeline — mobile: 2x3 grid */
-        @media (max-width: 768px) {
-          .flow-pipeline { flex-wrap: wrap !important; gap: 1px !important; }
-          .flow-step-card { flex: 0 0 calc(50% - 24px) !important; min-width: 0 !important; }
-          .flow-arrow { display: none !important; }
-        }
-        @media (max-width: 480px) {
-          .flow-step-card { flex: 0 0 100% !important; }
-        }
+        .hero-cta-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 28px -4px rgba(54,200,138,.4) !important; }
+        .hero-cta-primary:hover span { transform: translateX(3px); }
+        .hero-cta-secondary:hover { background: #111 !important; color: #fff !important; transform: translateY(-3px); }
+        @keyframes detailFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
     </>
   );

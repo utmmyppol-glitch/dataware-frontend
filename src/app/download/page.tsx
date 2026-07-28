@@ -3,8 +3,9 @@
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
-import { DOWNLOAD_CARDS, IMAGES } from '@/data';
+import { DOWNLOAD_CARDS, DOWNLOAD_PAGE, IMAGES } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import ConsentSection from '@/components/forms/ConsentSection';
 
 const inputBase =
   'w-full bg-white border border-[#d5d8dd] px-4 py-4 text-[16px] text-[#111111] focus:border-[#36c88a] focus:ring-1 focus:ring-[#36c88a] focus:outline-none transition-colors';
@@ -17,6 +18,7 @@ export default function DownloadPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [selectedFileType, setSelectedFileType] = useState('DA#_BROCHURE');
   const heroRef = useHeroAnim();
   const cardsRef = useGsapReveal();
   const formRef = useGsapReveal();
@@ -121,29 +123,50 @@ export default function DownloadPage() {
             다운로드 항목
           </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
-            {DOWNLOAD_CARDS.map((card) => {
-              const thumbMap: Record<string, string> = {
-                'da-intro': IMAGES.download.daIntro,
-                'dq-intro': IMAGES.download.dqIntro,
-                'da-personal': IMAGES.download.daPersonal,
-                'da-business': IMAGES.download.daBusiness,
-              };
-              return (
-                <div
-                  key={card.id}
-                  data-anim
-                  className="card"
-                  style={{ borderRadius: 0, padding: '28px 24px', textAlign: 'center' }}
-                >
-                  <img src={thumbMap[card.id]} alt={card.title} style={{ width: '100%', height: 80, objectFit: 'contain', marginBottom: 16 }} loading="lazy" />
-                  <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', marginBottom: 6 }}>{card.title}</h3>
-                  <p style={{ fontSize: 13, color: '#64748b', marginBottom: 16 }}>{card.desc}</p>
-                  <a href="#download-form" className="btn-accent" style={{ fontSize: 13, padding: '8px 18px', borderRadius: 0, textDecoration: 'none' }}>{card.ctaLabel}</a>
+          {DOWNLOAD_PAGE.sections.map((section) => {
+            const sectionCards = DOWNLOAD_CARDS.filter((c) => c.section === section.id);
+            const thumbMap: Record<string, string> = {
+              'da-intro': IMAGES.download.daIntro,
+              'dq-intro': IMAGES.download.dqIntro,
+              'da-personal': IMAGES.download.daPersonal,
+              'da-business': IMAGES.download.daBusiness,
+            };
+            const fileTypeMap: Record<string, string> = {
+              'da-intro': 'DA#_BROCHURE',
+              'dq-intro': 'DQ_BROCHURE',
+              'da-personal': 'DA#_FREE',
+              'da-business': 'DA#_BUSINESS',
+            };
+            return (
+              <div key={section.id} data-anim style={{ marginBottom: 40 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a' }}>{section.label}</h3>
+                  {section.notice && (
+                    <span style={{ fontSize: 12, color: '#94a3b8' }}>{section.notice}</span>
+                  )}
                 </div>
-              );
-            })}
-          </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
+                  {sectionCards.map((card) => (
+                    <div
+                      key={card.id}
+                      className="card"
+                      style={{ borderRadius: 0, padding: '28px 24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                    >
+                      <img src={thumbMap[card.id]} alt={card.title} style={{ width: '100%', height: 80, objectFit: 'contain', marginBottom: 16 }} loading="lazy" />
+                      <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', marginBottom: 6, minHeight: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{card.title}</h3>
+                      <p style={{ fontSize: 13, color: '#64748b', flex: 1 }}>{card.desc}</p>
+                      <a
+                        href="#download-form"
+                        className="btn-accent"
+                        style={{ fontSize: 13, padding: '8px 18px', borderRadius: 0, textDecoration: 'none', marginTop: 16 }}
+                        onClick={() => setSelectedFileType(fileTypeMap[card.id])}
+                      >{card.ctaLabel}</a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -159,10 +182,17 @@ export default function DownloadPage() {
             <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               <div>
                 <label className="block text-sm font-medium mb-1" style={{ color: '#0f172a' }}>다운로드 항목</label>
-                <select name="fileType" className={inputBase} style={{ appearance: 'auto' }}>
-                  <option value="DA#_FREE">DA# 개인용 (무료)</option>
-                  <option value="DATAWARE_BROCHURE">DATAWARE 소개서</option>
+                <select
+                  name="fileType"
+                  className={inputBase}
+                  style={{ appearance: 'auto' }}
+                  value={selectedFileType}
+                  onChange={(e) => setSelectedFileType(e.target.value)}
+                >
                   <option value="DA#_BROCHURE">DA# 소개서</option>
+                  <option value="DQ_BROCHURE">DA# DQ Edition 소개서</option>
+                  <option value="DA#_FREE">DA#5 개인용 (무료)</option>
+                  <option value="DA#_BUSINESS">DA#5 기업용</option>
                 </select>
               </div>
 
@@ -181,24 +211,7 @@ export default function DownloadPage() {
                 ))}
               </div>
 
-              <div style={{ background: '#f8fafc', borderRadius: 0, padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>동의 항목</p>
-                <div>
-                  <label className="flex items-start gap-2 text-sm cursor-pointer" style={{ color: '#334155' }}>
-                    <input type="checkbox" name="consentPrivacy" className="mt-1" style={{ accentColor: '#36c88a' }} />
-                    <span>[필수] 개인정보 수집 및 이용에 동의합니다.</span>
-                  </label>
-                  {errors.consentPrivacy && <p className="text-xs mt-1 ml-5" style={{ color: '#ef4444' }}>{errors.consentPrivacy}</p>}
-                </div>
-                <label className="flex items-start gap-2 text-sm cursor-pointer" style={{ color: '#334155' }}>
-                  <input type="checkbox" name="consentThirdParty" className="mt-1" style={{ accentColor: '#36c88a' }} />
-                  <span>[필수] 제3자(㈜엔코아) 정보 제공에 동의합니다.</span>
-                </label>
-                <label className="flex items-start gap-2 text-sm cursor-pointer" style={{ color: '#334155' }}>
-                  <input type="checkbox" name="consentMarketing" className="mt-1" style={{ accentColor: '#36c88a' }} />
-                  <span>[선택] 세미나개최, 제품 업데이트 소식 정보수신에 동의합니다.</span>
-                </label>
-              </div>
+              <ConsentSection errors={errors} showThirdParty />
 
               {errors.submit && <p className="text-sm text-center" style={{ color: '#ef4444' }}>{errors.submit}</p>}
 

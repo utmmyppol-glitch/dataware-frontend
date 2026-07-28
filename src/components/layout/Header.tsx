@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
+import SearchOverlay from './SearchOverlay';
 
 /* ── Data ─────────────────────────────────── */
 
@@ -16,15 +18,18 @@ const DATAWARE_PRODUCTS = [
   { name: 'DA#',      slug: 'da-sharp',   subtitle: '데이터 모델링',         color: '#6b8cae', isNew: false, initial: 'DA' },
   { name: 'META#',    slug: 'meta-sharp', subtitle: '메타데이터 관리',       color: '#8a7cb8', isNew: true,  initial: 'M' },
   { name: 'DQ#',      slug: 'dq-sharp',  subtitle: '데이터 품질관리',       color: '#5b9a7d', isNew: true,  initial: 'DQ' },
-  { name: 'AP#',      slug: 'ap-sharp',  subtitle: '영향도 분석',           color: '#c4975a', isNew: true,  initial: 'AP' },
+  { name: 'AP#',      slug: 'ap-sharp',  subtitle: '애플리케이션 영향도 분석', color: '#c4975a', isNew: true,  initial: 'AP' },
   { name: 'DF#',      slug: 'df-sharp',  subtitle: '데이터 흐름 관리',     color: '#5a9aaa', isNew: true,  initial: 'DF' },
   { name: 'ETT#',     slug: 'ett-sharp', subtitle: '데이터 마이그레이션',   color: '#b07a8a', isNew: true,  initial: 'ET' },
   { name: 'DP#',      slug: 'dp-sharp',  subtitle: '데이터 포털',           color: '#b8a060', isNew: true,  initial: 'DP' },
 ];
 
-const RESOURCE_LINKS = [
+const SUPPORT_LINKS = [
   { label: '공지사항', href: '/resources/notices', desc: '최신 소식 및 업데이트' },
   { label: '다운로드 신청', href: '/download', desc: 'DA# 무료 다운로드 · 소개서' },
+];
+
+const EDUCATION_LINKS = [
   { label: '무료교육', href: '/education', desc: 'DA# 활용 무료 교육 신청' },
   { label: '방문 세미나', href: '/seminar', desc: '맞춤형 방문 세미나 신청' },
   { label: '동영상 강의', href: '/resources/videos', desc: '온라인 강의 · 데모 영상' },
@@ -32,9 +37,11 @@ const RESOURCE_LINKS = [
 
 const NAV_ITEMS = [
   { label: 'DATAWARE', href: '/products', dropdownType: 'dataware' as const },
+  { label: '데이터 진단', href: '/diagnosis', dropdownType: null },
   { label: '가격안내', href: '/pricing', dropdownType: null },
   { label: '고객사례', href: '/customers', dropdownType: null },
-  { label: '자료실', href: '/resources', dropdownType: 'resources' as const },
+  { label: '교육', href: '/education', dropdownType: 'education' as const },
+  { label: '고객지원', href: '/resources', dropdownType: 'support' as const },
   { label: '이벤트', href: '/events', dropdownType: null },
 ];
 
@@ -45,10 +52,8 @@ export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileDatawareOpen, setMobileDatawareOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLUListElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Legacy alias for existing code
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -80,21 +85,6 @@ export default function Header() {
   const handleMouseEnter = () => handleDropdownEnter('dataware');
   const handleMouseLeave = () => handleDropdownLeave();
 
-  useEffect(() => {
-    if (searchOpen && searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, [searchOpen]);
-
-  useEffect(() => {
-    function handleEscape(e: KeyboardEvent) {
-      if (e.key === 'Escape') setSearchOpen(false);
-    }
-    if (searchOpen) {
-      document.addEventListener('keydown', handleEscape);
-      return () => document.removeEventListener('keydown', handleEscape);
-    }
-  }, [searchOpen]);
 
   return (
     <>
@@ -115,10 +105,10 @@ export default function Header() {
             textDecoration: 'none', fontSize: '11px', fontWeight: 600,
             lineHeight: 1.25, whiteSpace: 'pre-line',
             borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.1)' : 'none',
-            transition: 'width 0.2s cubic-bezier(0.22,1,0.36,1), background 0.2s',
+            transition: 'transform 0.2s cubic-bezier(0.22,1,0.36,1), background 0.2s',
           }}
-          onMouseEnter={e => { e.currentTarget.style.width = '84px'; e.currentTarget.style.backgroundColor = '#36c88a'; }}
-          onMouseLeave={e => { e.currentTarget.style.width = '72px'; e.currentTarget.style.backgroundColor = item.bg; }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(-12px)'; e.currentTarget.style.backgroundColor = '#36c88a'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.backgroundColor = item.bg; }}
         >
           {item.label}
         </Link>
@@ -130,38 +120,22 @@ export default function Header() {
       style={{ backgroundColor: '#ffffff', boxShadow: '0 2px 8px rgba(0,0,0,.06)' }}
     >
 
-      {/* ── Top Quick-Link Bar ── */}
-      <div style={{ backgroundColor: '#f6f8fa', borderBottom: '1px solid #e6e8ec' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-9">
-          <span className="text-xs hidden sm:block" style={{ color: '#888d94' }}>
-            DATAWARE™ — 데이터 거버넌스 All-in-One
-          </span>
-          <div className="flex items-center gap-1 ml-auto">
-            {QUICK_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="flex items-center gap-1 text-xs px-3 py-1 rounded transition-colors duration-150"
-                style={{ color: '#888d94' }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#36c88a'; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#888d94'; }}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Top Quick-Link Bar 제거 */}
 
       {/* ── Main Navigation ── */}
       <nav style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e6e8ec' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[68px]">
 
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0">
-            <span className="text-lg font-bold tracking-tight" style={{ color: '#111111' }}>
-              DATAWARE™
-            </span>
+            <Image
+              src="/images/dataware-logo.png"
+              alt="DATAWARE™"
+              width={160}
+              height={32}
+              priority
+              style={{ height: 'auto' }}
+            />
           </Link>
 
           {/* Desktop Nav */}
@@ -173,7 +147,7 @@ export default function Header() {
                     onMouseEnter={() => handleDropdownEnter(item.dropdownType!)}
                     onMouseLeave={handleDropdownLeave}
                     onClick={() => setActiveDropdown(activeDropdown === item.dropdownType ? null : item.dropdownType)}
-                    className="flex items-center gap-1 text-sm font-semibold px-4 py-2 transition-colors duration-150"
+                    className="flex items-center gap-1 text-[15px] font-semibold px-5 py-2 transition-colors duration-150"
                     style={{
                       color: activeDropdown === item.dropdownType ? '#36c88a' : '#33363b',
                       borderBottom: activeDropdown === item.dropdownType ? '2px solid #36c88a' : '2px solid transparent',
@@ -293,10 +267,10 @@ export default function Header() {
                     </div>
                   )}
 
-                  {/* Resources Dropdown */}
-                  {activeDropdown === 'resources' && item.dropdownType === 'resources' && (
+                  {/* Education Dropdown */}
+                  {activeDropdown === 'education' && item.dropdownType === 'education' && (
                     <div
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[420px] overflow-hidden"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[380px] overflow-hidden"
                       style={{
                         backgroundColor: '#ffffff',
                         border: '1px solid #e6e8ec',
@@ -304,14 +278,52 @@ export default function Header() {
                         borderRadius: '0',
                         animation: 'dropdownEnter 0.18s ease-out',
                       }}
-                      onMouseEnter={() => handleDropdownEnter('resources')}
+                      onMouseEnter={() => handleDropdownEnter('education')}
                       onMouseLeave={handleDropdownLeave}
                     >
                       <div className="px-5 py-3" style={{ borderBottom: '1px solid #e6e8ec' }}>
-                        <p className="font-bold text-sm" style={{ color: '#111111' }}>자료실</p>
+                        <p className="font-bold text-sm" style={{ color: '#111111' }}>교육</p>
                       </div>
                       <div className="py-2">
-                        {RESOURCE_LINKS.map((link) => (
+                        {EDUCATION_LINKS.map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            onClick={() => setActiveDropdown(null)}
+                            className="flex items-center gap-3 px-5 py-3 transition-colors duration-150"
+                            style={{ textDecoration: 'none' }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f6f8fa')}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                          >
+                            <div>
+                              <p className="text-sm font-semibold" style={{ color: '#111111' }}>{link.label}</p>
+                              <p className="text-xs" style={{ color: '#888d94' }}>{link.desc}</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Support Dropdown */}
+                  {activeDropdown === 'support' && item.dropdownType === 'support' && (
+                    <div
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[380px] overflow-hidden"
+                      style={{
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e6e8ec',
+                        boxShadow: '0 8px 24px rgba(0,0,0,.08)',
+                        borderRadius: '0',
+                        animation: 'dropdownEnter 0.18s ease-out',
+                      }}
+                      onMouseEnter={() => handleDropdownEnter('support')}
+                      onMouseLeave={handleDropdownLeave}
+                    >
+                      <div className="px-5 py-3" style={{ borderBottom: '1px solid #e6e8ec' }}>
+                        <p className="font-bold text-sm" style={{ color: '#111111' }}>고객지원</p>
+                      </div>
+                      <div className="py-2">
+                        {SUPPORT_LINKS.map((link) => (
                           <Link
                             key={link.href}
                             href={link.href}
@@ -335,7 +347,7 @@ export default function Header() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-sm font-semibold px-4 py-2 transition-colors duration-150 block"
+                    className="text-[15px] font-semibold px-5 py-2 transition-colors duration-150 block"
                     style={{ color: '#33363b', borderBottom: '2px solid transparent' }}
                     onMouseEnter={(e) => {
                       (e.currentTarget as HTMLAnchorElement).style.color = '#36c88a';
@@ -354,11 +366,11 @@ export default function Header() {
           </ul>
 
           {/* Right: Search + CTA + Mobile toggle */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-6">
             {/* Search toggle */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="hidden md:flex items-center justify-center w-9 h-9 rounded-lg transition-colors"
+              className="hidden md:flex items-center justify-center w-9 h-9 mr-2 rounded-lg transition-colors"
               style={{ color: '#888d94' }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#36c88a'; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#888d94'; }}
@@ -371,11 +383,11 @@ export default function Header() {
 
             <Link
               href="/contact"
-              className="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-white transition-all duration-200"
+              className="hidden md:inline-flex items-center gap-2 text-[15px] font-semibold text-white transition-all duration-200"
               style={{
                 backgroundColor: '#36c88a',
                 borderRadius: '4px',
-                padding: '10px 24px',
+                padding: '11px 28px',
                 boxShadow: '0 6px 18px rgba(54,200,138,.28)',
               }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#2ba876'; }}
@@ -408,80 +420,7 @@ export default function Header() {
         </div>
 
         {/* ── Search Overlay ── */}
-        {searchOpen && (
-          <div
-            className="fixed inset-0 z-[100] flex items-start justify-center pt-24"
-            style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
-            onClick={(e) => { if (e.target === e.currentTarget) setSearchOpen(false); }}
-          >
-            <div
-              className="w-full max-w-xl mx-4 rounded-2xl overflow-hidden"
-              style={{
-                backgroundColor: '#ffffff',
-                boxShadow: '0 20px 60px rgba(0,0,0,.15)',
-                animation: 'dropdownEnter 0.2s ease-out',
-              }}
-            >
-              <div className="flex items-center gap-3 px-5 py-4" style={{ borderBottom: '1px solid #e6e8ec' }}>
-                <svg className="w-5 h-5 shrink-0" fill="none" stroke="#888d94" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="제품, 자료, 고객사례 검색..."
-                  className="flex-1 text-sm outline-none bg-transparent"
-                  style={{ color: '#111111' }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && searchQuery.trim()) {
-                      setSearchOpen(false);
-                      window.location.href = `/resources?q=${encodeURIComponent(searchQuery.trim())}`;
-                    }
-                  }}
-                />
-                <button
-                  onClick={() => setSearchOpen(false)}
-                  className="text-xs px-2 py-1 rounded"
-                  style={{ color: '#888d94', backgroundColor: '#f6f8fa', border: '1px solid #e6e8ec' }}
-                >
-                  ESC
-                </button>
-              </div>
-              <div className="px-5 py-4">
-                <p className="text-xs mb-3" style={{ color: '#888d94' }}>빠른 링크</p>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    { label: 'DA# 다운로드', href: '/download' },
-                    { label: '무료교육', href: '/education' },
-                    { label: '가격안내', href: '/pricing' },
-                    { label: '도입문의', href: '/contact' },
-                    { label: 'FAQ', href: '/faq' },
-                  ].map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setSearchOpen(false)}
-                      className="text-xs px-3 py-1.5 rounded-full transition-colors"
-                      style={{ color: '#676767', backgroundColor: '#f6f8fa', border: '1px solid #e6e8ec' }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLAnchorElement).style.color = '#36c88a';
-                        (e.currentTarget as HTMLAnchorElement).style.borderColor = '#36c88a';
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLAnchorElement).style.color = '#676767';
-                        (e.currentTarget as HTMLAnchorElement).style.borderColor = '#e6e8ec';
-                      }}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
 
         {/* Dropdown animation keyframes */}
         <style>{`
@@ -550,6 +489,27 @@ export default function Header() {
                 )}
               </div>
 
+              {/* 교육 */}
+              <div className="px-4 py-2">
+                <p className="text-xs font-bold mb-2" style={{ color: '#94a3b8' }}>교육</p>
+                {EDUCATION_LINKS.map((link) => (
+                  <Link key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
+                    style={{ color: '#33363b' }}
+                  >{link.label}</Link>
+                ))}
+              </div>
+              {/* 고객지원 */}
+              <div className="px-4 py-2">
+                <p className="text-xs font-bold mb-2" style={{ color: '#94a3b8' }}>고객지원</p>
+                {SUPPORT_LINKS.map((link) => (
+                  <Link key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
+                    style={{ color: '#33363b' }}
+                  >{link.label}</Link>
+                ))}
+              </div>
+              {/* 나머지 단독 메뉴 */}
               {NAV_ITEMS.filter((i) => !i.dropdownType).map((item) => (
                 <Link
                   key={item.href}
@@ -557,8 +517,6 @@ export default function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="block px-4 py-3 text-sm font-semibold rounded-lg transition-colors"
                   style={{ color: '#33363b' }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#36c88a'; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#33363b'; }}
                 >
                   {item.label}
                 </Link>

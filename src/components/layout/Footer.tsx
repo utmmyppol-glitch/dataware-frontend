@@ -53,17 +53,17 @@ export default function Footer() {
 
             {/* Right — SNS icons */}
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
-              <a href="https://blog.naver.com/unionsystems" target="_blank" rel="noopener noreferrer" style={{ display: 'block', opacity: 0.7, transition: 'opacity 0.2s' }}
+              <a href="https://blog.naver.com/unionsystems_" target="_blank" rel="noopener noreferrer" style={{ display: 'block', opacity: 0.7, transition: 'opacity 0.2s' }}
                 onMouseEnter={e => { e.currentTarget.style.opacity = '1'; }}
                 onMouseLeave={e => { e.currentTarget.style.opacity = '0.7'; }}
               >
-                <img src={IMAGES.sns.blog} alt="블로그" style={{ width: '36px', height: '36px', objectFit: 'contain' }} />
+                <img src={IMAGES.sns.blog} alt="블로그 바로가기" style={{ width: '36px', height: '36px', objectFit: 'contain' }} />
               </a>
-              <a href="https://www.facebook.com/unionsystems" target="_blank" rel="noopener noreferrer" style={{ display: 'block', opacity: 0.7, transition: 'opacity 0.2s' }}
+              <a href="https://www.facebook.com/people/%EC%9C%A0%EB%8B%88%EC%98%A8%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%A6%88/100063749779619/" target="_blank" rel="noopener noreferrer" style={{ display: 'block', opacity: 0.7, transition: 'opacity 0.2s' }}
                 onMouseEnter={e => { e.currentTarget.style.opacity = '1'; }}
                 onMouseLeave={e => { e.currentTarget.style.opacity = '0.7'; }}
               >
-                <img src={IMAGES.sns.facebook} alt="페이스북" style={{ width: '36px', height: '36px', objectFit: 'contain' }} />
+                <img src={IMAGES.sns.facebook} alt="페이스북 바로가기" style={{ width: '36px', height: '36px', objectFit: 'contain' }} />
               </a>
             </div>
           </div>
@@ -71,11 +71,16 @@ export default function Footer() {
           {/* Divider */}
           <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.12)', marginBottom: '20px' }} />
 
-          {/* Bottom row: Copyright + DA DQ logo */}
+          {/* Bottom row: Copyright + Privacy + DA DQ logo */}
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
-            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', margin: 0 }}>
-              Copyright 2021 UNION SYSTEMS. All rights reserved.
-            </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', margin: 0 }}>
+                Copyright 2021 UNION SYSTEMS. All rights reserved.
+              </p>
+              <Link href="/privacy" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', textDecoration: 'none', borderLeft: '1px solid rgba(255,255,255,0.15)', paddingLeft: '16px' }}>
+                개인정보처리방침
+              </Link>
+            </div>
             <img src={IMAGES.footerLogo} alt="DA DQ Edition" style={{ height: '20px', objectFit: 'contain', opacity: 0.5 }} />
           </div>
         </div>
