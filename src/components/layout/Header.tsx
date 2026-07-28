@@ -27,6 +27,7 @@ const DATAWARE_PRODUCTS = [
 const SUPPORT_LINKS = [
   { label: '공지사항', href: '/resources/notices', desc: '최신 소식 및 업데이트' },
   { label: '다운로드 신청', href: '/download', desc: 'DA# 무료 다운로드 · 소개서' },
+  { label: '데이터 진단', href: '/diagnosis', desc: '거버넌스 성숙도 진단' },
   { label: '파트너 제휴', href: '/partner', desc: '솔루션 파트너 프로그램 안내' },
 ];
 
@@ -40,7 +41,6 @@ const NAV_ITEMS = [
   { label: 'DATAWARE', href: '/products', dropdownType: 'dataware' as const },
   { label: '교육', href: '/education', dropdownType: 'education' as const },
   { label: '고객지원', href: '/resources', dropdownType: 'support' as const },
-  { label: '데이터 진단', href: '/diagnosis', dropdownType: null },
   { label: '가격안내', href: '/pricing', dropdownType: null },
   { label: '고객사례', href: '/customers', dropdownType: null },
   { label: '이벤트', href: '/events', dropdownType: null },

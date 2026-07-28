@@ -57,11 +57,11 @@ export const SYSTEM_REQUIREMENTS = {
 export const PROCUREMENT = {
   da: {
     label: 'DA# 조달청 바로가기',
-    link: 'https://digitalmall.g2b.go.kr:8058/dm/dp/dm_dpprdinfo.do?oprtCtrtItemMngNo=002460933_1030000017',
+    link: 'https://digitalmall.g2b.go.kr/link/GDSF001_01/?ctrtItemMngNo=002460933_1030000017',
   },
   dq: {
     label: 'DQ_Edition 조달청 바로가기',
-    link: 'https://digitalmall.g2b.go.kr:8058/dm/dp/dm_dpprdinfo.do?oprtCtrtItemMngNo=002460933_1030000016',
+    link: 'https://digitalmall.g2b.go.kr/link/GDSF001_01/?ctrtItemMngNo=002460933_1030000016',
   },
 };
 
@@ -91,8 +91,10 @@ export const INQUIRY_STEPS = [
 ];
 
 export const INQUIRY_CATEGORIES = [
-  'DA# 제품소개서',
-  'DQ Edition 제품소개서',
-  'DA# 도입문의',
-  'DQ Edition 도입문의',
+  '제품 도입 문의',
+  '기술 지원',
+  '교육/세미나',
+  '파트너 제휴',
+  '가격/견적',
+  '기타 문의',
 ];

@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 
 const ROUTE_MAP: Record<string, string> = {
-  '4': '/education',
-  '5': '/seminar',
+  '4': '/contact',
+  '5': '/download',
 };
 
 export default function FormViewRedirectPage() {
