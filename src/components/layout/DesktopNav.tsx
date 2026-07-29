@@ -4,10 +4,26 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { NAV_ITEMS, DATAWARE_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS } from './header-data';
 
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware').replace('/api/dataware', '');
+
 export default function DesktopNav() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLUListElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [hiddenUrls, setHiddenUrls] = useState<Set<string>>(new Set());
+
+  // 메뉴 API에서 숨김 처리된 항목 가져오기
+  useEffect(() => {
+    fetch(`${API_BASE}/api/dataware/menu`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data: { url: string; isExposed: boolean }[] | null) => {
+        if (!data) return;
+        const hidden = new Set<string>();
+        data.forEach((m) => { if (!m.isExposed) hidden.add(m.url); });
+        setHiddenUrls(hidden);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -32,7 +48,7 @@ export default function DesktopNav() {
 
   return (
     <ul ref={dropdownRef} className="hidden lg:flex items-center gap-6" style={{ whiteSpace: 'nowrap' }}>
-      {NAV_ITEMS.map((item) =>
+      {NAV_ITEMS.filter((item) => !hiddenUrls.has(item.href)).map((item) =>
         item.dropdownType ? (
           <li key={item.href} className="relative">
             <button
