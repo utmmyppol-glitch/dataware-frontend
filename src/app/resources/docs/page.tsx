@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { formatDateDot as formatDate } from '@/lib/format';
 
 const DOCS = [
   { id: 1, title: 'DA# 5.0 사용자 가이드', desc: 'DA# 5.0 전체 기능에 대한 상세 사용자 매뉴얼입니다.', category: 'DA#', categoryColor: '#36c88a', fileSize: '12.4 MB', fileType: 'PDF', updated: '2026-03-15' },
@@ -13,11 +14,6 @@ const DOCS = [
   { id: 7, title: 'DA# AI Powered Pack 가이드', desc: 'ChatGPT 기반 자동 모델링 기능 활성화 및 사용 방법을 안내합니다.', category: 'DA#', categoryColor: '#36c88a', fileSize: '5.5 MB', fileType: 'PDF', updated: '2025-11-15' },
   { id: 8, title: 'ETT# 마이그레이션 가이드', desc: '이기종 RDBMS 및 Cloud DB 간 데이터 마이그레이션 방법을 설명합니다.', category: 'ETT#', categoryColor: '#ec4899', fileSize: '6.3 MB', fileType: 'PDF', updated: '2025-10-30' },
 ];
-
-function formatDate(d: string) {
-  const dt = new Date(d);
-  return `${dt.getFullYear()}.${String(dt.getMonth() + 1).padStart(2, '0')}.${String(dt.getDate()).padStart(2, '0')}`;
-}
 
 export default function DocsPage() {
   const heroRef = useHeroAnim();

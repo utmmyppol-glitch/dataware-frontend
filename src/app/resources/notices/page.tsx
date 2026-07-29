@@ -4,11 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { NOTICES } from '@/data/notices';
-
-function formatDate(d: string) {
-  const dt = new Date(d);
-  return `${dt.getFullYear()}.${String(dt.getMonth() + 1).padStart(2, '0')}.${String(dt.getDate()).padStart(2, '0')}`;
-}
+import { formatDateDot as formatDate } from '@/lib/format';
 
 export default function NoticesPage() {
   const PER_PAGE = 6;

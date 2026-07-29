@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { formatDateDot as formatDate } from '@/lib/format';
 
 const STATIC_EVENTS = [
   {
@@ -116,11 +117,6 @@ const STATIC_EVENTS = [
     status: '종료',
   },
 ];
-
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-}
 
 export default function EventsPage() {
   const [events] = useState(STATIC_EVENTS);

@@ -3,13 +3,9 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { NOTICES } from '@/data/notices';
+import { formatDateDot as formatDate } from '@/lib/format';
 
 const ACCENT = '#36c88a';
-
-function formatDate(d: string) {
-  const dt = new Date(d);
-  return `${dt.getFullYear()}.${String(dt.getMonth() + 1).padStart(2, '0')}.${String(dt.getDate()).padStart(2, '0')}`;
-}
 
 export default function NoticeDetailPage() {
   const params = useParams();

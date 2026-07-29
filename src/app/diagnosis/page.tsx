@@ -4,8 +4,6 @@ import React, { useState, useRef, FormEvent } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { api } from '@/lib/api';
-import ConsentSection from '@/components/forms/ConsentSection';
-import { IMAGES, ENCORE_IMAGES } from '@/data';
 
 const ACCENT = '#36c88a';
 
@@ -85,85 +83,6 @@ function diagnose(
   };
 }
 
-/* ── 인사이트 카드 데이터 ── */
-const INSIGHTS = [
-  {
-    num: '01',
-    title: '용어·정의 불일치',
-    desc: '같은 지표를 팀마다 다르게 정의해, 리포트 숫자가 서로 맞지 않습니다.',
-    stat: '72%',
-    statLabel: '기업이 부서 간 지표 불일치 경험',
-    solution: 'DA#으로 전사 표준 용어 사전을 구축하세요.',
-    product: 'DA#',
-    icon: (
-      <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-      </svg>
-    ),
-  },
-  {
-    num: '02',
-    title: '원천마다 다른 구조',
-    desc: '시스템별로 구조·표준이 제각각이라 데이터를 모아도 정합이 어렵습니다.',
-    stat: '3.2배',
-    statLabel: '표준 없는 환경의 통합 비용 증가율',
-    solution: 'META#으로 메타데이터를 통합 관리하세요.',
-    product: 'META#',
-    icon: (
-      <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-      </svg>
-    ),
-  },
-  {
-    num: '03',
-    title: '품질·흐름이 안 보임',
-    desc: '오류·중복이 감지되지 않고 계보가 안 보여, 데이터 불신이 쌓입니다.',
-    stat: '40%',
-    statLabel: '의사결정 시 데이터 불신으로 인한 지연',
-    solution: 'DQ#으로 품질을 자동 진단하고 모니터링하세요.',
-    product: 'DQ#',
-    icon: (
-      <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>
-    ),
-  },
-];
-
-/* ── WHY 스텝 ── */
-const WHY_STEPS = [
-  {
-    step: '01',
-    title: '표준화 수준 진단',
-    desc: '4가지 핵심 항목을 기반으로 우리 조직의 데이터 거버넌스 성숙도를 LEVEL 1~4로 진단합니다.',
-    icon: (
-      <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    ),
-  },
-  {
-    step: '02',
-    title: '우선 과제 도출',
-    desc: '표준·메타·품질 중 어디가 취약한지 파악하고, 가장 효과가 큰 개선 영역을 먼저 제시합니다.',
-    icon: (
-      <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-      </svg>
-    ),
-  },
-  {
-    step: '03',
-    title: '맞춤 제품 추천',
-    desc: '진단 결과에 맞는 DATAWARE 제품을 추천하고, 상세 리포트를 이메일로 받아볼 수 있습니다.',
-    icon: (
-      <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-      </svg>
-    ),
-  },
-];
 
 /* ── 제품 상세 정보 (인라인 표시용) ── */
 const PRODUCT_DETAILS: Record<string, { subtitle: string; desc: string; color: string; features: string[] }> = {
@@ -253,11 +172,6 @@ const SERVICE_LINEUP = [
   },
 ];
 
-/* ── Styles ── */
-const inputBase =
-  'w-full bg-white border border-[#d5d8dd] px-4 py-3 text-[15px] text-[#111111] focus:border-[#36c88a] focus:ring-1 focus:ring-[#36c88a] focus:outline-none transition-colors';
-const inputError =
-  'w-full bg-white border border-red-400 px-4 py-3 text-[15px] text-[#111111] focus:border-red-400 focus:ring-1 focus:ring-red-400 focus:outline-none transition-colors';
 
 type FieldErrors = Record<string, string>;
 
@@ -873,7 +787,7 @@ export default function DiagnosisPage() {
                 { step: 'Quality', label: '품질 검증', product: 'DQ#' },
                 { step: 'Flow', label: '흐름 분석', product: 'DF#' },
                 { step: 'Portal', label: '포털 제공', product: 'DP#' },
-              ].map((s, i, arr) => (
+              ].map((s, i) => (
                 <div key={s.step} style={{ display: 'flex', alignItems: 'center' }}>
                   <div style={{ textAlign: 'center', flex: 1, padding: '16px 8px', borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
                     <p style={{ fontSize: 14, fontWeight: 700, color: '#F9FAFB', marginBottom: 6, letterSpacing: '0.02em' }}>{s.step}</p>

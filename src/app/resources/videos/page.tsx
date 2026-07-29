@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { formatDateDot as formatDate } from '@/lib/format';
 
 interface Video {
   id: number;
@@ -175,11 +176,6 @@ const VIDEOS: Video[] = [
     tagColor: '#60a5fa',
   },
 ];
-
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-}
 
 export default function VideosPage() {
   const PER_PAGE = 6;
