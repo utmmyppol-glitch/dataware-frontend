@@ -10,9 +10,10 @@ const THEME = { ink: "#111827", ink2: "#6b7280" };
 
 async function fetchLayout(pageKey: string) {
   try {
-    const res = await fetch(`${API_BASE}/api/dataware/page-layout/${pageKey}`, {
-      next: { revalidate: 10 },
-    });
+    const res = await fetch(
+      `${API_BASE}/api/dataware/page-layout/${pageKey}`,
+      { next: { revalidate: 10 } }
+    );
     if (!res.ok) return null;
     const data = await res.json();
     return JSON.parse(data.layoutJson);
@@ -21,13 +22,33 @@ async function fetchLayout(pageKey: string) {
   }
 }
 
-export default async function AboutPage() {
-  const data = await fetchLayout("about");
+export default async function DynamicPuckPage({
+  params,
+}: {
+  params: { pageKey: string };
+}) {
+  const data = await fetchLayout(params.pageKey);
 
   if (!data || !data.content || data.content.length === 0) {
     return (
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
-        <h1 style={{ fontSize: 28, fontWeight: 700, color: THEME.ink, marginBottom: 12 }}>회사소개</h1>
+      <div
+        style={{
+          maxWidth: 900,
+          margin: "0 auto",
+          padding: "80px 24px",
+          textAlign: "center",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: 28,
+            fontWeight: 700,
+            color: THEME.ink,
+            marginBottom: 12,
+          }}
+        >
+          {decodeURIComponent(params.pageKey)}
+        </h1>
         <p style={{ color: THEME.ink2 }}>콘텐츠가 준비 중입니다.</p>
       </div>
     );
