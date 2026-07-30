@@ -55,4 +55,4 @@ deploy:
   when: manual
   script:
     - echo "배포 스크립트를 여기에 추가하세요"
-    - echo "앱 포트: 3001"
+    - 'echo "앱 포트: 3001"'
