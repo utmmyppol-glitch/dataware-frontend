@@ -4,26 +4,13 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { NAV_ITEMS, DATAWARE_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS } from './header-data';
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware').replace('/api/dataware', '');
-
-export default function DesktopNav() {
+export default function DesktopNav({ ssrVisibleUrls }: { ssrVisibleUrls?: string[] | null }) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLUListElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [visibleUrls, setVisibleUrls] = useState<Set<string> | null>(null);
 
-  // 메뉴 API에서 노출 중인 항목만 가져오기 (공개 API는 isExposed=true만 반환)
-  useEffect(() => {
-    fetch(`${API_BASE}/api/dataware/menu`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data: { url: string }[] | null) => {
-        if (!data) return;
-        const urls = new Set<string>();
-        data.forEach((m) => urls.add(m.url));
-        setVisibleUrls(urls);
-      })
-      .catch(() => {});
-  }, []);
+  // SSR에서 받은 노출 URL 사용, 없으면 전부 노출 (fallback)
+  const visibleUrls = ssrVisibleUrls ? new Set(ssrVisibleUrls) : null;
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
