@@ -1,4 +1,3 @@
-import { fetchPageLayout, CmsPageRender } from "@/lib/cms-page";
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { COMPANY } from '@/data';
@@ -11,8 +10,6 @@ export const metadata: Metadata = {
 const ACCENT = '#36c88a';
 
 export default async function PrivacyPage() {
-  const cmsData = await fetchPageLayout("privacy");
-  if (cmsData) return <CmsPageRender data={cmsData} />;
 
   return (
     <main style={{ backgroundColor: '#fff', minHeight: '100vh' }}>

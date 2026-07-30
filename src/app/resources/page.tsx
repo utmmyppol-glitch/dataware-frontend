@@ -1,4 +1,3 @@
-import { fetchPageLayout, CmsPageRender } from "@/lib/cms-page";
 import { PostResponse } from '@/lib/api';
 import ResourcesPageClient from './ResourcesPageClient';
 
@@ -18,8 +17,6 @@ async function getPosts(): Promise<PostResponse[]> {
 }
 
 export default async function ResourcesPage() {
-  const cmsData = await fetchPageLayout("resources");
-  if (cmsData) return <CmsPageRender data={cmsData} />;
 
   const posts = await getPosts();
   return <ResourcesPageClient initialPosts={posts} />;

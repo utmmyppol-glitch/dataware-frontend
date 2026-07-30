@@ -1,4 +1,3 @@
-import { fetchPageLayout, CmsPageRender } from "@/lib/cms-page";
 import { Metadata } from 'next';
 import { ProductResponse } from '@/lib/api';
 import ProductsPageClient from './ProductsPageClient';
@@ -27,8 +26,6 @@ async function getProducts(): Promise<ProductResponse[]> {
 }
 
 export default async function ProductsPage() {
-  const cmsData = await fetchPageLayout("products");
-  if (cmsData) return <CmsPageRender data={cmsData} />;
 
   const products = await getProducts();
   return <ProductsPageClient products={products} />;

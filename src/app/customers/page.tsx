@@ -1,4 +1,3 @@
-import { fetchPageLayout, CmsPageRender } from "@/lib/cms-page";
 import { Metadata } from 'next';
 import { CustomerStoryResponse } from '@/lib/api';
 import CustomersPageClient from './CustomersPageClient';
@@ -38,8 +37,6 @@ async function getCustomerStories(): Promise<CustomerStoryResponse[]> {
 }
 
 export default async function CustomersPage() {
-  const cmsData = await fetchPageLayout("customers");
-  if (cmsData) return <CmsPageRender data={cmsData} />;
 
   const stories = await getCustomerStories();
   return <CustomersPageClient initialStories={stories} />;
