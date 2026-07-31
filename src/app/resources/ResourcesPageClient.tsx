@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { PostResponse } from '@/lib/api';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const CATEGORIES = [
   { key: '', label: '전체' },
@@ -22,13 +23,15 @@ const QUICK_LINKS = [
 export default function ResourcesPageClient({ initialPosts }: { initialPosts: PostResponse[] }) {
   const [posts] = useState<PostResponse[]>(initialPosts);
   const [activeCategory, setActiveCategory] = useState('');
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   const filtered = activeCategory ? posts.filter(p => p.category === activeCategory) : posts;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-16" style={{ backgroundColor: '#ffffff' }}>
-      <h1 className="text-4xl font-bold text-center mb-4" style={{ color: '#111111' }}>자료실</h1>
-      <p className="text-center mb-8" style={{ color: '#676767' }}>공지사항, 동영상 강의, Documentation</p>
+      <h1 className="text-4xl font-bold text-center mb-4" style={{ color: '#111111' }}><E id="resources_hero.title" editMode={editMode}>자료실</E></h1>
+      <p className="text-center mb-8" style={{ color: '#676767' }}><E id="resources_hero.desc" editMode={editMode}>공지사항, 동영상 강의, Documentation</E></p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
         {QUICK_LINKS.map(({ href, label }) => (
@@ -78,6 +81,7 @@ export default function ResourcesPageClient({ initialPosts }: { initialPosts: Po
           </div>
         ))}
       </div>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </div>
   );
 }
