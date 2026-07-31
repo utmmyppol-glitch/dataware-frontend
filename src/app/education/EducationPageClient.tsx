@@ -7,6 +7,7 @@ import { EDUCATION_STEPS, EDUCATION_BENEFITS } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import ConsentSection from '@/components/forms/ConsentSection';
 import { EDUCATION_SESSIONS, getSessionStatus } from '@/data/education-sessions';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
@@ -30,6 +31,8 @@ export default function EducationPageClient() {
   const benefitsRef = useGsapReveal();
   const stepsRef = useGsapReveal();
   const formRef = useGsapReveal();
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   const upcomingSessions = EDUCATION_SESSIONS.filter(s => getSessionStatus(s) === '신청가능');
   const pastSessions = EDUCATION_SESSIONS.filter(s => getSessionStatus(s) === '마감');
@@ -149,9 +152,9 @@ export default function EducationPageClient() {
             <span style={{ fontSize: '10px', color: '#36c88a', letterSpacing: '0.08em' }}>FREE EDUCATION</span>
           </div>
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 0.95, marginBottom: '16px' }}>
-            DA# 무료교육<span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
+            <E id="education_hero.title" editMode={editMode}>DA# 무료교육</E><span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
           </h1>
-          <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '480px' }}>데이터 아키텍처 기본개념, 현장에서 사용할 수 있는 고급 활용 방법, 노하우를 알려드립니다.</p>
+          <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '480px' }}><E id="education_hero.desc" editMode={editMode}>데이터 아키텍처 기본개념, 현장에서 사용할 수 있는 고급 활용 방법, 노하우를 알려드립니다.</E></p>
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(54,200,138,0.2), transparent)' }} />
       </section>
@@ -607,6 +610,8 @@ export default function EducationPageClient() {
           </div>
         </section>
       )}
+
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </div>
   );
 }
