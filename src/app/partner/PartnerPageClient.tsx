@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { COMPANY } from '@/data';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const ACCENT = '#36c88a';
 
@@ -20,6 +21,8 @@ export default function PartnerPageClient() {
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
   const benefitRef = useGsapReveal() as React.RefObject<HTMLElement>;
   const ctaRef = useGsapReveal() as React.RefObject<HTMLElement>;
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   return (
     <>
@@ -35,11 +38,11 @@ export default function PartnerPageClient() {
             SOLUTION PARTNERSHIP
           </div>
           <h1 data-hero style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: 24 }}>
-            유니온시스템즈는 파트너와 함께<br />성장하는 기술과 서비스를<br />지속적으로 제시합니다<span style={{ color: ACCENT }}>.</span>
+            <E id="partner_hero.title" editMode={editMode}>유니온시스템즈는 파트너와 함께<br />성장하는 기술과 서비스를<br />지속적으로 제시합니다</E><span style={{ color: ACCENT }}>.</span>
           </h1>
           <p data-hero style={{ fontSize: 17, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, maxWidth: 600, marginBottom: 40 }}>
-            End-to-End 데이터 매니지먼트 솔루션 <span style={{ color: ACCENT, fontWeight: 600 }}>DATAWARE™</span> 판매 자격과
-            유니온시스템즈 파트너만의 혜택으로 다양한 솔루션 구성과 제안이 가능합니다.
+            <E id="partner_hero.desc" editMode={editMode}>End-to-End 데이터 매니지먼트 솔루션 <span style={{ color: ACCENT, fontWeight: 600 }}>DATAWARE™</span> 판매 자격과
+            유니온시스템즈 파트너만의 혜택으로 다양한 솔루션 구성과 제안이 가능합니다.</E>
           </p>
           <Link href="/contact" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '18px 36px', backgroundColor: ACCENT, color: '#fff', fontWeight: 700, fontSize: 15, textDecoration: 'none', transition: 'background 0.2s' }}
             onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#2ba876'; }}
@@ -57,11 +60,11 @@ export default function PartnerPageClient() {
             <div>
               <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.12em', color: ACCENT, display: 'block', marginBottom: 12 }}>BENEFITS</span>
               <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 36px)', fontWeight: 800, color: '#111', letterSpacing: '-0.03em', lineHeight: 1.2 }}>
-                유니온시스템즈<br />솔루션 파트너 혜택
+                <E id="partner_benefits.title" editMode={editMode}>유니온시스템즈<br />솔루션 파트너 혜택</E>
               </h2>
             </div>
             <p style={{ fontSize: 15, color: '#676767', lineHeight: 1.8, paddingTop: 32 }}>
-              고객의 디지털 트랜스포메이션 구축을 지원할 수 있는 기술과 인사이트를 보유한 유니온시스템즈는 파트너의 단기적인 성과보다 <span style={{ color: '#111', fontWeight: 600 }}>장기적으로 함께 성장할 수 있는</span> 파트너 프로그램을 제공합니다.
+              <E id="partner_benefits.desc" editMode={editMode}>고객의 디지털 트랜스포메이션 구축을 지원할 수 있는 기술과 인사이트를 보유한 유니온시스템즈는 파트너의 단기적인 성과보다 <span style={{ color: '#111', fontWeight: 600 }}>장기적으로 함께 성장할 수 있는</span> 파트너 프로그램을 제공합니다.</E>
             </p>
           </div>
 
@@ -73,9 +76,9 @@ export default function PartnerPageClient() {
               }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 12 }}>
                   <span style={{ fontSize: 32, fontWeight: 900, color: ACCENT, letterSpacing: '-0.03em', lineHeight: 1 }}>{b.num}</span>
-                  <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111' }}>{b.title}</h3>
+                  <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111' }}><E id={`partner_benefits.${b.num}.title`} editMode={editMode}>{b.title}</E></h3>
                 </div>
-                <p style={{ fontSize: 14, color: '#676767', lineHeight: 1.8, paddingLeft: 48 }}>{b.desc}</p>
+                <p style={{ fontSize: 14, color: '#676767', lineHeight: 1.8, paddingLeft: 48 }}><E id={`partner_benefits.${b.num}.desc`} editMode={editMode}>{b.desc}</E></p>
               </div>
             ))}
           </div>
@@ -87,10 +90,10 @@ export default function PartnerPageClient() {
         <div style={{ maxWidth: 600, margin: '0 auto' }}>
           <p data-anim style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.12em', color: ACCENT, marginBottom: 16 }}>CONTACT US</p>
           <h2 data-anim style={{ fontSize: 'clamp(24px, 3.5vw, 32px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.02em', marginBottom: 16 }}>
-            파트너 제휴에 관심이 있으신가요<span style={{ color: ACCENT }}>?</span>
+            <E id="partner_cta.title" editMode={editMode}>파트너 제휴에 관심이 있으신가요</E><span style={{ color: ACCENT }}>?</span>
           </h2>
           <p data-anim style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, marginBottom: 36 }}>
-            유니온시스템즈의 전문 스태프가<br />파트너 문의 사항에 신속하게 대응하겠습니다.
+            <E id="partner_cta.desc" editMode={editMode}>유니온시스템즈의 전문 스태프가<br />파트너 문의 사항에 신속하게 대응하겠습니다.</E>
           </p>
           <div data-anim style={{ display: 'flex', justifyContent: 'center', gap: 12, marginBottom: 48 }}>
             <Link href="/contact" style={{ padding: '16px 36px', backgroundColor: ACCENT, color: '#fff', fontSize: 15, fontWeight: 700, textDecoration: 'none', transition: 'background 0.2s' }}
@@ -116,6 +119,8 @@ export default function PartnerPageClient() {
           </div>
         </div>
       </section>
+
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </>
   );
 }
