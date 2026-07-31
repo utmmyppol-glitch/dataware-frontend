@@ -6,6 +6,7 @@ import { api } from '@/lib/api';
 import { INQUIRY_CATEGORIES, COMPANY } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import ConsentSection from '@/components/forms/ConsentSection';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const ACCENT = '#36c88a';
 
@@ -19,6 +20,8 @@ export default function ContactPageClient() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
   const contentRef = useGsapReveal() as React.RefObject<HTMLElement>;
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   function validate(formData: FormData): FieldErrors {
     const errs = validateCommonFields(formData);
@@ -94,7 +97,7 @@ export default function ContactPageClient() {
         </div>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <h1 data-hero style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 16 }}>
-            도입문의<span style={{ color: ACCENT }}>.</span>
+            <E id="contact_hero.title" editMode={editMode}>도입문의</E><span style={{ color: ACCENT }}>.</span>
           </h1>
           <p data-hero style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
             DA# 도입에 관한 문의를 남겨주세요. &nbsp;|&nbsp; TEL {COMPANY.tel} &nbsp;|&nbsp; {COMPANY.email}
@@ -229,7 +232,7 @@ export default function ContactPageClient() {
         >
           <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>DOWNLOAD</span>
           <h3 style={{ fontSize: 20, fontWeight: 700, color: '#F9FAFB', marginTop: 8, lineHeight: 1.3 }}>
-            DA# 소개서를 먼저 받아보세요<span style={{ color: ACCENT }}>.</span>
+            <E id="contact_cta.download" editMode={editMode}>DA# 소개서를 먼저 받아보세요</E><span style={{ color: ACCENT }}>.</span>
           </h3>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: ACCENT }}>소개서 다운로드 →</span>
         </Link>
@@ -239,11 +242,13 @@ export default function ContactPageClient() {
         >
           <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em' }}>EDUCATION</span>
           <h3 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginTop: 8, lineHeight: 1.3 }}>
-            DA# 무료교육도 신청하세요<span style={{ opacity: 0.6 }}>.</span>
+            <E id="contact_cta.education" editMode={editMode}>DA# 무료교육도 신청하세요</E><span style={{ opacity: 0.6 }}>.</span>
           </h3>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: '#fff' }}>무료교육 신청 →</span>
         </Link>
       </div>
+
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </>
   );
 }
