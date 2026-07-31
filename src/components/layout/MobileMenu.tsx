@@ -1,15 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { DATAWARE_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS, NAV_ITEMS, QUICK_LINKS } from './header-data';
+import type { SsrMenuItem } from '@/app/layout';
 
 interface MobileMenuProps {
   onClose: () => void;
+  ssrMenu?: SsrMenuItem[] | null;
 }
 
-export default function MobileMenu({ onClose }: MobileMenuProps) {
+export default function MobileMenu({ onClose, ssrMenu }: MobileMenuProps) {
   const [datawareOpen, setDatawareOpen] = useState(false);
+
+  // SSR 메뉴 기반 visibility — null이면 전부 노출 (fallback)
+  const visibleUrls = useMemo(() => {
+    if (!ssrMenu || ssrMenu.length === 0) return null;
+    return new Set(ssrMenu.map((m) => m.url));
+  }, [ssrMenu]);
+
+  const isVisible = (href: string) => visibleUrls === null || visibleUrls.has(href);
 
   return (
     <div
@@ -18,7 +28,7 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 space-y-1">
         {/* DATAWARE accordion */}
-        <div>
+        {isVisible('/products') && <div>
           <button
             onClick={() => setDatawareOpen(!datawareOpen)}
             className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold rounded-lg transition-colors"
@@ -67,9 +77,10 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
               ))}
             </div>
           )}
-        </div>
+        </div>}
 
         {/* Education */}
+        {isVisible('/education') && (
         <div className="px-4 py-2">
           <p className="text-xs font-bold mb-2" style={{ color: '#94a3b8' }}>교육</p>
           {EDUCATION_LINKS.map((link) => (
@@ -79,8 +90,10 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
             >{link.label}</Link>
           ))}
         </div>
+        )}
 
         {/* Support */}
+        {isVisible('/resources') && (
         <div className="px-4 py-2">
           <p className="text-xs font-bold mb-2" style={{ color: '#94a3b8' }}>고객지원</p>
           {SUPPORT_LINKS.map((link) => (
@@ -90,9 +103,10 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
             >{link.label}</Link>
           ))}
         </div>
+        )}
 
         {/* Standalone items */}
-        {NAV_ITEMS.filter((i) => !i.dropdownType).map((item) => (
+        {NAV_ITEMS.filter((i) => !i.dropdownType && isVisible(i.href)).map((item) => (
           <Link
             key={item.href}
             href={item.href}

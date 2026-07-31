@@ -1,16 +1,24 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { NAV_ITEMS, DATAWARE_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS } from './header-data';
+import type { SsrMenuItem } from '@/app/layout';
 
-export default function DesktopNav({ ssrVisibleUrls }: { ssrVisibleUrls?: string[] | null }) {
+export default function DesktopNav({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null }) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLUListElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // SSR에서 받은 노출 URL 사용, 없으면 전부 노출 (fallback)
-  const visibleUrls = ssrVisibleUrls ? new Set(ssrVisibleUrls) : null;
+  // SSR에서 받은 메뉴 데이터로 필터링+정렬, 없으면 전부 노출 (fallback)
+  const sortedNavItems = useMemo(() => {
+    if (!ssrMenu || ssrMenu.length === 0) return NAV_ITEMS;
+    const urlSet = new Set(ssrMenu.map((m) => m.url));
+    const orderMap = new Map(ssrMenu.map((m) => [m.url, m.sortOrder]));
+    return NAV_ITEMS
+      .filter((item) => urlSet.has(item.href))
+      .sort((a, b) => (orderMap.get(a.href) ?? 0) - (orderMap.get(b.href) ?? 0));
+  }, [ssrMenu]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -35,7 +43,7 @@ export default function DesktopNav({ ssrVisibleUrls }: { ssrVisibleUrls?: string
 
   return (
     <ul ref={dropdownRef} className="hidden lg:flex items-center gap-6" style={{ whiteSpace: 'nowrap' }}>
-      {NAV_ITEMS.filter((item) => visibleUrls === null || visibleUrls.has(item.href)).map((item) =>
+      {sortedNavItems.map((item) =>
         item.dropdownType ? (
           <li key={item.href} className="relative">
             <button

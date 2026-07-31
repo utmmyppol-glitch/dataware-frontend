@@ -8,7 +8,9 @@ import SideQuickMenu from './SideQuickMenu';
 import DesktopNav from './DesktopNav';
 import MobileMenu from './MobileMenu';
 
-export default function Header({ ssrVisibleUrls }: { ssrVisibleUrls?: string[] | null }) {
+import type { SsrMenuItem } from '@/app/layout';
+
+export default function Header({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -36,7 +38,7 @@ export default function Header({ ssrVisibleUrls }: { ssrVisibleUrls?: string[] |
             </Link>
 
             {/* Desktop Nav */}
-            <DesktopNav ssrVisibleUrls={ssrVisibleUrls} />
+            <DesktopNav ssrMenu={ssrMenu} />
 
             {/* Right: CTA + Search + Mobile toggle */}
             <div className="flex items-center gap-4" style={{ marginLeft: 48 }}>
@@ -101,7 +103,7 @@ export default function Header({ ssrVisibleUrls }: { ssrVisibleUrls?: string[] |
             }
           `}</style>
 
-          {mobileMenuOpen && <MobileMenu onClose={() => setMobileMenuOpen(false)} />}
+          {mobileMenuOpen && <MobileMenu onClose={() => setMobileMenuOpen(false)} ssrMenu={ssrMenu} />}
         </nav>
       </header>
     </>

@@ -7,13 +7,30 @@ import ChatBot from "@/components/layout/ChatBot";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/dataware";
 
-async function getVisibleUrls(): Promise<string[] | null> {
+export interface SsrMenuItem {
+  url: string;
+  sortOrder: number;
+}
+
+interface MenuApiItem {
+  name: string;
+  url: string;
+  isExposed: boolean;
+  sortOrder?: number;
+  children?: MenuApiItem[];
+}
+
+async function getMenu(): Promise<SsrMenuItem[] | null> {
   try {
     const base = API_URL.replace(/\/api\/dataware\/?$/, "");
     const res = await fetch(`${base}/api/dataware/menu`, { next: { revalidate: 60 } });
     if (!res.ok) return null;
-    const data: { url: string; isExposed: boolean }[] = await res.json();
-    return data.filter((m) => m.isExposed !== false).map((m) => m.url);
+    const data: MenuApiItem[] = await res.json();
+    if (!data || data.length === 0) return null;
+    return data
+      .filter((m) => m.isExposed)
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+      .map((m) => ({ url: m.url, sortOrder: m.sortOrder ?? 0 }));
   } catch {
     return null;
   }
@@ -40,13 +57,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const ssrVisibleUrls = await getVisibleUrls();
+  const ssrMenu = await getMenu();
 
   return (
     <html lang="ko">
       <head />
       <body className={`${notoSansKr.variable} antialiased`} style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Header ssrVisibleUrls={ssrVisibleUrls} />
+        <Header ssrMenu={ssrMenu} />
         <main style={{ flex: 1 }}>{children}</main>
         <Footer />
         <ChatBot />
