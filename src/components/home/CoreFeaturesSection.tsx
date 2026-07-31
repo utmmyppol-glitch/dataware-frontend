@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { COPY } from '@/data';
+import { E } from '@/lib/editable';
 
 function useCountUp(target: number, dur = 2400) {
   const [n, setN] = useState(0);
@@ -32,9 +33,10 @@ const FEATURES = [
 
 interface CoreFeaturesSectionProps {
   sectionRef: React.RefObject<HTMLElement>;
+  editMode: boolean;
 }
 
-export default function CoreFeaturesSection({ sectionRef }: CoreFeaturesSectionProps) {
+export default function CoreFeaturesSection({ sectionRef, editMode }: CoreFeaturesSectionProps) {
   const c3 = useCountUp(80);
 
   return (
@@ -44,7 +46,7 @@ export default function CoreFeaturesSection({ sectionRef }: CoreFeaturesSectionP
           <div>
             <p data-anim style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.12em', marginBottom: '16px' }}>CORE FEATURES</p>
             <h2 data-anim style={{ fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 900, color: '#111214', lineHeight: 1.1, marginBottom: '20px' }}>
-              {COPY.whyDA}<span style={{ color: '#36c88a' }}>.</span>
+              <E id="home_features.title" editMode={editMode}>{COPY.whyDA}<span style={{ color: '#36c88a' }}>.</span></E>
             </h2>
             <p data-anim style={{ fontSize: '20px', color: '#6B655C', lineHeight: 1.8, marginBottom: '48px' }}>{COPY.heroDA.subtitle}</p>
             <div data-anim>

@@ -2,19 +2,21 @@
 
 import React from 'react';
 import { TRUSTED_LOGOS } from '@/data';
+import { E } from '@/lib/editable';
 
 interface TrustedBySectionProps {
   sectionRef: React.RefObject<HTMLElement>;
+  editMode: boolean;
 }
 
-export default function TrustedBySection({ sectionRef }: TrustedBySectionProps) {
+export default function TrustedBySection({ sectionRef, editMode }: TrustedBySectionProps) {
   return (
     <section ref={sectionRef} style={{ backgroundColor: '#fff', borderTop: '1px solid #E7E2D8', borderBottom: '1px solid #E7E2D8' }}>
       <div style={{ maxWidth: '1080px', margin: '0 auto', padding: 'clamp(56px, 8vw, 96px) clamp(24px, 4vw, 56px)' }}>
         <div data-anim style={{ textAlign: 'center', marginBottom: '48px' }}>
           <p style={{ fontSize: '14px', fontWeight: 600, color: '#98A2B3', letterSpacing: '0.12em', marginBottom: '16px' }}>TRUSTED BY ENTERPRISES</p>
           <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 900, color: '#111214', lineHeight: 1.15, marginBottom: '36px' }}>
-            국내 주요 기업의 데이터 환경을 함께합니다<span style={{ color: '#36c88a' }}>.</span>
+            <E id="home_trusted.title" editMode={editMode}>국내 주요 기업의 데이터 환경을 함께합니다<span style={{ color: '#36c88a' }}>.</span></E>
           </h2>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 'clamp(40px, 6vw, 72px)', flexWrap: 'wrap' }}>
             {[

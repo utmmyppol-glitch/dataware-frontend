@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { E } from '@/lib/editable';
 
 const LECTURES = [
   { title: '새로운 시대의 데이터모델링', speaker: '이화식 대표', thumb: '/images/uniondata/video-lecture_seminar_thum-01.jpg', href: 'https://www.uniondata.co.kr/da5%ec%9d%98-%eb%8b%ac%eb%9d%bc%ec%a7%84-%eb%aa%a8%eb%8d%b8%eb%a7%81-da5-%eb%9f%b0%ec%b9%ad-%ec%84%b8%eb%af%b8%eb%82%98/' },
@@ -20,16 +21,17 @@ const NOTICES = [
 
 interface NewsSectionProps {
   sectionRef: React.RefObject<HTMLElement>;
+  editMode: boolean;
 }
 
-export default function NewsSection({ sectionRef }: NewsSectionProps) {
+export default function NewsSection({ sectionRef, editMode }: NewsSectionProps) {
   return (
     <section ref={sectionRef} style={{ backgroundColor: '#fff', borderTop: '1px solid #E7E2D8' }}>
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: 'clamp(64px, 8vw, 100px) clamp(24px, 4vw, 56px)' }}>
         <div data-anim style={{ textAlign: 'center', marginBottom: '56px' }}>
           <p style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.12em', marginBottom: '16px' }}>NEWS & LECTURES</p>
           <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 900, color: '#111214', lineHeight: 1.15, marginBottom: '12px' }}>
-            유니온시스템즈 소식<span style={{ color: '#36c88a' }}>.</span>
+            <E id="home_news.title" editMode={editMode}>유니온시스템즈 소식<span style={{ color: '#36c88a' }}>.</span></E>
           </h2>
           <p style={{ fontSize: '18px', color: '#6B655C' }}>성장하는 유니온시스템즈의 소식과 유용한 강의들을 만나보세요!</p>
         </div>

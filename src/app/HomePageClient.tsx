@@ -11,6 +11,7 @@ import CoreFeaturesSection from '@/components/home/CoreFeaturesSection';
 import CustomersSection from '@/components/home/CustomersSection';
 import NewsSection from '@/components/home/NewsSection';
 import CtaSection from '@/components/home/CtaSection';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 export default function HomePageClient() {
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
@@ -21,18 +22,22 @@ export default function HomePageClient() {
   const s5 = useGsapReveal() as React.RefObject<HTMLElement>;
   const s6 = useGsapReveal() as React.RefObject<HTMLElement>;
   const s7 = useGsapReveal() as React.RefObject<HTMLElement>;
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   return (
     <>
-      <HeroSection heroRef={heroRef} />
-      <TrustedBySection sectionRef={s1} />
-      <WhySection sectionRef={s2} />
-      <DataFlowSection sectionRef={s3} />
-      <PlatformSection sectionRef={s4} />
-      <CoreFeaturesSection sectionRef={s5} />
-      <CustomersSection sectionRef={s6} />
-      <NewsSection sectionRef={s7} />
-      <CtaSection />
+      <HeroSection heroRef={heroRef} editMode={editMode} />
+      <TrustedBySection sectionRef={s1} editMode={editMode} />
+      <WhySection sectionRef={s2} editMode={editMode} />
+      <DataFlowSection sectionRef={s3} editMode={editMode} />
+      <PlatformSection sectionRef={s4} editMode={editMode} />
+      <CoreFeaturesSection sectionRef={s5} editMode={editMode} />
+      <CustomersSection sectionRef={s6} editMode={editMode} />
+      <NewsSection sectionRef={s7} editMode={editMode} />
+      <CtaSection editMode={editMode} />
+
+      {editMode && <style>{EDITABLE_STYLES}</style>}
 
       <style>{`
         @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }

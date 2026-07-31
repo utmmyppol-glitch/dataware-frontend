@@ -3,19 +3,21 @@
 import React from 'react';
 import Link from 'next/link';
 import { COPY, TRUSTED_LOGOS } from '@/data';
+import { E } from '@/lib/editable';
 
 interface CustomersSectionProps {
   sectionRef: React.RefObject<HTMLElement>;
+  editMode: boolean;
 }
 
-export default function CustomersSection({ sectionRef }: CustomersSectionProps) {
+export default function CustomersSection({ sectionRef, editMode }: CustomersSectionProps) {
   return (
     <section ref={sectionRef} style={{ position: 'relative', backgroundColor: '#fff', borderTop: '1px solid #E7E2D8', overflow: 'hidden' }}>
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: 'clamp(80px, 10vw, 120px) clamp(24px, 4vw, 56px)', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: '56px' }}>
           <p data-anim style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.12em', marginBottom: '16px' }}>CUSTOMERS</p>
           <h2 data-anim style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 900, color: '#111214', lineHeight: 1.15, marginBottom: '16px' }}>
-            {COPY.customers}
+            <E id="home_customers.title" editMode={editMode}>{COPY.customers}</E>
           </h2>
           <p data-anim style={{ fontSize: '18px', color: '#6B655C' }}>
             {COPY.customerIndustries}

@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { COPY } from '@/data';
+import { E } from '@/lib/editable';
 import type { Solution } from '@/data/molecular-data';
 
 const MolecularU = dynamic(() => import('@/components/MolecularU'), { ssr: false });
@@ -29,9 +30,10 @@ function useCountUp(target: number, dur = 2400) {
 
 interface HeroSectionProps {
   heroRef: React.RefObject<HTMLElement>;
+  editMode: boolean;
 }
 
-export default function HeroSection({ heroRef }: HeroSectionProps) {
+export default function HeroSection({ heroRef, editMode }: HeroSectionProps) {
   const [zoomedSolution, setZoomedSolution] = useState<Solution | null>(null);
   const [explorerMode, setExplorerMode] = useState(false);
   const isZoomed = zoomedSolution !== null;
@@ -80,10 +82,10 @@ export default function HeroSection({ heroRef }: HeroSectionProps) {
               </div>
 
               <h2 data-hero style={{ fontWeight: 900, fontSize: 'clamp(36px, 5.5vw, 64px)', lineHeight: 1.05, letterSpacing: '-0.05em', color: '#111', margin: '0 0 22px' }}>
-                {COPY.heroDA.line1}<br />{COPY.heroDA.line2}<br />{COPY.heroDA.line3.replace('.', '')}<span style={{ color: '#36c88a' }}>.</span>
+                <E id="home_hero.title" editMode={editMode}>{COPY.heroDA.line1}<br />{COPY.heroDA.line2}<br />{COPY.heroDA.line3.replace('.', '')}<span style={{ color: '#36c88a' }}>.</span></E>
               </h2>
 
-              <p data-hero style={{ fontWeight: 400, fontSize: 'clamp(15px, 1.4vw, 17px)', lineHeight: 1.75, color: '#676767', maxWidth: 640, margin: '0 0 24px' }}>{COPY.heroDA.subtitle}</p>
+              <p data-hero style={{ fontWeight: 400, fontSize: 'clamp(15px, 1.4vw, 17px)', lineHeight: 1.75, color: '#676767', maxWidth: 640, margin: '0 0 24px' }}><E id="home_hero.desc" editMode={editMode}>{COPY.heroDA.subtitle}</E></p>
 
               <div data-hero style={{ fontSize: 13, color: '#676767', marginBottom: 28, display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: 'rgba(54,200,138,.04)', border: '1px solid rgba(54,200,138,.1)' }}>
                 <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#36c88a', boxShadow: '0 0 0 3px rgba(54,200,138,.15)' }} />

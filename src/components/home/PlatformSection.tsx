@@ -3,12 +3,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { DATAWARE_LINEUP } from '@/data';
+import { E } from '@/lib/editable';
 
 interface PlatformSectionProps {
   sectionRef: React.RefObject<HTMLElement>;
+  editMode: boolean;
 }
 
-export default function PlatformSection({ sectionRef }: PlatformSectionProps) {
+export default function PlatformSection({ sectionRef, editMode }: PlatformSectionProps) {
   return (
     <section ref={sectionRef} style={{ position: 'relative', backgroundColor: '#fcfbf8', overflow: 'hidden' }}>
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: 'clamp(80px, 10vw, 140px) clamp(24px, 4vw, 56px)', position: 'relative', zIndex: 1 }}>
@@ -16,7 +18,7 @@ export default function PlatformSection({ sectionRef }: PlatformSectionProps) {
           <div style={{ position: 'sticky', top: '120px' }}>
             <p data-anim style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.12em', marginBottom: '16px' }}>PLATFORM</p>
             <h2 data-anim style={{ fontSize: 'clamp(32px, 4vw, 48px)', fontWeight: 900, color: '#111214', lineHeight: 1.1, marginBottom: '20px' }}>
-              DATAWARE<br />제품 라인업<span style={{ color: '#36c88a' }}>.</span>
+              <E id="home_platform.title" editMode={editMode}>DATAWARE<br />제품 라인업<span style={{ color: '#36c88a' }}>.</span></E>
             </h2>
             <p data-anim style={{ fontSize: '20px', color: '#6B655C', lineHeight: 1.8, marginBottom: '32px' }}>
               데이터 거버넌스 All-in-One Package. 8개 제품으로 전 영역 커버.
