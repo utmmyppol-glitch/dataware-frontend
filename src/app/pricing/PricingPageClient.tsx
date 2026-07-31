@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { PRICING_PLANS, SYSTEM_REQUIREMENTS, PROCUREMENT } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const G = '#36c88a';
 
@@ -34,6 +35,8 @@ const Dash = () => <span style={{ color: 'rgba(255,255,255,0.12)' }}>—</span>;
 export default function PricingPageClient() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const cardsRef = useGsapReveal() as React.RefObject<HTMLDivElement>;
   const compareRef = useGsapReveal() as React.RefObject<HTMLDivElement>;
   const whyRef = useGsapReveal() as React.RefObject<HTMLDivElement>;
@@ -52,10 +55,10 @@ export default function PricingPageClient() {
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '160px 56px 96px', position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <p data-hero style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 32 }}>PRICING</p>
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: 24 }}>
-            Enterprise licensing<br />for every stage<br />of data governance<span style={{ color: G }}>.</span>
+            <E id="pricing_hero.title" editMode={editMode}>Enterprise licensing<br />for every stage<br />of data governance</E><span style={{ color: G }}>.</span>
           </h1>
           <p data-hero style={{ fontSize: 18, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 48px' }}>
-            업무 환경에 맞춰 영구, 1년 구독형으로 구매할 수 있습니다.
+            <E id="pricing_hero.desc" editMode={editMode}>업무 환경에 맞춰 영구, 1년 구독형으로 구매할 수 있습니다.</E>
           </p>
           <div data-hero style={{ display: 'flex', justifyContent: 'center', gap: 16, marginBottom: 72 }}>
             <a href="#plans" style={{ padding: '16px 36px', backgroundColor: G, color: '#fff', fontSize: 15, fontWeight: 700, textDecoration: 'none', transition: 'opacity 0.15s' }}
@@ -324,6 +327,8 @@ export default function PricingPageClient() {
           <span style={{ fontSize: 15, fontWeight: 600, color: '#fff' }}>소개서 다운로드 →</span>
         </Link>
       </div>
+
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </>
   );
 }
