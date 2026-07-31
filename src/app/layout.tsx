@@ -23,12 +23,11 @@ interface MenuApiItem {
 async function getMenu(): Promise<SsrMenuItem[] | null> {
   try {
     const base = API_URL.replace(/\/api\/dataware\/?$/, "");
-    const res = await fetch(`${base}/api/dataware/menu`, { next: { revalidate: 60 } });
+    const res = await fetch(`${base}/api/dataware/menus`, { next: { revalidate: 60 } });
     if (!res.ok) return null;
     const data: MenuApiItem[] = await res.json();
     if (!data || data.length === 0) return null;
     return data
-      .filter((m) => m.isExposed)
       .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
       .map((m) => ({ url: m.url, sortOrder: m.sortOrder ?? 0 }));
   } catch {
