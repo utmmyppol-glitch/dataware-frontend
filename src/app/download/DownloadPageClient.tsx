@@ -6,6 +6,7 @@ import { api } from '@/lib/api';
 import { DOWNLOAD_CARDS, DOWNLOAD_PAGE, IMAGES } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import ConsentSection from '@/components/forms/ConsentSection';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
@@ -17,6 +18,8 @@ export default function DownloadPageClient() {
   const heroRef = useHeroAnim();
   const cardsRef = useGsapReveal();
   const formRef = useGsapReveal();
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   function validate(formData: FormData): FieldErrors {
     return validateCommonFields(formData);
@@ -98,9 +101,9 @@ export default function DownloadPageClient() {
             <span style={{ fontSize: '10px', color: '#36c88a', letterSpacing: '0.08em' }}>DOWNLOAD</span>
           </div>
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 0.95, marginBottom: '16px' }}>
-            다운로드 신청<span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
+            <E id="download_hero.title" editMode={editMode}>다운로드 신청</E><span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
           </h1>
-          <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '480px' }}>DA# 무료 다운로드 및 제품 소개서를 신청하세요.</p>
+          <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '480px' }}><E id="download_hero.desc" editMode={editMode}>DA# 무료 다운로드 및 제품 소개서를 신청하세요.</E></p>
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(54,200,138,0.2), transparent)' }} />
       </section>
@@ -217,6 +220,7 @@ export default function DownloadPageClient() {
           </div>
         </div>
       </section>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </div>
   );
 }
