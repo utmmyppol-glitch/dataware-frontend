@@ -5,12 +5,15 @@ import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { NOTICES } from '@/data/notices';
 import { formatDateDot as formatDate } from '@/lib/format';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 export default function NoticesPageClient() {
   const PER_PAGE = 6;
   const [page, setPage] = useState(0);
   const heroRef = useHeroAnim();
   const listRef = useGsapReveal();
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   const totalPages = Math.ceil(NOTICES.length / PER_PAGE);
   const paged = NOTICES.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
@@ -31,9 +34,9 @@ export default function NoticesPageClient() {
             <span style={{ fontSize: 13, color: '#36c88a', fontWeight: 600 }}>공지사항</span>
           </div>
           <p data-hero className="eyebrow" style={{ marginBottom: 16 }}>NOTICES</p>
-          <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}>공지사항</h1>
+          <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}><E id="notices_hero.title" editMode={editMode}>공지사항</E></h1>
           <p data-hero style={{ color: 'rgba(255,255,255,0.6)', fontSize: 17, maxWidth: 480 }}>
-            DA# 및 DATAWARE 관련 공지사항, 업데이트, 점검 안내
+            <E id="notices_hero.desc" editMode={editMode}>DA# 및 DATAWARE 관련 공지사항, 업데이트, 점검 안내</E>
           </p>
         </div>
       </section>
@@ -105,6 +108,7 @@ export default function NoticesPageClient() {
           )}
         </div>
       </section>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </div>
   );
 }
