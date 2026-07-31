@@ -4,6 +4,7 @@ import React, { useState, useRef, FormEvent } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { api } from '@/lib/api';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const ACCENT = '#36c88a';
 
@@ -182,6 +183,8 @@ export default function DiagnosisPageClient() {
   const whyRef = useGsapReveal() as React.RefObject<HTMLElement>;
   const insightRef = useGsapReveal() as React.RefObject<HTMLElement>;
   const serviceRef = useGsapReveal() as React.RefObject<HTMLElement>;
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   /* ── 진단 폼 상태 ── */
   const [dbCount, setDbCount] = useState<DbScale | null>(null);
@@ -328,11 +331,11 @@ export default function DiagnosisPageClient() {
               marginBottom: 22,
             }}
           >
-            데이터 거버넌스 진단<span style={{ color: ACCENT }}>.</span>
+            <E id="diagnosis_hero.title" editMode={editMode}>데이터 거버넌스 진단</E><span style={{ color: ACCENT }}>.</span>
           </h1>
 
           <p data-hero style={{ fontSize: 'clamp(15px, 1.4vw, 17px)', color: 'rgba(255,255,255,0.55)', lineHeight: 1.75, maxWidth: 480, marginBottom: 28 }}>
-            4가지 질문에 답하면 <span style={{ color: ACCENT, fontWeight: 600 }}>30초 안에</span> 데이터 거버넌스 성숙도와 우선 과제를 알려드립니다.
+            <E id="diagnosis_hero.desc" editMode={editMode}>4가지 질문에 답하면 <span style={{ color: ACCENT, fontWeight: 600 }}>30초 안에</span> 데이터 거버넌스 성숙도와 우선 과제를 알려드립니다.</E>
           </p>
 
           {/* CTAs */}
@@ -976,6 +979,8 @@ export default function DiagnosisPageClient() {
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 20, fontSize: 14, fontWeight: 600, color: '#fff' }}>지금 진단하기 →</span>
         </a>
       </div>
+
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </>
   );
 }
