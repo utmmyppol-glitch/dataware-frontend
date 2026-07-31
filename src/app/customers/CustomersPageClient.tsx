@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { CustomerStoryResponse } from '@/lib/api';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { CUSTOMER_STORIES } from '@/data/customers';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const ACCENT = '#36c88a';
 const INDUSTRIES = ['전체', '공공기관', '금융', '유통', '제조'];
@@ -13,6 +14,8 @@ export default function CustomersPageClient({ initialStories }: { initialStories
   const [activeIndustry, setActiveIndustry] = useState('전체');
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
   const gridRef = useGsapReveal() as React.RefObject<HTMLElement>;
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   // 실데이터만 (title이 있는 것)
   const realStories = initialStories.filter(s => s.title);
@@ -31,10 +34,10 @@ export default function CustomersPageClient({ initialStories }: { initialStories
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <p data-hero style={{ fontSize: 13, fontWeight: 600, color: ACCENT, letterSpacing: '0.12em', marginBottom: 16 }}>CUSTOMER STORIES</p>
           <h1 data-hero style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: 20 }}>
-            고객사례<span style={{ color: ACCENT }}>.</span>
+            <E id="customers_hero.title" editMode={editMode}>고객사례</E><span style={{ color: ACCENT }}>.</span>
           </h1>
           <p data-hero style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, maxWidth: 520, margin: '0 auto' }}>
-            금융 · 공공 · 제조 · 유통 등 다양한 산업에서 DATAWARE를 도입하고 있습니다.
+            <E id="customers_hero.desc" editMode={editMode}>금융 · 공공 · 제조 · 유통 등 다양한 산업에서 DATAWARE를 도입하고 있습니다.</E>
           </p>
         </div>
       </section>
@@ -124,7 +127,7 @@ export default function CustomersPageClient({ initialStories }: { initialStories
         >
           <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>CONSULTATION</span>
           <h3 style={{ fontSize: 22, fontWeight: 700, color: '#F9FAFB', marginTop: 10, lineHeight: 1.3 }}>
-            DATAWARE 도입을 검토하고 계신가요<span style={{ color: ACCENT }}>?</span>
+            <E id="customers_cta.title" editMode={editMode}>DATAWARE 도입을 검토하고 계신가요</E><span style={{ color: ACCENT }}>?</span>
           </h3>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, fontSize: 14, fontWeight: 600, color: ACCENT }}>도입문의 →</span>
         </Link>
@@ -134,11 +137,13 @@ export default function CustomersPageClient({ initialStories }: { initialStories
         >
           <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em' }}>DOWNLOAD</span>
           <h3 style={{ fontSize: 22, fontWeight: 700, color: '#fff', marginTop: 10, lineHeight: 1.3 }}>
-            소개서를 받아보세요<span style={{ opacity: 0.6 }}>.</span>
+            <E id="customers_cta.download" editMode={editMode}>소개서를 받아보세요</E><span style={{ opacity: 0.6 }}>.</span>
           </h3>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, fontSize: 14, fontWeight: 600, color: '#fff' }}>무료 다운로드 →</span>
         </Link>
       </div>
+
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </>
   );
 }
