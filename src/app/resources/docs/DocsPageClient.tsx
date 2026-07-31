@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { formatDateDot as formatDate } from '@/lib/format';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const DOCS = [
   { id: 1, title: 'DA# 5.0 사용자 가이드', desc: 'DA# 5.0 전체 기능에 대한 상세 사용자 매뉴얼입니다.', category: 'DA#', categoryColor: '#36c88a', fileSize: '12.4 MB', fileType: 'PDF', updated: '2026-03-15' },
@@ -18,6 +19,8 @@ const DOCS = [
 export default function DocsPageClient() {
   const heroRef = useHeroAnim();
   const gridRef = useGsapReveal();
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   return (
     <div style={{ background: '#ffffff' }}>
@@ -36,9 +39,9 @@ export default function DocsPageClient() {
             <span style={{ fontSize: 13, color: '#36c88a', fontWeight: 600 }}>기술문서</span>
           </div>
           <p data-hero className="eyebrow" style={{ marginBottom: 16 }}>DOCUMENTATION</p>
-          <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}>기술문서</h1>
+          <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}><E id="docs_hero.title" editMode={editMode}>기술문서</E></h1>
           <p data-hero style={{ color: 'rgba(255,255,255,0.6)', fontSize: 17, maxWidth: 520 }}>
-            DA# 및 DATAWARE 제품의 사용자 가이드, 설치 매뉴얼, API 레퍼런스
+            <E id="docs_hero.desc" editMode={editMode}>DA# 및 DATAWARE 제품의 사용자 가이드, 설치 매뉴얼, API 레퍼런스</E>
           </p>
         </div>
       </section>
@@ -81,6 +84,7 @@ export default function DocsPageClient() {
           </div>
         </div>
       </section>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </div>
   );
 }
