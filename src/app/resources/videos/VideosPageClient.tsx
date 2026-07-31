@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { formatDateDot as formatDate } from '@/lib/format';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 interface Video {
   id: number;
@@ -181,6 +182,8 @@ export default function VideosPageClient() {
   const PER_PAGE = 6;
   const [page, setPage] = useState(0);
   const [playingId, setPlayingId] = useState<number | null>(null);
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const totalPages = Math.ceil(VIDEOS.length / PER_PAGE);
   const paged = VIDEOS.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
 
@@ -214,9 +217,9 @@ export default function VideosPageClient() {
             </svg>
             <span style={{ fontSize: '13px', color: '#36c88a', fontWeight: '600' }}>동영상 강의</span>
           </div>
-          <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#111111', margin: '0 0 10px' }}>동영상 강의</h1>
+          <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#111111', margin: '0 0 10px' }}><E id="videos_hero.title" editMode={editMode}>동영상 강의</E></h1>
           <p style={{ fontSize: '16px', color: '#676767', margin: 0 }}>
-            DA#5 런칭 세미나 및 튜토리얼 강의를 무료로 시청하세요.
+            <E id="videos_hero.desc" editMode={editMode}>DA#5 런칭 세미나 및 튜토리얼 강의를 무료로 시청하세요.</E>
           </p>
         </div>
       </div>
@@ -483,10 +486,10 @@ export default function VideosPageClient() {
         >
           <div>
             <h3 style={{ fontSize: '17px', fontWeight: '700', color: '#111111', margin: '0 0 6px' }}>
-              DA# 무료 교육도 신청해 보세요
+              <E id="videos_cta.title" editMode={editMode}>DA# 무료 교육도 신청해 보세요</E>
             </h3>
             <p style={{ fontSize: '14px', color: '#676767', margin: 0 }}>
-              강의 수강 후 실습 교육을 원하시면 무료교육 신청을 이용해 주세요.
+              <E id="videos_cta.desc" editMode={editMode}>강의 수강 후 실습 교육을 원하시면 무료교육 신청을 이용해 주세요.</E>
             </p>
           </div>
           <Link
@@ -512,6 +515,7 @@ export default function VideosPageClient() {
           </Link>
         </div>
       </div>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </main>
   );
 }
