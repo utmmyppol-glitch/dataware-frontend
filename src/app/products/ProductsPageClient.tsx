@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ProductResponse } from '@/lib/api';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const PRODUCT_COLORS: Record<string, string> = {
   'dataware': '#36c88a',
@@ -19,6 +20,8 @@ export default function ProductsPageClient({ products }: { products: ProductResp
   const heroRef = useHeroAnim();
   const gridRef = useGsapReveal();
   const ctaRef = useGsapReveal();
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   return (
     <div style={{ background: '#ffffff' }}>
@@ -38,10 +41,10 @@ export default function ProductsPageClient({ products }: { products: ProductResp
 
           <p data-hero className="eyebrow" style={{ marginBottom: 16 }}>PRODUCT LINEUP</p>
           <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}>
-            DATAWARE
+            <E id="products_hero.title" editMode={editMode}>DATAWARE</E>
           </h1>
           <p data-hero style={{ color: 'rgba(255,255,255,0.6)', fontSize: 17, maxWidth: 520 }}>
-            기업의 DX와 AIX를 가속화하는 데이터 거버넌스 All-in-One Package
+            <E id="products_hero.desc" editMode={editMode}>기업의 DX와 AIX를 가속화하는 데이터 거버넌스 All-in-One Package</E>
           </p>
 
           {/* Key features bar */}
@@ -107,14 +110,16 @@ export default function ProductsPageClient({ products }: { products: ProductResp
       {/* ── 3. CTA — Dark ── */}
       <section ref={ctaRef as React.RefObject<HTMLElement>} className="section-dark section-pad" style={{ textAlign: 'center' }}>
         <div className="wrap">
-          <h2 className="headline-md" style={{ marginBottom: 16 }}>DATAWARE 도입을 고민하고 계신가요?</h2>
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 16, marginBottom: 32 }}>전문 컨설턴트가 귀사에 맞는 솔루션을 안내해 드립니다.</p>
+          <h2 className="headline-md" style={{ marginBottom: 16 }}><E id="products_cta.title" editMode={editMode}>DATAWARE 도입을 고민하고 계신가요?</E></h2>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 16, marginBottom: 32 }}><E id="products_cta.desc" editMode={editMode}>전문 컨설턴트가 귀사에 맞는 솔루션을 안내해 드립니다.</E></p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 12 }}>
             <Link href="/contact" className="btn-accent" style={{ textDecoration: 'none', borderRadius: 0 }}>도입 문의하기</Link>
             <Link href="/download" className="btn-outline-light" style={{ textDecoration: 'none', borderRadius: 0 }}>소개서 다운로드</Link>
           </div>
         </div>
       </section>
+
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </div>
   );
 }
