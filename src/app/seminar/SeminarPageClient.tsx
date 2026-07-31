@@ -5,6 +5,7 @@ import { api } from '@/lib/api';
 import { SEMINAR_STEPS } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import ConsentSection from '@/components/forms/ConsentSection';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
@@ -15,6 +16,8 @@ export default function SeminarPageClient() {
   const heroRef = useHeroAnim();
   const stepsRef = useGsapReveal();
   const formRef = useGsapReveal();
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
 
   function validate(formData: FormData): FieldErrors {
     return validateCommonFields(formData);
@@ -130,9 +133,9 @@ export default function SeminarPageClient() {
             <span style={{ fontSize: '10px', color: '#36c88a', letterSpacing: '0.08em' }}>VISIT SEMINAR</span>
           </div>
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1.05, marginBottom: '16px' }}>
-            DATAWARE 맞춤형<br />방문 세미나<span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
+            <E id="seminar_hero.title" editMode={editMode}>DATAWARE 맞춤형<br />방문 세미나</E><span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
           </h1>
-          <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '520px' }}>전문 컨설턴트가 직접 방문하여 귀사의 데이터 환경에 맞는 최적의 솔루션을 제안해 드립니다.</p>
+          <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '520px' }}><E id="seminar_hero.desc" editMode={editMode}>전문 컨설턴트가 직접 방문하여 귀사의 데이터 환경에 맞는 최적의 솔루션을 제안해 드립니다.</E></p>
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(54,200,138,0.2), transparent)' }} />
       </section>
@@ -329,10 +332,10 @@ export default function SeminarPageClient() {
                 marginBottom: '12px',
               }}
             >
-              세미나 신청서 작성
+              <E id="seminar_form.title" editMode={editMode}>세미나 신청서 작성</E>
             </h2>
             <p style={{ color: '#64748b' }}>
-              아래 양식을 작성해 주시면 담당자가 확인 후 연락드립니다.
+              <E id="seminar_form.desc" editMode={editMode}>아래 양식을 작성해 주시면 담당자가 확인 후 연락드립니다.</E>
             </p>
           </div>
 
@@ -475,6 +478,7 @@ export default function SeminarPageClient() {
           </div>
         </div>
       </section>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </div>
   );
 }
