@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { formatDateDot as formatDate } from '@/lib/format';
+import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const STATIC_EVENTS = [
   {
@@ -122,6 +123,8 @@ export default function EventsPageClient() {
   const [events] = useState(STATIC_EVENTS);
   const [openId, setOpenId] = useState<number | null>(null);
   const heroRef = useHeroAnim();
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const contentRef = useGsapReveal();
 
   const PER_PAGE = 4;
@@ -150,10 +153,10 @@ export default function EventsPageClient() {
           </div>
 
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5.5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 0.95, marginBottom: '20px' }}>
-            이벤트<span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
+            <E id="events_hero.title" editMode={editMode}>이벤트</E><span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
           </h1>
           <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '460px' }}>
-            DATAWARE 최신 이벤트, 웨비나, 프로모션 소식을 확인하세요.
+            <E id="events_hero.desc" editMode={editMode}>DATAWARE 최신 이벤트, 웨비나, 프로모션 소식을 확인하세요.</E>
           </p>
 
           {/* Quick stats */}
@@ -299,6 +302,8 @@ export default function EventsPageClient() {
           <div aria-hidden="true" style={{ position: 'absolute', bottom: '-10px', right: '20px', fontSize: '120px', fontWeight: 900, color: 'rgba(255,255,255,0.1)', lineHeight: 1, pointerEvents: 'none' }}>DL</div>
         </Link>
       </div>
+
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </main>
   );
 }
