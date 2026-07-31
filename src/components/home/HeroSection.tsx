@@ -31,9 +31,10 @@ function useCountUp(target: number, dur = 2400) {
 interface HeroSectionProps {
   heroRef: React.RefObject<HTMLElement>;
   editMode: boolean;
+  content?: { title?: string; desc?: string };
 }
 
-export default function HeroSection({ heroRef, editMode }: HeroSectionProps) {
+export default function HeroSection({ heroRef, editMode, content }: HeroSectionProps) {
   const [zoomedSolution, setZoomedSolution] = useState<Solution | null>(null);
   const [explorerMode, setExplorerMode] = useState(false);
   const isZoomed = zoomedSolution !== null;
@@ -82,10 +83,10 @@ export default function HeroSection({ heroRef, editMode }: HeroSectionProps) {
               </div>
 
               <h2 data-hero style={{ fontWeight: 900, fontSize: 'clamp(36px, 5.5vw, 64px)', lineHeight: 1.05, letterSpacing: '-0.05em', color: '#111', margin: '0 0 22px' }}>
-                <E id="home_hero.title" editMode={editMode}>{COPY.heroDA.line1}<br />{COPY.heroDA.line2}<br />{COPY.heroDA.line3.replace('.', '')}<span style={{ color: '#36c88a' }}>.</span></E>
+                <E id="home_hero.title" editMode={editMode}>{content?.title ?? `${COPY.heroDA.line1}\n${COPY.heroDA.line2}\n${COPY.heroDA.line3}`}</E>
               </h2>
 
-              <p data-hero style={{ fontWeight: 400, fontSize: 'clamp(15px, 1.4vw, 17px)', lineHeight: 1.75, color: '#676767', maxWidth: 640, margin: '0 0 24px' }}><E id="home_hero.desc" editMode={editMode}>{COPY.heroDA.subtitle}</E></p>
+              <p data-hero style={{ fontWeight: 400, fontSize: 'clamp(15px, 1.4vw, 17px)', lineHeight: 1.75, color: '#676767', maxWidth: 640, margin: '0 0 24px' }}><E id="home_hero.desc" editMode={editMode}>{content?.desc ?? COPY.heroDA.subtitle}</E></p>
 
               <div data-hero style={{ fontSize: 13, color: '#676767', marginBottom: 28, display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: 'rgba(54,200,138,.04)', border: '1px solid rgba(54,200,138,.1)' }}>
                 <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#36c88a', boxShadow: '0 0 0 3px rgba(54,200,138,.15)' }} />

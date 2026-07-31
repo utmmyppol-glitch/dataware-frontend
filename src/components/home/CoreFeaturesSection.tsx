@@ -34,9 +34,10 @@ const FEATURES = [
 interface CoreFeaturesSectionProps {
   sectionRef: React.RefObject<HTMLElement>;
   editMode: boolean;
+  content?: { title?: string };
 }
 
-export default function CoreFeaturesSection({ sectionRef, editMode }: CoreFeaturesSectionProps) {
+export default function CoreFeaturesSection({ sectionRef, editMode, content }: CoreFeaturesSectionProps) {
   const c3 = useCountUp(80);
 
   return (
@@ -46,7 +47,7 @@ export default function CoreFeaturesSection({ sectionRef, editMode }: CoreFeatur
           <div>
             <p data-anim style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.12em', marginBottom: '16px' }}>CORE FEATURES</p>
             <h2 data-anim style={{ fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 900, color: '#111214', lineHeight: 1.1, marginBottom: '20px' }}>
-              <E id="home_features.title" editMode={editMode}>{COPY.whyDA}<span style={{ color: '#36c88a' }}>.</span></E>
+              <E id="home_features.title" editMode={editMode}>{content?.title ?? COPY.whyDA}</E>
             </h2>
             <p data-anim style={{ fontSize: '20px', color: '#6B655C', lineHeight: 1.8, marginBottom: '48px' }}>{COPY.heroDA.subtitle}</p>
             <div data-anim>

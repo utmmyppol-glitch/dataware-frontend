@@ -22,16 +22,17 @@ const NOTICES = [
 interface NewsSectionProps {
   sectionRef: React.RefObject<HTMLElement>;
   editMode: boolean;
+  content?: { title?: string };
 }
 
-export default function NewsSection({ sectionRef, editMode }: NewsSectionProps) {
+export default function NewsSection({ sectionRef, editMode, content }: NewsSectionProps) {
   return (
     <section ref={sectionRef} style={{ backgroundColor: '#fff', borderTop: '1px solid #E7E2D8' }}>
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: 'clamp(64px, 8vw, 100px) clamp(24px, 4vw, 56px)' }}>
         <div data-anim style={{ textAlign: 'center', marginBottom: '56px' }}>
           <p style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.12em', marginBottom: '16px' }}>NEWS & LECTURES</p>
           <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 900, color: '#111214', lineHeight: 1.15, marginBottom: '12px' }}>
-            <E id="home_news.title" editMode={editMode}>유니온시스템즈 소식<span style={{ color: '#36c88a' }}>.</span></E>
+            <E id="home_news.title" editMode={editMode}>{content?.title ?? '유니온시스템즈 소식.'}</E>
           </h2>
           <p style={{ fontSize: '18px', color: '#6B655C' }}>성장하는 유니온시스템즈의 소식과 유용한 강의들을 만나보세요!</p>
         </div>

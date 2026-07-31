@@ -7,9 +7,10 @@ import { E } from '@/lib/editable';
 interface WhySectionProps {
   sectionRef: React.RefObject<HTMLElement>;
   editMode: boolean;
+  content?: { title?: string };
 }
 
-export default function WhySection({ sectionRef, editMode }: WhySectionProps) {
+export default function WhySection({ sectionRef, editMode, content }: WhySectionProps) {
   return (
     <section ref={sectionRef} style={{ position: 'relative', backgroundColor: '#FBFAF7', overflow: 'hidden' }}>
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: 'clamp(80px, 10vw, 140px) clamp(24px, 4vw, 56px)', position: 'relative', zIndex: 1 }}>
@@ -17,7 +18,7 @@ export default function WhySection({ sectionRef, editMode }: WhySectionProps) {
           <div>
             <p data-anim style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.12em', marginBottom: '24px' }}>WHY DATAWARE</p>
             <h2 data-anim style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, color: '#111214', lineHeight: 1.05, letterSpacing: '-0.04em', marginBottom: '28px' }}>
-              <E id="home_why.title" editMode={editMode}>{COPY.roleSection}</E>
+              <E id="home_why.title" editMode={editMode}>{content?.title ?? COPY.roleSection}</E>
             </h2>
             <p data-anim style={{ fontSize: '20px', color: '#6B655C', lineHeight: 1.8, marginBottom: '48px' }}>
               기업의 DX와 AIX를 가속화하는 데이터 거버넌스 All-in-One Package

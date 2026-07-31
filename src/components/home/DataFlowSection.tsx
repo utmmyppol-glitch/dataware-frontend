@@ -15,16 +15,17 @@ const DATA_FLOW = [
 interface DataFlowSectionProps {
   sectionRef: React.RefObject<HTMLElement>;
   editMode: boolean;
+  content?: { title?: string };
 }
 
-export default function DataFlowSection({ sectionRef, editMode }: DataFlowSectionProps) {
+export default function DataFlowSection({ sectionRef, editMode, content }: DataFlowSectionProps) {
   return (
     <section ref={sectionRef} style={{ position: 'relative', backgroundColor: '#0B1220', overflow: 'hidden' }}>
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: 'clamp(80px, 10vw, 120px) clamp(24px, 4vw, 56px)', position: 'relative', zIndex: 2 }}>
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
           <p data-anim style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.12em', marginBottom: '16px' }}>DATA GOVERNANCE FLOW</p>
           <h2 data-anim style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 800, color: '#F9FAFB', lineHeight: 1.15 }}>
-            <E id="home_dataflow.title" editMode={editMode}>데이터 분석, 설계, 활용을 한번에<span style={{ color: '#36c88a' }}>!</span></E>
+            <E id="home_dataflow.title" editMode={editMode}>{content?.title ?? '데이터 분석, 설계, 활용을 한번에!'}</E>
           </h2>
         </div>
 
