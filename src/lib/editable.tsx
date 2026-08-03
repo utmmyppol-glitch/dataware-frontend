@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import { usePathname } from 'next/navigation';
 
 /* ── JSON 안전 파싱 ── */
@@ -42,7 +42,7 @@ export function useEditableManifest(editMode: boolean) {
         type: el.classList.contains('editable-image') ? 'image' as const : 'text' as const,
         value: el.classList.contains('editable-image')
           ? (el as HTMLImageElement).src
-          : el.textContent || '',
+          : el.innerHTML || '',
       }));
       console.log('[manifest]', pathname, fields.length);
       window.parent.postMessage({
@@ -89,7 +89,7 @@ function containsHtml(v: React.ReactNode): v is string {
 /* ── EditableText (HTML 서식 지원) ── */
 export function E({ id, editMode, children }: { id: string; editMode: boolean; children: React.ReactNode }) {
   const sanitized = useMemo(
-    () => (containsHtml(children) && typeof window !== 'undefined' ? DOMPurify.sanitize(children) : null),
+    () => (containsHtml(children) ? DOMPurify.sanitize(children) : null),
     [children],
   );
 
@@ -117,7 +117,7 @@ export function E({ id, editMode, children }: { id: string; editMode: boolean; c
     <span data-editable={id} className="editable-field" style={{ cursor: 'pointer', position: 'relative' }}
       onClick={(e) => {
         e.stopPropagation();
-        const value = (e.currentTarget as HTMLElement).textContent || '';
+        const value = (e.currentTarget as HTMLElement).innerHTML || '';
         window.parent.postMessage({ type: 'field-click', id, fieldType: 'text', value }, '*');
       }}>
       {children}
