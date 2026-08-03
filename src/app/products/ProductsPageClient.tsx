@@ -17,13 +17,14 @@ const PRODUCT_COLORS: Record<string, string> = {
   'dp-sharp': '#b8a060',
 };
 
-const DEFAULT_HERO = { title: 'DATAWARE', desc: '기업의 DX와 AIX를 가속화하는 데이터 거버넌스 All-in-One Package' };
+const DEFAULT_HERO = { title: 'DATAWARE', desc: '기업의 DX와 AIX를 가속화하는 데이터 거버넌스 All-in-One Package', eyebrow: 'PRODUCT LINEUP' };
 const DEFAULT_FEATURES = [
   { v: '8', l: '핵심 솔루션' },
   { v: 'GS 1등급', l: '품질인증' },
   { v: 'All-in-One', l: '통합 패키지' },
 ];
-const DEFAULT_CTA = { title: 'DATAWARE 도입을 고민하고 계신가요?', desc: '전문 컨설턴트가 귀사에 맞는 솔루션을 안내해 드립니다.' };
+const DEFAULT_GRID = { label: '제품 라인업' };
+const DEFAULT_CTA = { title: 'DATAWARE 도입을 고민하고 계신가요?', desc: '전문 컨설턴트가 귀사에 맞는 솔루션을 안내해 드립니다.', btn1: '도입 문의하기', btn2: '소개서 다운로드' };
 
 export default function ProductsPageClient({ products, ssrContent }: { products: ProductResponse[]; ssrContent: Record<string, string> }) {
   const heroRef = useHeroAnim();
@@ -34,6 +35,7 @@ export default function ProductsPageClient({ products, ssrContent }: { products:
 
   const [hero, setHero] = useState(() => safeParse(ssrContent.products_hero, DEFAULT_HERO));
   const [features, setFeatures] = useState(() => safeParse(ssrContent.products_features, DEFAULT_FEATURES));
+  const [grid, setGrid] = useState(() => safeParse(ssrContent.products_grid, DEFAULT_GRID));
   const [cta, setCta] = useState(() => safeParse(ssrContent.products_cta, DEFAULT_CTA));
 
   useEffect(() => {
@@ -41,6 +43,7 @@ export default function ProductsPageClient({ products, ssrContent }: { products:
     const setters: Record<string, (v: unknown) => void> = {
       products_hero: setHero as (v: unknown) => void,
       products_features: setFeatures as (v: unknown) => void,
+      products_grid: setGrid as (v: unknown) => void,
       products_cta: setCta as (v: unknown) => void,
     };
     const handler = (e: MessageEvent) => {
@@ -69,7 +72,7 @@ export default function ProductsPageClient({ products, ssrContent }: { products:
             <span style={{ fontSize: 13, color: '#36c88a', fontWeight: 600 }}>DATAWARE</span>
           </div>
 
-          <p data-hero className="eyebrow" style={{ marginBottom: 16 }}>PRODUCT LINEUP</p>
+          <p data-hero className="eyebrow" style={{ marginBottom: 16 }}><E id="products_hero.eyebrow" editMode={editMode}>{hero.eyebrow}</E></p>
           <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}>
             <E id="products_hero.title" editMode={editMode}>{hero.title}</E>
           </h1>
@@ -93,7 +96,7 @@ export default function ProductsPageClient({ products, ssrContent }: { products:
       <section className="section-pad" style={{ background: '#f8fafc' }}>
         <div ref={gridRef} className="wrap">
           <p style={{ textAlign: 'center', color: '#36c88a', fontWeight: 700, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 40 }}>
-            제품 라인업
+            <E id="products_grid.label" editMode={editMode}>{grid.label}</E>
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -139,8 +142,8 @@ export default function ProductsPageClient({ products, ssrContent }: { products:
           <h2 className="headline-md" style={{ marginBottom: 16 }}><E id="products_cta.title" editMode={editMode}>{cta.title}</E></h2>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 16, marginBottom: 32 }}><E id="products_cta.desc" editMode={editMode}>{cta.desc}</E></p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 12 }}>
-            <Link href="/contact" className="btn-accent" style={{ textDecoration: 'none', borderRadius: 0 }}>도입 문의하기</Link>
-            <Link href="/download" className="btn-outline-light" style={{ textDecoration: 'none', borderRadius: 0 }}>소개서 다운로드</Link>
+            <Link href="/contact" className="btn-accent" style={{ textDecoration: 'none', borderRadius: 0 }}><E id="products_cta.btn1" editMode={editMode}>{cta.btn1}</E></Link>
+            <Link href="/download" className="btn-outline-light" style={{ textDecoration: 'none', borderRadius: 0 }}><E id="products_cta.btn2" editMode={editMode}>{cta.btn2}</E></Link>
           </div>
         </div>
       </section>
