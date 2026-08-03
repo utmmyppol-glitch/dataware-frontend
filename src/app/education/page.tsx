@@ -1,7 +1,7 @@
 import EducationPageClient from "./EducationPageClient";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
-const CONTENT_KEYS = ['education_hero'];
+const CONTENT_KEYS = ['education_hero', 'education_benefits', 'education_videos'];
 
 async function getContent(): Promise<Record<string, string>> {
   try {

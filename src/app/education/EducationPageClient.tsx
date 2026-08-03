@@ -14,6 +14,12 @@ import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@
 const PER_PAGE_EDU = 6;
 
 const DEFAULT_HERO = { title: 'DA# 무료교육', desc: '데이터 아키텍처 기본개념, 현장에서 사용할 수 있는 고급 활용 방법, 노하우를 알려드립니다.' };
+const DEFAULT_BENEFITS = EDUCATION_BENEFITS.map(b => ({ title: b.title, desc: b.desc }));
+const DEFAULT_VIDEOS = [
+  { title: '새로운 시대의 데이터모델링', speaker: '이화식 대표', youtubeId: '33nGO8uZOQ8' },
+  { title: 'DA#5 기본구조 및 개념', speaker: '최광희 연구원', youtubeId: 'V-8w2lXyiqY' },
+  { title: '초보자도 할 수 있는 현행모델 파헤치기', speaker: '이임형 연구원', youtubeId: '1qP1zbsChQc' },
+];
 
 export default function EducationPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const [submitted, setSubmitted] = useState(false);
@@ -37,12 +43,20 @@ export default function EducationPageClient({ ssrContent }: { ssrContent: Record
   useEditableManifest(editMode);
 
   const [hero, setHero] = useState(() => safeParse(ssrContent.education_hero, DEFAULT_HERO));
+  const [benefits, setBenefits] = useState(() => safeParse(ssrContent.education_benefits, DEFAULT_BENEFITS));
+  const [videos, setVideos] = useState(() => safeParse(ssrContent.education_videos, DEFAULT_VIDEOS));
 
   useEffect(() => {
     if (!editMode) return;
+    const setters: Record<string, (v: unknown) => void> = {
+      education_hero: setHero as (v: unknown) => void,
+      education_benefits: setBenefits as (v: unknown) => void,
+      education_videos: setVideos as (v: unknown) => void,
+    };
     const handler = (e: MessageEvent) => {
-      if (e.data?.type === 'content-update' && e.data.section === 'education_hero') {
-        setHero(e.data.data);
+      if (e.data?.type === 'content-update') {
+        const fn = setters[e.data.section];
+        if (fn) fn(e.data.data);
       }
     };
     window.addEventListener('message', handler);
@@ -392,10 +406,10 @@ export default function EducationPageClient({ ssrContent }: { ssrContent: Record
                   marginBottom: 6,
                 }}
               >
-                {EDUCATION_BENEFITS[0].title}
+                <E id="education_benefits.0.title" editMode={editMode}>{benefits[0]?.title}</E>
               </h3>
               <p style={{ color: '#64748b', fontSize: 15, lineHeight: 1.6, margin: 0 }}>
-                {EDUCATION_BENEFITS[0].desc}
+                <E id="education_benefits.0.desc" editMode={editMode}>{benefits[0]?.desc}</E>
               </p>
             </div>
           </div>
@@ -409,9 +423,9 @@ export default function EducationPageClient({ ssrContent }: { ssrContent: Record
             }}
           >
             {[
-              { benefit: EDUCATION_BENEFITS[1], icon: '02' },
-              { benefit: EDUCATION_BENEFITS[2], icon: '03' },
-            ].map(({ benefit, icon }) => (
+              { benefit: benefits[1], icon: '02', idx: 1 },
+              { benefit: benefits[2], icon: '03', idx: 2 },
+            ].map(({ benefit, icon, idx }) => (
               <div
                 key={benefit.title}
                 style={{
@@ -448,10 +462,10 @@ export default function EducationPageClient({ ssrContent }: { ssrContent: Record
                       marginBottom: 4,
                     }}
                   >
-                    {benefit.title}
+                    <E id={`education_benefits.${idx}.title`} editMode={editMode}>{benefit?.title}</E>
                   </h3>
                   <p style={{ color: '#64748b', fontSize: 14, lineHeight: 1.6, margin: 0 }}>
-                    {benefit.desc}
+                    <E id={`education_benefits.${idx}.desc`} editMode={editMode}>{benefit?.desc}</E>
                   </p>
                 </div>
               </div>
@@ -581,11 +595,7 @@ export default function EducationPageClient({ ssrContent }: { ssrContent: Record
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, maxWidth: 960, margin: '0 auto' }}>
-              {[
-                { title: '새로운 시대의 데이터모델링', speaker: '이화식 대표', youtubeId: '33nGO8uZOQ8' },
-                { title: 'DA#5 기본구조 및 개념', speaker: '최광희 연구원', youtubeId: 'V-8w2lXyiqY' },
-                { title: '초보자도 할 수 있는 현행모델 파헤치기', speaker: '이임형 연구원', youtubeId: '1qP1zbsChQc' },
-              ].map((v) => (
+              {videos.map((v, vi) => (
                 <a
                   key={v.youtubeId}
                   href={`https://www.youtube.com/watch?v=${v.youtubeId}`}
@@ -606,8 +616,8 @@ export default function EducationPageClient({ ssrContent }: { ssrContent: Record
                     <span style={{ position: 'absolute', top: 10, left: 10, fontSize: 11, fontWeight: 700, color: '#fff', backgroundColor: 'rgba(54,200,138,0.9)', padding: '3px 10px' }}>DA#5 세미나</span>
                   </div>
                   <div style={{ padding: '16px 20px' }}>
-                    <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', lineHeight: 1.4, marginBottom: 6 }}>{v.title}</h3>
-                    <p style={{ fontSize: 13, color: '#94a3b8', margin: 0 }}>{v.speaker}</p>
+                    <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', lineHeight: 1.4, marginBottom: 6 }}><E id={`education_videos.${vi}.title`} editMode={editMode}>{v.title}</E></h3>
+                    <p style={{ fontSize: 13, color: '#94a3b8', margin: 0 }}><E id={`education_videos.${vi}.speaker`} editMode={editMode}>{v.speaker}</E></p>
                   </div>
                 </a>
               ))}
