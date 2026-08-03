@@ -11,18 +11,29 @@ export function safeParse<T>(json: string | undefined, fallback: T): T {
   try { return JSON.parse(json); } catch { return fallback; }
 }
 
-/* ── 편집모드 감지 훅 (sessionStorage로 클라이언트 네비게이션 시에도 유지) ── */
+/* ── 허용 origin (CMS 백오피스) ── */
+const ALLOWED_ORIGINS = [
+  'https://admin.unionsystems.co.kr',
+  'http://localhost:3002',
+];
+
+function isAllowedOrigin(origin: string): boolean {
+  return ALLOWED_ORIGINS.includes(origin);
+}
+
+/* ── 편집모드 감지 훅 (iframe + origin 검증) ── */
 const EDIT_STORAGE_KEY = '__cms_edit';
 
 export function useEditMode(): boolean {
   const [editMode, setEditMode] = useState(false);
   useEffect(() => {
-    const fromUrl = new URLSearchParams(window.location.search).get('_edit') === '1';
     const inIframe = window.self !== window.top;
+    if (!inIframe) return;
+    const fromUrl = new URLSearchParams(window.location.search).get('_edit') === '1';
     if (fromUrl) {
-      if (inIframe) sessionStorage.setItem(EDIT_STORAGE_KEY, '1');
+      sessionStorage.setItem(EDIT_STORAGE_KEY, '1');
       setEditMode(true);
-    } else if (inIframe && sessionStorage.getItem(EDIT_STORAGE_KEY) === '1') {
+    } else if (sessionStorage.getItem(EDIT_STORAGE_KEY) === '1') {
       setEditMode(true);
     }
   }, []);
@@ -44,17 +55,19 @@ export function useEditableManifest(editMode: boolean) {
           ? (el as HTMLImageElement).src
           : el.innerHTML || '',
       }));
-      console.log('[manifest]', pathname, fields.length);
-      window.parent.postMessage({
-        type: 'editable-manifest',
-        fields,
-        path: pathname,
-      }, '*');
+      for (const origin of ALLOWED_ORIGINS) {
+        window.parent.postMessage({
+          type: 'editable-manifest',
+          fields,
+          path: pathname,
+        }, origin);
+      }
     };
 
     // DOM이 안정화된 후 전송 (페이지 전환 직후 렌더링 대기)
     const timer = setTimeout(sendManifest, 400);
     const handler = (e: MessageEvent) => {
+      if (!isAllowedOrigin(e.origin)) return;
       if (e.data?.type === 'request-manifest') sendManifest();
       if (e.data?.type === 'highlight-field') {
         const el = document.querySelector(`[data-editable="${e.data.id}"]`) as HTMLElement | null;
@@ -107,7 +120,7 @@ export function E({ id, editMode, children }: { id: string; editMode: boolean; c
         onClick={(e) => {
           e.stopPropagation();
           const value = (e.currentTarget as HTMLElement).innerHTML || '';
-          window.parent.postMessage({ type: 'field-click', id, fieldType: 'text', value }, '*');
+          for (const o of ALLOWED_ORIGINS) window.parent.postMessage({ type: 'field-click', id, fieldType: 'text', value }, o);
         }}
       />
     );
@@ -118,7 +131,7 @@ export function E({ id, editMode, children }: { id: string; editMode: boolean; c
       onClick={(e) => {
         e.stopPropagation();
         const value = (e.currentTarget as HTMLElement).innerHTML || '';
-        window.parent.postMessage({ type: 'field-click', id, fieldType: 'text', value }, '*');
+        for (const o of ALLOWED_ORIGINS) window.parent.postMessage({ type: 'field-click', id, fieldType: 'text', value }, o);
       }}>
       {children}
     </span>
@@ -137,7 +150,7 @@ export function OptImg({ id, editMode, src, alt, width, height, fill, className,
     className: `${className || ''} editable-field editable-image`.trim(),
     onClick: (e: React.MouseEvent) => {
       e.stopPropagation();
-      window.parent.postMessage({ type: 'field-click', id, fieldType: 'image', value: src }, '*');
+      for (const o of ALLOWED_ORIGINS) window.parent.postMessage({ type: 'field-click', id, fieldType: 'image', value: src }, o);
     },
   } : { className };
 
