@@ -1,7 +1,7 @@
 import EventsPageClient from "./EventsPageClient";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
-const CONTENT_KEYS = ['events_hero'];
+const CONTENT_KEYS = ['events_hero', 'events_cta'];
 
 async function getContent(): Promise<Record<string, string>> {
   try {

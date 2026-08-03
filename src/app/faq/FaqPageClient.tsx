@@ -45,7 +45,7 @@ const DEFAULT_ITEMS = {
   '2': { question: FAQ_ITEMS[2].question, answer: FAQ_ITEMS[2].answer },
   '3': { question: FAQ_ITEMS[3].question, answer: FAQ_ITEMS[3].answer },
 };
-const DEFAULT_CTA = { title: '원하시는 답변을 찾지 못하셨나요?', desc: '도입문의 또는 전화(02-706-8999)로 연락 주시면 전문 컨설턴트가 직접 안내해 드립니다.' };
+const DEFAULT_CTA = { title: '원하시는 답변을 찾지 못하셨나요?', desc: '도입문의 또는 전화(02-706-8999)로 연락 주시면 전문 컨설턴트가 직접 안내해 드립니다.', btn: '도입문의 바로가기' };
 
 export default function FaqPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const [openId, setOpenId] = useState<number | null>(null);
@@ -286,7 +286,7 @@ export default function FaqPageClient({ ssrContent }: { ssrContent: Record<strin
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#2ba876'; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#36c88a'; }}
             >
-              도입문의 바로가기
+              <E id="faq_cta.btn" editMode={editMode}>{cta.btn}</E>
             </Link>
             <a
               href="tel:027068999"

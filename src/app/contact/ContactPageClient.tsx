@@ -13,7 +13,7 @@ const ACCENT = '#36c88a';
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
 const DEFAULT_HERO = { title: '도입문의' };
-const DEFAULT_CTA = { download: 'DA# 소개서를 먼저 받아보세요', education: 'DA# 무료교육도 신청하세요' };
+const DEFAULT_CTA = { download: 'DA# 소개서를 먼저 받아보세요', education: 'DA# 무료교육도 신청하세요', btn_download: '소개서 다운로드 →', btn_edu: '무료교육 신청 →' };
 
 export default function ContactPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const [submitted, setSubmitted] = useState(false);
@@ -256,7 +256,7 @@ export default function ContactPageClient({ ssrContent }: { ssrContent: Record<s
           <h3 style={{ fontSize: 20, fontWeight: 700, color: '#F9FAFB', marginTop: 8, lineHeight: 1.3 }}>
             <E id="contact_cta.download" editMode={editMode}>{cta.download}</E><span style={{ color: ACCENT }}>.</span>
           </h3>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: ACCENT }}>소개서 다운로드 →</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: ACCENT }}><E id="contact_cta.btn_download" editMode={editMode}>{cta.btn_download}</E></span>
         </Link>
         <Link href="/education" style={{ backgroundColor: ACCENT, padding: '40px 48px', textDecoration: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', transition: 'filter 0.3s' }}
           onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(0.92)'; }}
@@ -266,7 +266,7 @@ export default function ContactPageClient({ ssrContent }: { ssrContent: Record<s
           <h3 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginTop: 8, lineHeight: 1.3 }}>
             <E id="contact_cta.education" editMode={editMode}>{cta.education}</E><span style={{ opacity: 0.6 }}>.</span>
           </h3>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: '#fff' }}>무료교육 신청 →</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: '#fff' }}><E id="contact_cta.btn_edu" editMode={editMode}>{cta.btn_edu}</E></span>
         </Link>
       </div>
 

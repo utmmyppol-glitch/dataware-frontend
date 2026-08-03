@@ -119,7 +119,8 @@ const STATIC_EVENTS = [
   },
 ];
 
-const DEFAULT_HERO = { title: '이벤트', desc: 'DATAWARE 최신 이벤트, 웨비나, 프로모션 소식을 확인하세요.' };
+const DEFAULT_HERO = { title: '이벤트', desc: 'DATAWARE 최신 이벤트, 웨비나, 프로모션 소식을 확인하세요.', eyebrow: 'EVENTS' };
+const DEFAULT_CTA = { title: '이벤트 소식을\n놓치지 마세요', desc: '도입문의 신청 시 최신 이벤트 및 프로모션 정보를 먼저 받아보실 수 있습니다.', download: '무료 다운로드' };
 
 export default function EventsPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const [events] = useState(STATIC_EVENTS);
@@ -130,12 +131,18 @@ export default function EventsPageClient({ ssrContent }: { ssrContent: Record<st
   const contentRef = useGsapReveal();
 
   const [hero, setHero] = useState(() => safeParse(ssrContent.events_hero, DEFAULT_HERO));
+  const [cta, setCta] = useState(() => safeParse(ssrContent.events_cta, DEFAULT_CTA));
 
   useEffect(() => {
     if (!editMode) return;
+    const setters: Record<string, (v: unknown) => void> = {
+      events_hero: setHero as (v: unknown) => void,
+      events_cta: setCta as (v: unknown) => void,
+    };
     const handler = (e: MessageEvent) => {
-      if (e.data?.type === 'content-update' && e.data.section === 'events_hero') {
-        setHero(e.data.data);
+      if (e.data?.type === 'content-update') {
+        const fn = setters[e.data.section];
+        if (fn) fn(e.data.data);
       }
     };
     window.addEventListener('message', handler);
@@ -164,7 +171,7 @@ export default function EventsPageClient({ ssrContent }: { ssrContent: Record<st
           <div data-hero style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '32px' }}>
             <span style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.12em' }}>01</span>
             <div style={{ width: '32px', height: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
-            <span style={{ fontSize: '11px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.14em' }}>EVENTS</span>
+            <span style={{ fontSize: '11px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.14em' }}><E id="events_hero.eyebrow" editMode={editMode}>{hero.eyebrow}</E></span>
           </div>
 
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5.5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 0.95, marginBottom: '20px' }}>
@@ -295,8 +302,8 @@ export default function EventsPageClient({ ssrContent }: { ssrContent: Record<st
           <div aria-hidden="true" style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(255,255,255,0.01) 1px, transparent 1px)', backgroundSize: '20px 20px', pointerEvents: 'none' }} />
           <div style={{ position: 'relative', zIndex: 1 }}>
             <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>STAY UPDATED</span>
-            <h3 style={{ fontSize: '24px', fontWeight: 700, color: '#F9FAFB', marginTop: '12px', lineHeight: 1.3, letterSpacing: '-0.02em' }}>이벤트 소식을<br />놓치지 마세요</h3>
-            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.4)', marginTop: '12px', lineHeight: 1.6, maxWidth: '320px' }}>도입문의 신청 시 최신 이벤트 및 프로모션 정보를 먼저 받아보실 수 있습니다.</p>
+            <h3 style={{ fontSize: '24px', fontWeight: 700, color: '#F9FAFB', marginTop: '12px', lineHeight: 1.3, letterSpacing: '-0.02em' }}><E id="events_cta.title" editMode={editMode}>{cta.title}</E></h3>
+            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.4)', marginTop: '12px', lineHeight: 1.6, maxWidth: '320px' }}><E id="events_cta.desc" editMode={editMode}>{cta.desc}</E></p>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '24px', fontSize: '14px', fontWeight: 600, color: '#36c88a' }}>
               도입문의 신청 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
             </div>
@@ -309,7 +316,7 @@ export default function EventsPageClient({ ssrContent }: { ssrContent: Record<st
         >
           <div style={{ position: 'relative', zIndex: 1 }}>
             <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em' }}>DOWNLOAD</span>
-            <h3 style={{ fontSize: '24px', fontWeight: 700, color: '#fff', marginTop: '12px', lineHeight: 1.3 }}>무료 다운로드</h3>
+            <h3 style={{ fontSize: '24px', fontWeight: 700, color: '#fff', marginTop: '12px', lineHeight: 1.3 }}><E id="events_cta.download" editMode={editMode}>{cta.download}</E></h3>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '24px', fontSize: '14px', fontWeight: 600, color: '#fff' }}>
               소개서 받기 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
             </div>
