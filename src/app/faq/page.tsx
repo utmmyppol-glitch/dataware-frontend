@@ -1,7 +1,8 @@
+import { Metadata } from 'next';
 import FaqPageClient from "./FaqPageClient";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
-const CONTENT_KEYS = ['faq_hero', 'faq_items', 'faq_cta'];
+const CONTENT_KEYS = ['faq_hero', 'faq_items', 'faq_cta', 'faq_seo_title', 'faq_seo_description'];
 
 async function getContent(): Promise<Record<string, string>> {
   try {
@@ -15,6 +16,13 @@ async function getContent(): Promise<Record<string, string>> {
   } catch {
     return {};
   }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getContent();
+  const title = c.faq_seo_title || '자주 묻는 질문 | UNION DATAWARE';
+  const description = c.faq_seo_description || 'DATAWARE 솔루션 도입, 라이선스, 기술 지원에 대한 자주 묻는 질문과 답변입니다.';
+  return { title, description, openGraph: { title, description } };
 }
 
 export default async function FaqPage() {

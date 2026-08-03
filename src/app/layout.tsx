@@ -42,9 +42,17 @@ const notoSansKr = Noto_Sans_KR({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://dataware.unionsystems.co.kr';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "UNION DATAWARE - DA# 데이터 모델링 & DATAWARE 솔루션",
   description: "DA#, META#, DQ#, AP#, DF#, ETT#, DP# - 데이터 거버넌스 All-in-One Package. 유니온시스템즈는 엔코아 DATAWARE 공식 총판입니다.",
+  openGraph: {
+    siteName: 'UNION DATAWARE',
+    locale: 'ko_KR',
+    type: 'website',
+  },
 };
 
 export const viewport: Viewport = {

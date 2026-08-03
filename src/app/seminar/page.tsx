@@ -1,7 +1,8 @@
+import { Metadata } from 'next';
 import SeminarPageClient from "./SeminarPageClient";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
-const CONTENT_KEYS = ['seminar_hero', 'seminar_steps', 'seminar_form'];
+const CONTENT_KEYS = ['seminar_hero', 'seminar_steps', 'seminar_form', 'seminar_seo_title', 'seminar_seo_description'];
 
 async function getContent(): Promise<Record<string, string>> {
   try {
@@ -15,6 +16,13 @@ async function getContent(): Promise<Record<string, string>> {
   } catch {
     return {};
   }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getContent();
+  const title = c.seminar_seo_title || '세미나 | UNION DATAWARE';
+  const description = c.seminar_seo_description || '데이터 거버넌스 및 DATAWARE 솔루션 활용 세미나에 참여하세요.';
+  return { title, description, openGraph: { title, description } };
 }
 
 export default async function SeminarPage() {

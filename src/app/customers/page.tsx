@@ -2,15 +2,6 @@ import { Metadata } from 'next';
 import { CustomerStoryResponse } from '@/lib/api';
 import CustomersPageClient from './CustomersPageClient';
 
-export const metadata: Metadata = {
-  title: '고객사례 | UNION DATAWARE',
-  description: 'SSG닷컴, 카카오뱅크, 아모레퍼시픽 등 3,000+ 기업이 선택한 DATAWARE 도입 사례',
-  openGraph: {
-    title: '고객사례 | UNION DATAWARE',
-    description: 'SSG닷컴, 카카오뱅크, 아모레퍼시픽 등 3,000+ 기업이 선택한 DATAWARE 도입 사례',
-  },
-};
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
 
 // Static fallback data
@@ -36,7 +27,7 @@ async function getCustomerStories(): Promise<CustomerStoryResponse[]> {
   }
 }
 
-const CONTENT_KEYS = ['customers_hero', 'customers_cta'];
+const CONTENT_KEYS = ['customers_hero', 'customers_cta', 'customers_seo_title', 'customers_seo_description'];
 
 async function getContent(): Promise<Record<string, string>> {
   try {
@@ -50,6 +41,13 @@ async function getContent(): Promise<Record<string, string>> {
   } catch {
     return {};
   }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getContent();
+  const title = c.customers_seo_title || '고객사례 | UNION DATAWARE';
+  const description = c.customers_seo_description || 'SSG닷컴, 카카오뱅크, 아모레퍼시픽 등 3,000+ 기업이 선택한 DATAWARE 도입 사례';
+  return { title, description, openGraph: { title, description } };
 }
 
 export default async function CustomersPage() {

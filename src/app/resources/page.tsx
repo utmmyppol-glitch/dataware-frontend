@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { PostResponse } from '@/lib/api';
 import ResourcesPageClient from './ResourcesPageClient';
 
@@ -16,7 +17,7 @@ async function getPosts(): Promise<PostResponse[]> {
   }
 }
 
-const CONTENT_KEYS = ['resources_hero'];
+const CONTENT_KEYS = ['resources_hero', 'resources_seo_title', 'resources_seo_description'];
 
 async function getContent(): Promise<Record<string, string>> {
   try {
@@ -30,6 +31,13 @@ async function getContent(): Promise<Record<string, string>> {
   } catch {
     return {};
   }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getContent();
+  const title = c.resources_seo_title || '리소스 | UNION DATAWARE';
+  const description = c.resources_seo_description || '데이터 거버넌스 관련 블로그, 기술 자료, 뉴스를 확인하세요.';
+  return { title, description, openGraph: { title, description } };
 }
 
 export default async function ResourcesPage() {

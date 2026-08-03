@@ -2,17 +2,8 @@ import { Metadata } from 'next';
 import { ProductResponse } from '@/lib/api';
 import ProductsPageClient from './ProductsPageClient';
 
-export const metadata: Metadata = {
-  title: '제품 소개 | UNION DATAWARE',
-  description: 'DA#, META#, DQ#, AP#, DF#, ETT#, DP# - 데이터 거버넌스 All-in-One 솔루션 라인업',
-  openGraph: {
-    title: '제품 소개 | UNION DATAWARE',
-    description: 'DA#, META#, DQ#, AP#, DF#, ETT#, DP# - 데이터 거버넌스 All-in-One 솔루션 라인업',
-  },
-};
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
-const CONTENT_KEYS = ['products_hero', 'products_features', 'products_grid', 'products_cta'];
+const CONTENT_KEYS = ['products_hero', 'products_features', 'products_grid', 'products_cta', 'products_seo_title', 'products_seo_description'];
 
 async function getProducts(): Promise<ProductResponse[]> {
   try {
@@ -38,6 +29,13 @@ async function getContent(): Promise<Record<string, string>> {
   } catch {
     return {};
   }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getContent();
+  const title = c.products_seo_title || '제품 소개 | UNION DATAWARE';
+  const description = c.products_seo_description || 'DA#, META#, DQ#, AP#, DF#, ETT#, DP# - 데이터 거버넌스 All-in-One 솔루션 라인업';
+  return { title, description, openGraph: { title, description } };
 }
 
 export default async function ProductsPage() {

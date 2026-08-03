@@ -1,7 +1,8 @@
+import { Metadata } from 'next';
 import ContactPageClient from "./ContactPageClient";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
-const CONTENT_KEYS = ['contact_hero', 'contact_cta'];
+const CONTENT_KEYS = ['contact_hero', 'contact_cta', 'contact_seo_title', 'contact_seo_description'];
 
 async function getContent(): Promise<Record<string, string>> {
   try {
@@ -15,6 +16,13 @@ async function getContent(): Promise<Record<string, string>> {
   } catch {
     return {};
   }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getContent();
+  const title = c.contact_seo_title || '도입문의 | UNION DATAWARE';
+  const description = c.contact_seo_description || 'DATAWARE 솔루션 도입 상담 및 견적 문의. 데이터 거버넌스 전문 컨설팅을 제공합니다.';
+  return { title, description, openGraph: { title, description } };
 }
 
 export default async function ContactPage() {
