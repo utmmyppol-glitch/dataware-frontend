@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import DOMPurify from 'dompurify';
 import { usePathname } from 'next/navigation';
 
 /* ── JSON 안전 파싱 ── */
@@ -80,9 +81,38 @@ export function useEditableManifest(editMode: boolean) {
   }, [editMode, pathname]); // ← pathname 변화마다 재전송
 }
 
-/* ── EditableText ── */
+/* ── HTML 태그 포함 여부 판별 ── */
+function containsHtml(v: React.ReactNode): v is string {
+  return typeof v === 'string' && /<[a-z][\s\S]*>/i.test(v);
+}
+
+/* ── EditableText (HTML 서식 지원) ── */
 export function E({ id, editMode, children }: { id: string; editMode: boolean; children: React.ReactNode }) {
-  if (!editMode) return <>{children}</>;
+  const sanitized = useMemo(
+    () => (containsHtml(children) && typeof window !== 'undefined' ? DOMPurify.sanitize(children) : null),
+    [children],
+  );
+
+  if (!editMode) {
+    if (sanitized !== null) {
+      return <span style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: sanitized }} />;
+    }
+    return <>{children}</>;
+  }
+
+  if (sanitized !== null) {
+    return (
+      <span data-editable={id} className="editable-field" style={{ cursor: 'pointer', position: 'relative', whiteSpace: 'pre-wrap' }}
+        dangerouslySetInnerHTML={{ __html: sanitized }}
+        onClick={(e) => {
+          e.stopPropagation();
+          const value = (e.currentTarget as HTMLElement).innerHTML || '';
+          window.parent.postMessage({ type: 'field-click', id, fieldType: 'text', value }, '*');
+        }}
+      />
+    );
+  }
+
   return (
     <span data-editable={id} className="editable-field" style={{ cursor: 'pointer', position: 'relative' }}
       onClick={(e) => {
