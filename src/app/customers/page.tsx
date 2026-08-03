@@ -36,8 +36,23 @@ async function getCustomerStories(): Promise<CustomerStoryResponse[]> {
   }
 }
 
-export default async function CustomersPage() {
+const CONTENT_KEYS = ['customers_hero', 'customers_cta'];
 
-  const stories = await getCustomerStories();
-  return <CustomersPageClient initialStories={stories} />;
+async function getContent(): Promise<Record<string, string>> {
+  try {
+    const base = API_BASE_URL.replace(/\/api\/dataware\/?$/, '');
+    const res = await fetch(
+      `${base}/api/dataware/content?keys=${CONTENT_KEYS.join(',')}`,
+      { next: { revalidate: 60 } },
+    );
+    if (!res.ok) return {};
+    return res.json();
+  } catch {
+    return {};
+  }
+}
+
+export default async function CustomersPage() {
+  const [stories, content] = await Promise.all([getCustomerStories(), getContent()]);
+  return <CustomersPageClient initialStories={stories} ssrContent={content} />;
 }
