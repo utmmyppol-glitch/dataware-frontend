@@ -18,6 +18,11 @@ const PRODUCT_COLORS: Record<string, string> = {
 };
 
 const DEFAULT_HERO = { title: 'DATAWARE', desc: '기업의 DX와 AIX를 가속화하는 데이터 거버넌스 All-in-One Package' };
+const DEFAULT_FEATURES = [
+  { v: '8', l: '핵심 솔루션' },
+  { v: 'GS 1등급', l: '품질인증' },
+  { v: 'All-in-One', l: '통합 패키지' },
+];
 const DEFAULT_CTA = { title: 'DATAWARE 도입을 고민하고 계신가요?', desc: '전문 컨설턴트가 귀사에 맞는 솔루션을 안내해 드립니다.' };
 
 export default function ProductsPageClient({ products, ssrContent }: { products: ProductResponse[]; ssrContent: Record<string, string> }) {
@@ -28,12 +33,14 @@ export default function ProductsPageClient({ products, ssrContent }: { products:
   useEditableManifest(editMode);
 
   const [hero, setHero] = useState(() => safeParse(ssrContent.products_hero, DEFAULT_HERO));
+  const [features, setFeatures] = useState(() => safeParse(ssrContent.products_features, DEFAULT_FEATURES));
   const [cta, setCta] = useState(() => safeParse(ssrContent.products_cta, DEFAULT_CTA));
 
   useEffect(() => {
     if (!editMode) return;
     const setters: Record<string, (v: unknown) => void> = {
       products_hero: setHero as (v: unknown) => void,
+      products_features: setFeatures as (v: unknown) => void,
       products_cta: setCta as (v: unknown) => void,
     };
     const handler = (e: MessageEvent) => {
@@ -72,14 +79,10 @@ export default function ProductsPageClient({ products, ssrContent }: { products:
 
           {/* Key features bar */}
           <div data-hero style={{ display: 'flex', gap: 32, marginTop: 40, paddingTop: 24, borderTop: '1px solid rgba(255,255,255,.06)' }}>
-            {[
-              { v: '8', l: '핵심 솔루션' },
-              { v: 'GS 1등급', l: '품질인증' },
-              { v: 'All-in-One', l: '통합 패키지' },
-            ].map(s => (
-              <div key={s.l}>
-                <div style={{ fontSize: 24, fontWeight: 800, color: '#fff' }}>{s.v}</div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,.35)', marginTop: 4 }}>{s.l}</div>
+            {features.map((s, i) => (
+              <div key={i}>
+                <div style={{ fontSize: 24, fontWeight: 800, color: '#fff' }}><E id={`products_features.${i}.v`} editMode={editMode}>{s.v}</E></div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,.35)', marginTop: 4 }}><E id={`products_features.${i}.l`} editMode={editMode}>{s.l}</E></div>
               </div>
             ))}
           </div>

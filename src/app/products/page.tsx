@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
-const CONTENT_KEYS = ['products_hero', 'products_cta'];
+const CONTENT_KEYS = ['products_hero', 'products_features', 'products_cta'];
 
 async function getProducts(): Promise<ProductResponse[]> {
   try {
