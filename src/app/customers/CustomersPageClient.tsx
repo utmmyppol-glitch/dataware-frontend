@@ -10,8 +10,8 @@ import { E, safeParse, useEditMode, useEditableManifest, EDITABLE_STYLES } from 
 const ACCENT = '#36c88a';
 const INDUSTRIES = ['전체', '공공기관', '금융', '유통', '제조'];
 
-const DEFAULT_HERO = { title: '고객사례', desc: '금융 · 공공 · 제조 · 유통 등 다양한 산업에서 DATAWARE를 도입하고 있습니다.' };
-const DEFAULT_CTA = { title: 'DATAWARE 도입을 검토하고 계신가요', download: '소개서를 받아보세요' };
+const DEFAULT_HERO = { title: '고객사례', desc: '금융 · 공공 · 제조 · 유통 등 다양한 산업에서 DATAWARE를 도입하고 있습니다.', eyebrow: 'CUSTOMER STORIES' };
+const DEFAULT_CTA = { title: 'DATAWARE 도입을 검토하고 계신가요', download: '소개서를 받아보세요', btn1: '도입문의 →', btn2: '무료 다운로드 →' };
 
 export default function CustomersPageClient({ initialStories, ssrContent }: { initialStories: CustomerStoryResponse[]; ssrContent: Record<string, string> }) {
   const [activeIndustry, setActiveIndustry] = useState('전체');
@@ -54,7 +54,7 @@ export default function CustomersPageClient({ initialStories, ssrContent }: { in
         </div>
 
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <p data-hero style={{ fontSize: 13, fontWeight: 600, color: ACCENT, letterSpacing: '0.12em', marginBottom: 16 }}>CUSTOMER STORIES</p>
+          <p data-hero style={{ fontSize: 13, fontWeight: 600, color: ACCENT, letterSpacing: '0.12em', marginBottom: 16 }}><E id="customers_hero.eyebrow" editMode={editMode}>{hero.eyebrow}</E></p>
           <h1 data-hero style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: 20 }}>
             <E id="customers_hero.title" editMode={editMode}>{hero.title}</E><span style={{ color: ACCENT }}>.</span>
           </h1>
@@ -151,7 +151,7 @@ export default function CustomersPageClient({ initialStories, ssrContent }: { in
           <h3 style={{ fontSize: 22, fontWeight: 700, color: '#F9FAFB', marginTop: 10, lineHeight: 1.3 }}>
             <E id="customers_cta.title" editMode={editMode}>{cta.title}</E><span style={{ color: ACCENT }}>?</span>
           </h3>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, fontSize: 14, fontWeight: 600, color: ACCENT }}>도입문의 →</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, fontSize: 14, fontWeight: 600, color: ACCENT }}><E id="customers_cta.btn1" editMode={editMode}>{cta.btn1}</E></span>
         </Link>
         <Link href="/download" style={{ backgroundColor: ACCENT, padding: '48px 56px', textDecoration: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', transition: 'filter 0.3s' }}
           onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(0.92)'; }}
@@ -161,7 +161,7 @@ export default function CustomersPageClient({ initialStories, ssrContent }: { in
           <h3 style={{ fontSize: 22, fontWeight: 700, color: '#fff', marginTop: 10, lineHeight: 1.3 }}>
             <E id="customers_cta.download" editMode={editMode}>{cta.download}</E><span style={{ opacity: 0.6 }}>.</span>
           </h3>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, fontSize: 14, fontWeight: 600, color: '#fff' }}>무료 다운로드 →</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, fontSize: 14, fontWeight: 600, color: '#fff' }}><E id="customers_cta.btn2" editMode={editMode}>{cta.btn2}</E></span>
         </Link>
       </div>
 
