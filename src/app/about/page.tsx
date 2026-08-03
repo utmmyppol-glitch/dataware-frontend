@@ -1,10 +1,23 @@
-const THEME = { ink: "#111827", ink2: "#6b7280" };
+import AboutPageClient from "./AboutPageClient";
 
-export default function AboutPage() {
-  return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
-      <h1 style={{ fontSize: 28, fontWeight: 700, color: THEME.ink, marginBottom: 12 }}>회사소개</h1>
-      <p style={{ color: THEME.ink2 }}>콘텐츠가 준비 중입니다.</p>
-    </div>
-  );
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
+const CONTENT_KEYS = ['about_hero'];
+
+async function getContent(): Promise<Record<string, string>> {
+  try {
+    const base = API_URL.replace(/\/api\/dataware\/?$/, '');
+    const res = await fetch(
+      `${base}/api/dataware/content?keys=${CONTENT_KEYS.join(',')}`,
+      { next: { revalidate: 60 } },
+    );
+    if (!res.ok) return {};
+    return res.json();
+  } catch {
+    return {};
+  }
+}
+
+export default async function AboutPage() {
+  const content = await getContent();
+  return <AboutPageClient ssrContent={content} />;
 }
