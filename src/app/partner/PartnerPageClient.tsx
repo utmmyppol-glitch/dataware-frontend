@@ -17,10 +17,11 @@ const BENEFITS = [
   { num: '06', title: '인센티브', desc: '유니온시스템즈는 DATAWARE™ 영업 파트너의 판매 실적에 따라 소정의 인센티브를 제공함으로써 영업 파트너를 지원할 수 있습니다.' },
 ];
 
-const DEFAULT_HERO = { title: '유니온시스템즈는 파트너와 함께\n성장하는 기술과 서비스를\n지속적으로 제시합니다', desc: 'End-to-End 데이터 매니지먼트 솔루션 DATAWARE™ 판매 자격과 유니온시스템즈 파트너만의 혜택으로 다양한 솔루션 구성과 제안이 가능합니다.' };
+const DEFAULT_HERO = { title: '유니온시스템즈는 파트너와 함께\n성장하는 기술과 서비스를\n지속적으로 제시합니다', desc: 'End-to-End 데이터 매니지먼트 솔루션 DATAWARE™ 판매 자격과 유니온시스템즈 파트너만의 혜택으로 다양한 솔루션 구성과 제안이 가능합니다.', eyebrow: 'SOLUTION PARTNERSHIP', btn: '파트너 문의하기' };
 const DEFAULT_BENEFITS = {
   title: '유니온시스템즈\n솔루션 파트너 혜택',
   desc: '고객의 디지털 트랜스포메이션 구축을 지원할 수 있는 기술과 인사이트를 보유한 유니온시스템즈는 파트너의 단기적인 성과보다 장기적으로 함께 성장할 수 있는 파트너 프로그램을 제공합니다.',
+  eyebrow: 'BENEFITS',
   '01': { title: '합리적인 수익', desc: BENEFITS[0].desc },
   '02': { title: '영업 지원', desc: BENEFITS[1].desc },
   '03': { title: '제품 교육', desc: BENEFITS[2].desc },
@@ -28,7 +29,7 @@ const DEFAULT_BENEFITS = {
   '05': { title: '프로모션', desc: BENEFITS[4].desc },
   '06': { title: '인센티브', desc: BENEFITS[5].desc },
 };
-const DEFAULT_CTA = { title: '파트너 제휴에 관심이 있으신가요', desc: '유니온시스템즈의 전문 스태프가\n파트너 문의 사항에 신속하게 대응하겠습니다.' };
+const DEFAULT_CTA = { title: '파트너 제휴에 관심이 있으신가요', desc: '유니온시스템즈의 전문 스태프가\n파트너 문의 사항에 신속하게 대응하겠습니다.', eyebrow: 'CONTACT US', btn1: '도입문의 →' };
 
 export default function PartnerPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
@@ -69,7 +70,7 @@ export default function PartnerPageClient({ ssrContent }: { ssrContent: Record<s
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '160px 56px 120px', position: 'relative', zIndex: 1 }}>
           <div data-hero style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20, fontSize: 12, fontWeight: 600, letterSpacing: '.12em', color: ACCENT }}>
             <span style={{ width: 20, height: 1.5, background: ACCENT }} />
-            SOLUTION PARTNERSHIP
+            <E id="partner_hero.eyebrow" editMode={editMode}>{hero.eyebrow}</E>
           </div>
           <h1 data-hero style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: 24 }}>
             <E id="partner_hero.title" editMode={editMode}>{hero.title}</E><span style={{ color: ACCENT }}>.</span>
@@ -81,7 +82,7 @@ export default function PartnerPageClient({ ssrContent }: { ssrContent: Record<s
             onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#2ba876'; }}
             onMouseLeave={e => { e.currentTarget.style.backgroundColor = ACCENT; }}
           >
-            파트너 문의하기<span>&rarr;</span>
+            <E id="partner_hero.btn" editMode={editMode}>{hero.btn}</E><span>&rarr;</span>
           </Link>
         </div>
       </section>
@@ -91,7 +92,7 @@ export default function PartnerPageClient({ ssrContent }: { ssrContent: Record<s
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '100px 56px' }}>
           <div data-anim style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'start', marginBottom: 64 }}>
             <div>
-              <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.12em', color: ACCENT, display: 'block', marginBottom: 12 }}>BENEFITS</span>
+              <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.12em', color: ACCENT, display: 'block', marginBottom: 12 }}><E id="partner_benefits.eyebrow" editMode={editMode}>{benefits.eyebrow}</E></span>
               <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 36px)', fontWeight: 800, color: '#111', letterSpacing: '-0.03em', lineHeight: 1.2 }}>
                 <E id="partner_benefits.title" editMode={editMode}>{benefits.title}</E>
               </h2>
@@ -121,7 +122,7 @@ export default function PartnerPageClient({ ssrContent }: { ssrContent: Record<s
       {/* ═══ CTA ═══ */}
       <section ref={ctaRef} style={{ backgroundColor: '#0B1220', padding: '80px 56px', textAlign: 'center' }}>
         <div style={{ maxWidth: 600, margin: '0 auto' }}>
-          <p data-anim style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.12em', color: ACCENT, marginBottom: 16 }}>CONTACT US</p>
+          <p data-anim style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.12em', color: ACCENT, marginBottom: 16 }}><E id="partner_cta.eyebrow" editMode={editMode}>{cta.eyebrow}</E></p>
           <h2 data-anim style={{ fontSize: 'clamp(24px, 3.5vw, 32px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.02em', marginBottom: 16 }}>
             <E id="partner_cta.title" editMode={editMode}>{cta.title}</E><span style={{ color: ACCENT }}>?</span>
           </h2>
@@ -132,7 +133,7 @@ export default function PartnerPageClient({ ssrContent }: { ssrContent: Record<s
             <Link href="/contact" style={{ padding: '16px 36px', backgroundColor: ACCENT, color: '#fff', fontSize: 15, fontWeight: 700, textDecoration: 'none', transition: 'background 0.2s' }}
               onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#2ba876'; }}
               onMouseLeave={e => { e.currentTarget.style.backgroundColor = ACCENT; }}
-            >도입문의 →</Link>
+            ><E id="partner_cta.btn1" editMode={editMode}>{cta.btn1}</E></Link>
             <a href={`tel:${COMPANY.tel}`} style={{ padding: '16px 36px', border: '1px solid rgba(255,255,255,0.12)', color: '#F9FAFB', fontSize: 15, fontWeight: 700, textDecoration: 'none', transition: 'border-color 0.2s' }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; }}
