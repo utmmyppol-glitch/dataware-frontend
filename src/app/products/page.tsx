@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
+const CONTENT_KEYS = ['products_hero', 'products_cta'];
 
 async function getProducts(): Promise<ProductResponse[]> {
   try {
@@ -25,8 +26,21 @@ async function getProducts(): Promise<ProductResponse[]> {
   }
 }
 
-export default async function ProductsPage() {
+async function getContent(): Promise<Record<string, string>> {
+  try {
+    const base = API_BASE_URL.replace(/\/api\/dataware\/?$/, '');
+    const res = await fetch(
+      `${base}/api/dataware/content?keys=${CONTENT_KEYS.join(',')}`,
+      { next: { revalidate: 60 } },
+    );
+    if (!res.ok) return {};
+    return res.json();
+  } catch {
+    return {};
+  }
+}
 
-  const products = await getProducts();
-  return <ProductsPageClient products={products} />;
+export default async function ProductsPage() {
+  const [products, content] = await Promise.all([getProducts(), getContent()]);
+  return <ProductsPageClient products={products} ssrContent={content} />;
 }
