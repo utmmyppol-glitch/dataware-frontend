@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { formatDateDot as formatDate } from '@/lib/format';
-import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
+import { E, safeParse, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const STATIC_EVENTS = [
   {
@@ -119,13 +119,28 @@ const STATIC_EVENTS = [
   },
 ];
 
-export default function EventsPageClient() {
+const DEFAULT_HERO = { title: '이벤트', desc: 'DATAWARE 최신 이벤트, 웨비나, 프로모션 소식을 확인하세요.' };
+
+export default function EventsPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const [events] = useState(STATIC_EVENTS);
   const [openId, setOpenId] = useState<number | null>(null);
   const heroRef = useHeroAnim();
   const editMode = useEditMode();
   useEditableManifest(editMode);
   const contentRef = useGsapReveal();
+
+  const [hero, setHero] = useState(() => safeParse(ssrContent.events_hero, DEFAULT_HERO));
+
+  useEffect(() => {
+    if (!editMode) return;
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'content-update' && e.data.section === 'events_hero') {
+        setHero(e.data.data);
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [editMode]);
 
   const PER_PAGE = 4;
   const [page, setPage] = useState(0);
@@ -153,10 +168,10 @@ export default function EventsPageClient() {
           </div>
 
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5.5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 0.95, marginBottom: '20px' }}>
-            <E id="events_hero.title" editMode={editMode}>이벤트</E><span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
+            <E id="events_hero.title" editMode={editMode}>{hero.title}</E><span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
           </h1>
           <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '460px' }}>
-            <E id="events_hero.desc" editMode={editMode}>DATAWARE 최신 이벤트, 웨비나, 프로모션 소식을 확인하세요.</E>
+            <E id="events_hero.desc" editMode={editMode}>{hero.desc}</E>
           </p>
 
           {/* Quick stats */}
