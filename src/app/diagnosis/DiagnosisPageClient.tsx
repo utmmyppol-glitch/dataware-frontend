@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useRef, FormEvent } from 'react';
+import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { api } from '@/lib/api';
-import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
+import { E, safeParse, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const ACCENT = '#36c88a';
 
@@ -177,7 +177,9 @@ const SERVICE_LINEUP = [
 type FieldErrors = Record<string, string>;
 
 /* ══════════════════════════════════════════════════════════════ */
-export default function DiagnosisPageClient() {
+const DEFAULT_HERO = { title: '데이터 거버넌스 진단', desc: '4가지 질문에 답하면 30초 안에 데이터 거버넌스 성숙도와 우선 과제를 알려드립니다.' };
+
+export default function DiagnosisPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
   const diagRef = useGsapReveal() as React.RefObject<HTMLElement>;
   const whyRef = useGsapReveal() as React.RefObject<HTMLElement>;
@@ -185,6 +187,19 @@ export default function DiagnosisPageClient() {
   const serviceRef = useGsapReveal() as React.RefObject<HTMLElement>;
   const editMode = useEditMode();
   useEditableManifest(editMode);
+
+  const [hero, setHero] = useState(() => safeParse(ssrContent.diagnosis_hero, DEFAULT_HERO));
+
+  useEffect(() => {
+    if (!editMode) return;
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'content-update' && e.data.section === 'diagnosis_hero') {
+        setHero(e.data.data);
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [editMode]);
 
   /* ── 진단 폼 상태 ── */
   const [dbCount, setDbCount] = useState<DbScale | null>(null);
@@ -331,11 +346,11 @@ export default function DiagnosisPageClient() {
               marginBottom: 22,
             }}
           >
-            <E id="diagnosis_hero.title" editMode={editMode}>데이터 거버넌스 진단</E><span style={{ color: ACCENT }}>.</span>
+            <E id="diagnosis_hero.title" editMode={editMode}>{hero.title}</E><span style={{ color: ACCENT }}>.</span>
           </h1>
 
           <p data-hero style={{ fontSize: 'clamp(15px, 1.4vw, 17px)', color: 'rgba(255,255,255,0.55)', lineHeight: 1.75, maxWidth: 480, marginBottom: 28 }}>
-            <E id="diagnosis_hero.desc" editMode={editMode}>4가지 질문에 답하면 <span style={{ color: ACCENT, fontWeight: 600 }}>30초 안에</span> 데이터 거버넌스 성숙도와 우선 과제를 알려드립니다.</E>
+            <E id="diagnosis_hero.desc" editMode={editMode}>{hero.desc}</E>
           </p>
 
           {/* CTAs */}
