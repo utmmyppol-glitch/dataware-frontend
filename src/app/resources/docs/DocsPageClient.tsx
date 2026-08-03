@@ -1,9 +1,10 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { formatDateDot as formatDate } from '@/lib/format';
-import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
+import { E, safeParse, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const DOCS = [
   { id: 1, title: 'DA# 5.0 사용자 가이드', desc: 'DA# 5.0 전체 기능에 대한 상세 사용자 매뉴얼입니다.', category: 'DA#', categoryColor: '#36c88a', fileSize: '12.4 MB', fileType: 'PDF', updated: '2026-03-15' },
@@ -16,11 +17,26 @@ const DOCS = [
   { id: 8, title: 'ETT# 마이그레이션 가이드', desc: '이기종 RDBMS 및 Cloud DB 간 데이터 마이그레이션 방법을 설명합니다.', category: 'ETT#', categoryColor: '#ec4899', fileSize: '6.3 MB', fileType: 'PDF', updated: '2025-10-30' },
 ];
 
-export default function DocsPageClient() {
+const DEFAULT_HERO = { title: '기술문서', desc: 'DA# 및 DATAWARE 제품의 사용자 가이드, 설치 매뉴얼, API 레퍼런스' };
+
+export default function DocsPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const heroRef = useHeroAnim();
   const gridRef = useGsapReveal();
   const editMode = useEditMode();
   useEditableManifest(editMode);
+
+  const [hero, setHero] = useState(() => safeParse(ssrContent.docs_hero, DEFAULT_HERO));
+
+  useEffect(() => {
+    if (!editMode) return;
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'content-update' && e.data.section === 'docs_hero') {
+        setHero(e.data.data);
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [editMode]);
 
   return (
     <div style={{ background: '#ffffff' }}>
@@ -39,9 +55,9 @@ export default function DocsPageClient() {
             <span style={{ fontSize: 13, color: '#36c88a', fontWeight: 600 }}>기술문서</span>
           </div>
           <p data-hero className="eyebrow" style={{ marginBottom: 16 }}>DOCUMENTATION</p>
-          <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}><E id="docs_hero.title" editMode={editMode}>기술문서</E></h1>
+          <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}><E id="docs_hero.title" editMode={editMode}>{hero.title}</E></h1>
           <p data-hero style={{ color: 'rgba(255,255,255,0.6)', fontSize: 17, maxWidth: 520 }}>
-            <E id="docs_hero.desc" editMode={editMode}>DA# 및 DATAWARE 제품의 사용자 가이드, 설치 매뉴얼, API 레퍼런스</E>
+            <E id="docs_hero.desc" editMode={editMode}>{hero.desc}</E>
           </p>
         </div>
       </section>

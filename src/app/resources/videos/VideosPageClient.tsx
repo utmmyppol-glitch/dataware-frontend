@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { formatDateDot as formatDate } from '@/lib/format';
-import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
+import { E, safeParse, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 interface Video {
   id: number;
@@ -178,12 +178,35 @@ const VIDEOS: Video[] = [
   },
 ];
 
-export default function VideosPageClient() {
+const DEFAULT_HERO = { title: '동영상 강의', desc: 'DA#5 런칭 세미나 및 튜토리얼 강의를 무료로 시청하세요.' };
+const DEFAULT_CTA = { title: 'DA# 무료 교육도 신청해 보세요', desc: '강의 수강 후 실습 교육을 원하시면 무료교육 신청을 이용해 주세요.' };
+
+export default function VideosPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const PER_PAGE = 6;
   const [page, setPage] = useState(0);
   const [playingId, setPlayingId] = useState<number | null>(null);
   const editMode = useEditMode();
   useEditableManifest(editMode);
+
+  const [hero, setHero] = useState(() => safeParse(ssrContent.videos_hero, DEFAULT_HERO));
+  const [cta, setCta] = useState(() => safeParse(ssrContent.videos_cta, DEFAULT_CTA));
+
+  useEffect(() => {
+    if (!editMode) return;
+    const setters: Record<string, (v: unknown) => void> = {
+      videos_hero: setHero as (v: unknown) => void,
+      videos_cta: setCta as (v: unknown) => void,
+    };
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'content-update') {
+        const fn = setters[e.data.section];
+        if (fn) fn(e.data.data);
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [editMode]);
+
   const totalPages = Math.ceil(VIDEOS.length / PER_PAGE);
   const paged = VIDEOS.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
 
@@ -217,9 +240,9 @@ export default function VideosPageClient() {
             </svg>
             <span style={{ fontSize: '13px', color: '#36c88a', fontWeight: '600' }}>동영상 강의</span>
           </div>
-          <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#111111', margin: '0 0 10px' }}><E id="videos_hero.title" editMode={editMode}>동영상 강의</E></h1>
+          <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#111111', margin: '0 0 10px' }}><E id="videos_hero.title" editMode={editMode}>{hero.title}</E></h1>
           <p style={{ fontSize: '16px', color: '#676767', margin: 0 }}>
-            <E id="videos_hero.desc" editMode={editMode}>DA#5 런칭 세미나 및 튜토리얼 강의를 무료로 시청하세요.</E>
+            <E id="videos_hero.desc" editMode={editMode}>{hero.desc}</E>
           </p>
         </div>
       </div>
@@ -486,10 +509,10 @@ export default function VideosPageClient() {
         >
           <div>
             <h3 style={{ fontSize: '17px', fontWeight: '700', color: '#111111', margin: '0 0 6px' }}>
-              <E id="videos_cta.title" editMode={editMode}>DA# 무료 교육도 신청해 보세요</E>
+              <E id="videos_cta.title" editMode={editMode}>{cta.title}</E>
             </h3>
             <p style={{ fontSize: '14px', color: '#676767', margin: 0 }}>
-              <E id="videos_cta.desc" editMode={editMode}>강의 수강 후 실습 교육을 원하시면 무료교육 신청을 이용해 주세요.</E>
+              <E id="videos_cta.desc" editMode={editMode}>{cta.desc}</E>
             </p>
           </div>
           <Link

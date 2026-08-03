@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { PostResponse } from '@/lib/api';
-import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
+import { E, safeParse, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const CATEGORIES = [
   { key: '', label: '전체' },
@@ -20,18 +20,33 @@ const QUICK_LINKS = [
   { href: '/resources', label: '동영상' },
 ];
 
-export default function ResourcesPageClient({ initialPosts }: { initialPosts: PostResponse[] }) {
+const DEFAULT_HERO = { title: '자료실', desc: '공지사항, 동영상 강의, Documentation' };
+
+export default function ResourcesPageClient({ initialPosts, ssrContent }: { initialPosts: PostResponse[]; ssrContent: Record<string, string> }) {
   const [posts] = useState<PostResponse[]>(initialPosts);
   const [activeCategory, setActiveCategory] = useState('');
   const editMode = useEditMode();
   useEditableManifest(editMode);
 
+  const [hero, setHero] = useState(() => safeParse(ssrContent.resources_hero, DEFAULT_HERO));
+
+  useEffect(() => {
+    if (!editMode) return;
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'content-update' && e.data.section === 'resources_hero') {
+        setHero(e.data.data);
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [editMode]);
+
   const filtered = activeCategory ? posts.filter(p => p.category === activeCategory) : posts;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-16" style={{ backgroundColor: '#ffffff' }}>
-      <h1 className="text-4xl font-bold text-center mb-4" style={{ color: '#111111' }}><E id="resources_hero.title" editMode={editMode}>자료실</E></h1>
-      <p className="text-center mb-8" style={{ color: '#676767' }}><E id="resources_hero.desc" editMode={editMode}>공지사항, 동영상 강의, Documentation</E></p>
+      <h1 className="text-4xl font-bold text-center mb-4" style={{ color: '#111111' }}><E id="resources_hero.title" editMode={editMode}>{hero.title}</E></h1>
+      <p className="text-center mb-8" style={{ color: '#676767' }}><E id="resources_hero.desc" editMode={editMode}>{hero.desc}</E></p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
         {QUICK_LINKS.map(({ href, label }) => (

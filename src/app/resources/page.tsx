@@ -16,8 +16,23 @@ async function getPosts(): Promise<PostResponse[]> {
   }
 }
 
-export default async function ResourcesPage() {
+const CONTENT_KEYS = ['resources_hero'];
 
-  const posts = await getPosts();
-  return <ResourcesPageClient initialPosts={posts} />;
+async function getContent(): Promise<Record<string, string>> {
+  try {
+    const base = API_BASE_URL.replace(/\/api\/dataware\/?$/, '');
+    const res = await fetch(
+      `${base}/api/dataware/content?keys=${CONTENT_KEYS.join(',')}`,
+      { next: { revalidate: 60 } },
+    );
+    if (!res.ok) return {};
+    return res.json();
+  } catch {
+    return {};
+  }
+}
+
+export default async function ResourcesPage() {
+  const [posts, content] = await Promise.all([getPosts(), getContent()]);
+  return <ResourcesPageClient initialPosts={posts} ssrContent={content} />;
 }

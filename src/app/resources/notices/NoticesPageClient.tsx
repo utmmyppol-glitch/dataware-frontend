@@ -1,19 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { NOTICES } from '@/data/notices';
 import { formatDateDot as formatDate } from '@/lib/format';
-import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
+import { E, safeParse, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
-export default function NoticesPageClient() {
+const DEFAULT_HERO = { title: '공지사항', desc: 'DA# 및 DATAWARE 관련 공지사항, 업데이트, 점검 안내' };
+
+export default function NoticesPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const PER_PAGE = 6;
   const [page, setPage] = useState(0);
   const heroRef = useHeroAnim();
   const listRef = useGsapReveal();
   const editMode = useEditMode();
   useEditableManifest(editMode);
+
+  const [hero, setHero] = useState(() => safeParse(ssrContent.notices_hero, DEFAULT_HERO));
+
+  useEffect(() => {
+    if (!editMode) return;
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'content-update' && e.data.section === 'notices_hero') {
+        setHero(e.data.data);
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [editMode]);
 
   const totalPages = Math.ceil(NOTICES.length / PER_PAGE);
   const paged = NOTICES.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
@@ -34,9 +49,9 @@ export default function NoticesPageClient() {
             <span style={{ fontSize: 13, color: '#36c88a', fontWeight: 600 }}>공지사항</span>
           </div>
           <p data-hero className="eyebrow" style={{ marginBottom: 16 }}>NOTICES</p>
-          <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}><E id="notices_hero.title" editMode={editMode}>공지사항</E></h1>
+          <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}><E id="notices_hero.title" editMode={editMode}>{hero.title}</E></h1>
           <p data-hero style={{ color: 'rgba(255,255,255,0.6)', fontSize: 17, maxWidth: 480 }}>
-            <E id="notices_hero.desc" editMode={editMode}>DA# 및 DATAWARE 관련 공지사항, 업데이트, 점검 안내</E>
+            <E id="notices_hero.desc" editMode={editMode}>{hero.desc}</E>
           </p>
         </div>
       </section>
