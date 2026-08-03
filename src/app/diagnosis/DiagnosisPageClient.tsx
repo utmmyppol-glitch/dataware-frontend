@@ -178,6 +178,31 @@ type FieldErrors = Record<string, string>;
 
 /* ══════════════════════════════════════════════════════════════ */
 const DEFAULT_HERO = { title: '데이터 거버넌스 진단', desc: '4가지 질문에 답하면 30초 안에 데이터 거버넌스 성숙도와 우선 과제를 알려드립니다.' };
+const DEFAULT_HERO_STATS = [
+  { num: '4항목', label: '핵심 진단 기준' },
+  { num: '30초', label: '소요 시간' },
+  { num: '즉시', label: '결과 · 추천 제공' },
+];
+const DEFAULT_WHY = { title: '진단이\n먼저입니다', desc: '막연한 소개서 대신, 우리 회사 데이터의 현재 위치를 숫자로 확인하세요. 어디부터 손대야 할지가 분명해집니다.' };
+const DEFAULT_WHY_STATS = [
+  { num: '4', label: '진단 항목' },
+  { num: '30초', label: '소요 시간' },
+  { num: '즉시', label: '결과 확인' },
+];
+const DEFAULT_INSIGHT = { title: '데이터는 많은데, 왜 활용이 어려울까' };
+const DEFAULT_INSIGHTS = [
+  { num: '72%', title: '표준 없이 쌓인 데이터', desc: '명명 규칙·도메인·코드가 제각각이면, 데이터를 모아도 연결이 안 됩니다.' },
+  { num: '3.2x', title: '원천마다 다른 구조', desc: '시스템별 구조가 제각각이라 데이터를 모아도 정합이 어렵습니다.' },
+  { num: '40%', title: '품질·흐름이 안 보인다', desc: '오류·중복이 감지되지 않고 계보가 안 보여 불신이 쌓입니다.' },
+];
+const DEFAULT_SERVICE = { title: '8종의 솔루션,\n하나의 플랫폼', desc: '수집부터 포털까지, 데이터 라이프사이클 전체를 커버합니다.' };
+const DEFAULT_ARCH = { title: '메타데이터 통합 관리 체계', desc: '데이터 표준부터 모델, DB 관리, 영향도, 포털까지 — 전체 라이프사이클의 메타데이터를 하나의 플랫폼에서 관리합니다.' };
+const DEFAULT_METRICS = [
+  { num: '3,000', suffix: '+', label: '도입 기업', sub: '공공·금융·제조·유통' },
+  { num: '20', suffix: '년+', label: '축적된 구축 경험', sub: '2005년 설립' },
+  { num: '8', suffix: '종', label: '솔루션 라인업', sub: 'All-in-One 패키지' },
+  { num: 'GS', suffix: ' 1등급', label: '품질 인증', sub: 'TTA 인증' },
+];
 
 export default function DiagnosisPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
@@ -189,12 +214,32 @@ export default function DiagnosisPageClient({ ssrContent }: { ssrContent: Record
   useEditableManifest(editMode);
 
   const [hero, setHero] = useState(() => safeParse(ssrContent.diagnosis_hero, DEFAULT_HERO));
+  const [heroStats, setHeroStats] = useState(() => safeParse(ssrContent.diagnosis_hero_stats, DEFAULT_HERO_STATS));
+  const [why, setWhy] = useState(() => safeParse(ssrContent.diagnosis_why, DEFAULT_WHY));
+  const [whyStats, setWhyStats] = useState(() => safeParse(ssrContent.diagnosis_why_stats, DEFAULT_WHY_STATS));
+  const [insight, setInsight] = useState(() => safeParse(ssrContent.diagnosis_insight, DEFAULT_INSIGHT));
+  const [insights, setInsights] = useState(() => safeParse(ssrContent.diagnosis_insights, DEFAULT_INSIGHTS));
+  const [service, setService] = useState(() => safeParse(ssrContent.diagnosis_service, DEFAULT_SERVICE));
+  const [arch, setArch] = useState(() => safeParse(ssrContent.diagnosis_arch, DEFAULT_ARCH));
+  const [metrics, setMetrics] = useState(() => safeParse(ssrContent.diagnosis_metrics, DEFAULT_METRICS));
 
   useEffect(() => {
     if (!editMode) return;
+    const setters: Record<string, (v: unknown) => void> = {
+      diagnosis_hero: setHero as (v: unknown) => void,
+      diagnosis_hero_stats: setHeroStats as (v: unknown) => void,
+      diagnosis_why: setWhy as (v: unknown) => void,
+      diagnosis_why_stats: setWhyStats as (v: unknown) => void,
+      diagnosis_insight: setInsight as (v: unknown) => void,
+      diagnosis_insights: setInsights as (v: unknown) => void,
+      diagnosis_service: setService as (v: unknown) => void,
+      diagnosis_arch: setArch as (v: unknown) => void,
+      diagnosis_metrics: setMetrics as (v: unknown) => void,
+    };
     const handler = (e: MessageEvent) => {
-      if (e.data?.type === 'content-update' && e.data.section === 'diagnosis_hero') {
-        setHero(e.data.data);
+      if (e.data?.type === 'content-update') {
+        const fn = setters[e.data.section];
+        if (fn) fn(e.data.data);
       }
     };
     window.addEventListener('message', handler);
@@ -366,14 +411,10 @@ export default function DiagnosisPageClient({ ssrContent }: { ssrContent: Record
 
           {/* Stats */}
           <div data-hero style={{ display: 'flex', gap: 0, marginTop: 36, paddingTop: 28, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-            {[
-              { num: '4항목', label: '핵심 진단 기준' },
-              { num: '30초', label: '소요 시간' },
-              { num: '즉시', label: '결과 · 추천 제공' },
-            ].map((s, i) => (
-              <div key={s.label} style={{ flex: 1, paddingLeft: i > 0 ? 24 : 0, borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
-                <span style={{ fontSize: 28, fontWeight: 800, color: '#F9FAFB', lineHeight: 1, display: 'block' }}>{s.num}</span>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 6, letterSpacing: '.04em' }}>{s.label}</div>
+            {heroStats.map((s, i) => (
+              <div key={i} style={{ flex: 1, paddingLeft: i > 0 ? 24 : 0, borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
+                <span style={{ fontSize: 28, fontWeight: 800, color: '#F9FAFB', lineHeight: 1, display: 'block' }}><E id={`diagnosis_hero_stats.${i}.num`} editMode={editMode}>{s.num}</E></span>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 6, letterSpacing: '.04em' }}><E id={`diagnosis_hero_stats.${i}.label`} editMode={editMode}>{s.label}</E></div>
               </div>
             ))}
           </div>
@@ -645,22 +686,18 @@ export default function DiagnosisPageClient({ ssrContent }: { ssrContent: Record
             <div>
               <span data-anim style={{ fontSize: 10, fontWeight: 600, letterSpacing: '.12em', color: ACCENT, display: 'block', marginBottom: 16 }}>WHY DIAGNOSE</span>
               <h2 data-anim style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 800, color: '#F9FAFB', lineHeight: 1.15, letterSpacing: '-0.03em', marginBottom: 20 }}>
-                진단이<br />먼저입니다<span style={{ color: ACCENT }}>.</span>
+                <E id="diagnosis_why.title" editMode={editMode}>{why.title}</E><span style={{ color: ACCENT }}>.</span>
               </h2>
               <p data-anim style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, marginBottom: 36, maxWidth: 420 }}>
-                막연한 소개서 대신, 우리 회사 데이터의 <span style={{ color: ACCENT, fontWeight: 600 }}>현재 위치를 숫자로</span> 확인하세요. 어디부터 손대야 할지가 분명해집니다.
+                <E id="diagnosis_why.desc" editMode={editMode}>{why.desc}</E>
               </p>
 
               {/* 키 넘버 */}
               <div data-anim style={{ display: 'flex', gap: 32, marginBottom: 36 }}>
-                {[
-                  { num: '4', label: '진단 항목' },
-                  { num: '30초', label: '소요 시간' },
-                  { num: '즉시', label: '결과 확인' },
-                ].map((s) => (
-                  <div key={s.label}>
-                    <span style={{ fontSize: 24, fontWeight: 800, color: ACCENT, lineHeight: 1, display: 'block' }}>{s.num}</span>
-                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 6, letterSpacing: '.04em' }}>{s.label}</p>
+                {whyStats.map((s, i) => (
+                  <div key={i}>
+                    <span style={{ fontSize: 24, fontWeight: 800, color: ACCENT, lineHeight: 1, display: 'block' }}><E id={`diagnosis_why_stats.${i}.num`} editMode={editMode}>{s.num}</E></span>
+                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 6, letterSpacing: '.04em' }}><E id={`diagnosis_why_stats.${i}.label`} editMode={editMode}>{s.label}</E></p>
                   </div>
                 ))}
               </div>
@@ -747,34 +784,38 @@ export default function DiagnosisPageClient({ ssrContent }: { ssrContent: Record
           <div style={{ marginBottom: 56 }}>
             <span data-anim style={{ fontSize: 10, fontWeight: 600, letterSpacing: '.12em', color: ACCENT, display: 'block', marginBottom: 12 }}>INSIGHT</span>
             <h2 data-anim style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 800, color: '#F9FAFB', lineHeight: 1.2, letterSpacing: '-0.03em' }}>
-              데이터는 많은데, 왜 활용이 어려울까<span style={{ color: ACCENT }}>?</span>
+              <E id="diagnosis_insight.title" editMode={editMode}>{insight.title}</E><span style={{ color: ACCENT }}>?</span>
             </h2>
           </div>
 
           {/* 가로 리스트 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-            {[
-              { num: '72%', title: '표준 없이 쌓인 데이터', desc: '명명 규칙·도메인·코드가 제각각이면, 데이터를 모아도 연결이 안 됩니다.', product: 'DA#', productSub: '데이터 모델링' },
-              { num: '3.2x', title: '원천마다 다른 구조', desc: '시스템별 구조가 제각각이라 데이터를 모아도 정합이 어렵습니다.', product: 'META#', productSub: '메타데이터 관리' },
-              { num: '40%', title: '품질·흐름이 안 보인다', desc: '오류·중복이 감지되지 않고 계보가 안 보여 불신이 쌓입니다.', product: 'DQ#', productSub: '품질관리' },
-            ].map((item, i) => (
-              <div key={item.product} data-anim style={{
+            {insights.map((item, i) => {
+              const productLinks = [
+                { product: 'DA#', productSub: '데이터 모델링' },
+                { product: 'META#', productSub: '메타데이터 관리' },
+                { product: 'DQ#', productSub: '품질관리' },
+              ];
+              const link = productLinks[i] || productLinks[0];
+              return (
+              <div key={i} data-anim style={{
                 display: 'grid', gridTemplateColumns: '120px 1fr auto',
                 gap: 32, alignItems: 'center',
                 padding: '36px 0',
-                borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                borderBottom: i < insights.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
               }}>
-                <span style={{ fontSize: 36, fontWeight: 900, color: '#F9FAFB', letterSpacing: '-0.03em' }}>{item.num}</span>
+                <span style={{ fontSize: 36, fontWeight: 900, color: '#F9FAFB', letterSpacing: '-0.03em' }}><E id={`diagnosis_insights.${i}.num`} editMode={editMode}>{item.num}</E></span>
                 <div>
-                  <h3 style={{ fontSize: 17, fontWeight: 700, color: '#F9FAFB', marginBottom: 6 }}>{item.title}</h3>
-                  <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>{item.desc}</p>
+                  <h3 style={{ fontSize: 17, fontWeight: 700, color: '#F9FAFB', marginBottom: 6 }}><E id={`diagnosis_insights.${i}.title`} editMode={editMode}>{item.title}</E></h3>
+                  <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}><E id={`diagnosis_insights.${i}.desc`} editMode={editMode}>{item.desc}</E></p>
                 </div>
-                <Link href={`/products/${item.product.toLowerCase().replace('#', '-sharp')}`} style={{ textDecoration: 'none', textAlign: 'right', flexShrink: 0 }}>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: ACCENT, display: 'block' }}>{item.product}</span>
-                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{item.productSub}</span>
+                <Link href={`/products/${link.product.toLowerCase().replace('#', '-sharp')}`} style={{ textDecoration: 'none', textAlign: 'right', flexShrink: 0 }}>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: ACCENT, display: 'block' }}>{link.product}</span>
+                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{link.productSub}</span>
                 </Link>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -788,10 +829,10 @@ export default function DiagnosisPageClient({ ssrContent }: { ssrContent: Record
           <div style={{ marginBottom: 48, textAlign: 'right' }}>
             <span data-anim style={{ fontSize: 10, fontWeight: 600, letterSpacing: '.12em', color: ACCENT, display: 'block', marginBottom: 12 }}>PRODUCTS</span>
             <h2 data-anim style={{ fontSize: 'clamp(26px, 3.5vw, 36px)', fontWeight: 800, color: '#111', lineHeight: 1.2, letterSpacing: '-0.03em' }}>
-              8종의 솔루션,<br />하나의 플랫폼<span style={{ color: ACCENT }}>.</span>
+              <E id="diagnosis_service.title" editMode={editMode}>{service.title}</E><span style={{ color: ACCENT }}>.</span>
             </h2>
             <p data-anim style={{ fontSize: 15, color: '#676767', lineHeight: 1.8, marginTop: 14, maxWidth: 480, marginLeft: 'auto' }}>
-              수집부터 포털까지, 데이터 라이프사이클 전체를 커버합니다.
+              <E id="diagnosis_service.desc" editMode={editMode}>{service.desc}</E>
             </p>
           </div>
 
@@ -826,8 +867,8 @@ export default function DiagnosisPageClient({ ssrContent }: { ssrContent: Record
           <div data-anim style={{ marginBottom: 40, background: '#fff', border: '1px solid #e6e8ec', borderLeft: `3px solid ${ACCENT}`, padding: '32px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'center' }}>
             <div>
               <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '.1em', color: ACCENT, display: 'block', marginBottom: 12 }}>META# ARCHITECTURE</span>
-              <h3 style={{ fontSize: 20, fontWeight: 800, color: '#111', marginBottom: 12, letterSpacing: '-0.02em' }}>메타데이터 통합 관리 체계</h3>
-              <p style={{ fontSize: 13, color: '#676767', lineHeight: 1.7 }}>데이터 표준부터 모델, DB 관리, 영향도, 포털까지 — 전체 라이프사이클의 메타데이터를 하나의 플랫폼에서 관리합니다.</p>
+              <h3 style={{ fontSize: 20, fontWeight: 800, color: '#111', marginBottom: 12, letterSpacing: '-0.02em' }}><E id="diagnosis_arch.title" editMode={editMode}>{arch.title}</E></h3>
+              <p style={{ fontSize: 13, color: '#676767', lineHeight: 1.7 }}><E id="diagnosis_arch.desc" editMode={editMode}>{arch.desc}</E></p>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/images/encore/solutions_data3-img3.jpg" alt="META# 아키텍처" style={{ width: '100%', height: 'auto' }} />
@@ -943,21 +984,16 @@ export default function DiagnosisPageClient({ ssrContent }: { ssrContent: Record
       <div style={{ background: '#fff' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '80px 56px 80px', position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0 }}>
-            {[
-              { num: '3,000', suffix: '+', label: '도입 기업', sub: '공공·금융·제조·유통' },
-              { num: '20', suffix: '년+', label: '축적된 구축 경험', sub: '2005년 설립' },
-              { num: '8', suffix: '종', label: '솔루션 라인업', sub: 'All-in-One 패키지' },
-              { num: 'GS', suffix: ' 1등급', label: '품질 인증', sub: 'TTA 인증' },
-            ].map((s, i) => (
-              <div key={s.label} style={{
+            {metrics.map((s, i) => (
+              <div key={i} style={{
                 padding: '0 32px',
                 borderLeft: i > 0 ? '1px solid #e6e8ec' : 'none',
               }}>
                 <span style={{ fontSize: 'clamp(36px, 5vw, 52px)', fontWeight: 900, color: '#111', lineHeight: 1, letterSpacing: '-0.03em' }}>
-                  {s.num}<span style={{ color: ACCENT }}>{s.suffix}</span>
+                  <E id={`diagnosis_metrics.${i}.num`} editMode={editMode}>{s.num}</E><span style={{ color: ACCENT }}><E id={`diagnosis_metrics.${i}.suffix`} editMode={editMode}>{s.suffix}</E></span>
                 </span>
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#475467', marginTop: 12 }}>{s.label}</p>
-                <p style={{ fontSize: 12, color: '#98A2B3', marginTop: 4 }}>{s.sub}</p>
+                <p style={{ fontSize: 14, fontWeight: 600, color: '#475467', marginTop: 12 }}><E id={`diagnosis_metrics.${i}.label`} editMode={editMode}>{s.label}</E></p>
+                <p style={{ fontSize: 12, color: '#98A2B3', marginTop: 4 }}><E id={`diagnosis_metrics.${i}.sub`} editMode={editMode}>{s.sub}</E></p>
               </div>
             ))}
           </div>

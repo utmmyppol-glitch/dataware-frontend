@@ -1,7 +1,7 @@
 import DiagnosisPageClient from "./DiagnosisPageClient";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
-const CONTENT_KEYS = ['diagnosis_hero'];
+const CONTENT_KEYS = ['diagnosis_hero', 'diagnosis_hero_stats', 'diagnosis_why', 'diagnosis_why_stats', 'diagnosis_insight', 'diagnosis_insights', 'diagnosis_service', 'diagnosis_arch', 'diagnosis_metrics'];
 
 async function getContent(): Promise<Record<string, string>> {
   try {
