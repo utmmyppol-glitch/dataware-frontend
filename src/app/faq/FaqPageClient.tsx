@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
+import { E, safeParse, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 // 원본 uniondata.co.kr 가격안내 페이지(price/) FAQ 4개
 const FAQ_ITEMS = [
@@ -38,11 +38,41 @@ const FAQ_ITEMS = [
 
 const CATEGORIES = ['전체', '가격'];
 
-export default function FaqPageClient() {
+const DEFAULT_HERO = { title: '자주 묻는 질문', desc: 'DA# 및 DATAWARE에 관해 자주 문의하시는 내용을 모았습니다.' };
+const DEFAULT_ITEMS = {
+  '0': { question: FAQ_ITEMS[0].question, answer: FAQ_ITEMS[0].answer },
+  '1': { question: FAQ_ITEMS[1].question, answer: FAQ_ITEMS[1].answer },
+  '2': { question: FAQ_ITEMS[2].question, answer: FAQ_ITEMS[2].answer },
+  '3': { question: FAQ_ITEMS[3].question, answer: FAQ_ITEMS[3].answer },
+};
+const DEFAULT_CTA = { title: '원하시는 답변을 찾지 못하셨나요?', desc: '도입문의 또는 전화(02-706-8999)로 연락 주시면 전문 컨설턴트가 직접 안내해 드립니다.' };
+
+export default function FaqPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const [openId, setOpenId] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState('전체');
   const editMode = useEditMode();
   useEditableManifest(editMode);
+
+  const [hero, setHero] = useState(() => safeParse(ssrContent.faq_hero, DEFAULT_HERO));
+  const [items, setItems] = useState(() => safeParse(ssrContent.faq_items, DEFAULT_ITEMS));
+  const [cta, setCta] = useState(() => safeParse(ssrContent.faq_cta, DEFAULT_CTA));
+
+  useEffect(() => {
+    if (!editMode) return;
+    const setters: Record<string, (v: unknown) => void> = {
+      faq_hero: setHero as (v: unknown) => void,
+      faq_items: setItems as (v: unknown) => void,
+      faq_cta: setCta as (v: unknown) => void,
+    };
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'content-update') {
+        const fn = setters[e.data.section];
+        if (fn) fn(e.data.data);
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [editMode]);
 
   const filtered = activeCategory === '전체'
     ? FAQ_ITEMS
@@ -68,10 +98,10 @@ export default function FaqPageClient() {
             <span style={{ fontSize: '13px', color: '#36c88a', fontWeight: '600' }}>자주 묻는 질문</span>
           </div>
           <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#111111', margin: '0 0 10px' }}>
-            <E id="faq_hero.title" editMode={editMode}>자주 묻는 질문</E>
+            <E id="faq_hero.title" editMode={editMode}>{hero.title}</E>
           </h1>
           <p style={{ fontSize: '16px', color: '#676767', margin: 0 }}>
-            <E id="faq_hero.desc" editMode={editMode}>DA# 및 DATAWARE에 관해 자주 문의하시는 내용을 모았습니다.</E>
+            <E id="faq_hero.desc" editMode={editMode}>{hero.desc}</E>
           </p>
         </div>
       </div>
@@ -149,7 +179,7 @@ export default function FaqPageClient() {
                       Q
                     </span>
                     <span style={{ fontSize: '15px', fontWeight: '600', color: '#111111', lineHeight: 1.5 }}>
-                      <E id={`faq_items.${idx}.question`} editMode={editMode}>{item.question}</E>
+                      <E id={`faq_items.${idx}.question`} editMode={editMode}>{(items as unknown as Record<string, Record<string, string>>)[String(idx)]?.question ?? item.question}</E>
                     </span>
                   </div>
                   <svg
@@ -211,7 +241,7 @@ export default function FaqPageClient() {
                         whiteSpace: 'pre-line',
                       }}
                     >
-                      <E id={`faq_items.${idx}.answer`} editMode={editMode}>{item.answer}</E>
+                      <E id={`faq_items.${idx}.answer`} editMode={editMode}>{(items as unknown as Record<string, Record<string, string>>)[String(idx)]?.answer ?? item.answer}</E>
                     </p>
                   </div>
                 </div>
@@ -232,10 +262,10 @@ export default function FaqPageClient() {
           }}
         >
           <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#111111', margin: '0 0 8px' }}>
-            <E id="faq_cta.title" editMode={editMode}>원하시는 답변을 찾지 못하셨나요?</E>
+            <E id="faq_cta.title" editMode={editMode}>{cta.title}</E>
           </h3>
           <p style={{ fontSize: '14px', color: '#676767', margin: '0 0 20px' }}>
-            <E id="faq_cta.desc" editMode={editMode}>도입문의 또는 전화(02-706-8999)로 연락 주시면 전문 컨설턴트가 직접 안내해 드립니다.</E>
+            <E id="faq_cta.desc" editMode={editMode}>{cta.desc}</E>
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <Link
