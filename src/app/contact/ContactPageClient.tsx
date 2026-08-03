@@ -1,18 +1,21 @@
 'use client';
 
-import React, { useState, useRef, FormEvent } from 'react';
+import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { INQUIRY_CATEGORIES, COMPANY } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import ConsentSection from '@/components/forms/ConsentSection';
-import { E, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
+import { E, safeParse, useEditMode, useEditableManifest, EDITABLE_STYLES } from '@/lib/editable';
 
 const ACCENT = '#36c88a';
 
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
-export default function ContactPageClient() {
+const DEFAULT_HERO = { title: '도입문의' };
+const DEFAULT_CTA = { download: 'DA# 소개서를 먼저 받아보세요', education: 'DA# 무료교육도 신청하세요' };
+
+export default function ContactPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -22,6 +25,25 @@ export default function ContactPageClient() {
   const contentRef = useGsapReveal() as React.RefObject<HTMLElement>;
   const editMode = useEditMode();
   useEditableManifest(editMode);
+
+  const [hero, setHero] = useState(() => safeParse(ssrContent.contact_hero, DEFAULT_HERO));
+  const [cta, setCta] = useState(() => safeParse(ssrContent.contact_cta, DEFAULT_CTA));
+
+  useEffect(() => {
+    if (!editMode) return;
+    const setters: Record<string, (v: unknown) => void> = {
+      contact_hero: setHero as (v: unknown) => void,
+      contact_cta: setCta as (v: unknown) => void,
+    };
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'content-update') {
+        const fn = setters[e.data.section];
+        if (fn) fn(e.data.data);
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [editMode]);
 
   function validate(formData: FormData): FieldErrors {
     const errs = validateCommonFields(formData);
@@ -97,7 +119,7 @@ export default function ContactPageClient() {
         </div>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <h1 data-hero style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 16 }}>
-            <E id="contact_hero.title" editMode={editMode}>도입문의</E><span style={{ color: ACCENT }}>.</span>
+            <E id="contact_hero.title" editMode={editMode}>{hero.title}</E><span style={{ color: ACCENT }}>.</span>
           </h1>
           <p data-hero style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
             DA# 도입에 관한 문의를 남겨주세요. &nbsp;|&nbsp; TEL {COMPANY.tel} &nbsp;|&nbsp; {COMPANY.email}
@@ -232,7 +254,7 @@ export default function ContactPageClient() {
         >
           <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>DOWNLOAD</span>
           <h3 style={{ fontSize: 20, fontWeight: 700, color: '#F9FAFB', marginTop: 8, lineHeight: 1.3 }}>
-            <E id="contact_cta.download" editMode={editMode}>DA# 소개서를 먼저 받아보세요</E><span style={{ color: ACCENT }}>.</span>
+            <E id="contact_cta.download" editMode={editMode}>{cta.download}</E><span style={{ color: ACCENT }}>.</span>
           </h3>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: ACCENT }}>소개서 다운로드 →</span>
         </Link>
@@ -242,7 +264,7 @@ export default function ContactPageClient() {
         >
           <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em' }}>EDUCATION</span>
           <h3 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginTop: 8, lineHeight: 1.3 }}>
-            <E id="contact_cta.education" editMode={editMode}>DA# 무료교육도 신청하세요</E><span style={{ opacity: 0.6 }}>.</span>
+            <E id="contact_cta.education" editMode={editMode}>{cta.education}</E><span style={{ opacity: 0.6 }}>.</span>
           </h3>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: '#fff' }}>무료교육 신청 →</span>
         </Link>
