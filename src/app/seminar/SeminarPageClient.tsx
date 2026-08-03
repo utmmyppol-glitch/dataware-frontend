@@ -9,8 +9,9 @@ import { E, safeParse, useEditMode, useEditableManifest, EDITABLE_STYLES } from 
 
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
-const DEFAULT_HERO = { title: 'DATAWARE 맞춤형\n방문 세미나', desc: '전문 컨설턴트가 직접 방문하여 귀사의 데이터 환경에 맞는 최적의 솔루션을 제안해 드립니다.' };
-const DEFAULT_FORM = { title: '세미나 신청서 작성', desc: '아래 양식을 작성해 주시면 담당자가 확인 후 연락드립니다.' };
+const DEFAULT_HERO = { title: 'DATAWARE 맞춤형\n방문 세미나', desc: '전문 컨설턴트가 직접 방문하여 귀사의 데이터 환경에 맞는 최적의 솔루션을 제안해 드립니다.', eyebrow: 'VISIT SEMINAR' };
+const DEFAULT_STEPS = { eyebrow: '세미나 진행 프로세스', title: '신청부터 완료까지 3단계' };
+const DEFAULT_FORM = { title: '세미나 신청서 작성', desc: '아래 양식을 작성해 주시면 담당자가 확인 후 연락드립니다.', btn: '세미나신청 제출' };
 
 export default function SeminarPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const [submitted, setSubmitted] = useState(false);
@@ -23,12 +24,14 @@ export default function SeminarPageClient({ ssrContent }: { ssrContent: Record<s
   useEditableManifest(editMode);
 
   const [hero, setHero] = useState(() => safeParse(ssrContent.seminar_hero, DEFAULT_HERO));
+  const [steps, setSteps] = useState(() => safeParse(ssrContent.seminar_steps, DEFAULT_STEPS));
   const [form, setForm] = useState(() => safeParse(ssrContent.seminar_form, DEFAULT_FORM));
 
   useEffect(() => {
     if (!editMode) return;
     const setters: Record<string, (v: unknown) => void> = {
       seminar_hero: setHero as (v: unknown) => void,
+      seminar_steps: setSteps as (v: unknown) => void,
       seminar_form: setForm as (v: unknown) => void,
     };
     const handler = (e: MessageEvent) => {
@@ -152,7 +155,7 @@ export default function SeminarPageClient({ ssrContent }: { ssrContent: Record<s
           <div data-hero style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
             <span style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.12em' }}>01</span>
             <div style={{ width: '32px', height: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
-            <span style={{ fontSize: '10px', color: '#36c88a', letterSpacing: '0.08em' }}>VISIT SEMINAR</span>
+            <span style={{ fontSize: '10px', color: '#36c88a', letterSpacing: '0.08em' }}><E id="seminar_hero.eyebrow" editMode={editMode}>{hero.eyebrow}</E></span>
           </div>
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1.05, marginBottom: '16px' }}>
             <E id="seminar_hero.title" editMode={editMode}>{hero.title}</E><span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
@@ -177,10 +180,10 @@ export default function SeminarPageClient({ ssrContent }: { ssrContent: Record<s
           {/* Section label */}
           <div style={{ textAlign: 'center', marginBottom: '72px' }}>
             <p style={{ color: '#36c88a', fontSize: '0.8125rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>
-              세미나 진행 프로세스
+              <E id="seminar_steps.eyebrow" editMode={editMode}>{steps.eyebrow}</E>
             </p>
             <h2 style={{ color: '#ffffff', fontSize: '1.75rem', fontWeight: 700 }}>
-              신청부터 완료까지 3단계
+              <E id="seminar_steps.title" editMode={editMode}>{steps.title}</E>
             </h2>
           </div>
 
@@ -494,7 +497,7 @@ export default function SeminarPageClient({ ssrContent }: { ssrContent: Record<s
                   if (!loading) (e.currentTarget as HTMLButtonElement).style.opacity = '1';
                 }}
               >
-                {loading ? '신청 중...' : '세미나신청 제출'}
+                {loading ? '신청 중...' : <E id="seminar_form.btn" editMode={editMode}>{form.btn}</E>}
               </button>
             </form>
           </div>

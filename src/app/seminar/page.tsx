@@ -1,7 +1,7 @@
 import SeminarPageClient from "./SeminarPageClient";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
-const CONTENT_KEYS = ['seminar_hero', 'seminar_form'];
+const CONTENT_KEYS = ['seminar_hero', 'seminar_steps', 'seminar_form'];
 
 async function getContent(): Promise<Record<string, string>> {
   try {
