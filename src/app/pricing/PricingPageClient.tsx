@@ -33,6 +33,21 @@ const Check = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
 const Dash = () => <span style={{ color: 'rgba(255,255,255,0.12)' }}>—</span>;
 
 const DEFAULT_HERO = { title: 'Enterprise licensing\nfor every stage\nof data governance', desc: '업무 환경에 맞춰 영구, 1년 구독형으로 구매할 수 있습니다.' };
+const DEFAULT_HERO_STATS = [
+  { v: '3,000+', l: 'Enterprise Customers' },
+  { v: 'GS 인증', l: 'Certified Quality' },
+  { v: '20년+', l: 'Partner Experience' },
+];
+const DEFAULT_WHY = { title: 'DATAWARE를 선택하는 이유' };
+const DEFAULT_WHY_ITEMS = [
+  { n: '01', t: '논리적인 설계', d: '개괄 모델부터 개념, 논리, 물리 모델까지 데이터 아키텍처 구축의 모든 단계를 지원' },
+  { n: '02', t: '효율적인 생산', d: 'M:M 해소, 테이블 구조 변경 가능, 변경 내용 논리/물리 모델 실시간 반영' },
+  { n: '03', t: '직관적인 표현', d: '엔터티 상태, 관계, 목적 등 의미를 분명하게 파악할 수 있는 다양한 유형 설정 기능' },
+  { n: '04', t: '원활한 협업', d: '주제 영역별 동시 모델링 지원, 모든 작업자들에게 모델 공유, 동기화' },
+];
+const DEFAULT_FAQ_ITEMS = FAQ.map(f => ({ q: f.q, a: f.a }));
+const DEFAULT_CTA_LEFT = { title: '요금제 선택이\n어려우신가요', desc: '전문 컨설턴트가 귀사에 맞는 최적의 구성을 제안합니다.' };
+const DEFAULT_CTA_RIGHT = { title: 'DA# 무료 체험\n시작하기', desc: '개인용 DA#을 무료로 다운로드하고 직접 체험해보세요.' };
 
 export default function PricingPageClient({ ssrContent }: { ssrContent: Record<string, string> }) {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -41,12 +56,28 @@ export default function PricingPageClient({ ssrContent }: { ssrContent: Record<s
   useEditableManifest(editMode);
 
   const [hero, setHero] = useState(() => safeParse(ssrContent.pricing_hero, DEFAULT_HERO));
+  const [heroStats, setHeroStats] = useState(() => safeParse(ssrContent.pricing_hero_stats, DEFAULT_HERO_STATS));
+  const [whyHeading, setWhyHeading] = useState(() => safeParse(ssrContent.pricing_why, DEFAULT_WHY));
+  const [whyItems, setWhyItems] = useState(() => safeParse(ssrContent.pricing_why_items, DEFAULT_WHY_ITEMS));
+  const [faqItems, setFaqItems] = useState(() => safeParse(ssrContent.pricing_faq, DEFAULT_FAQ_ITEMS));
+  const [ctaLeft, setCtaLeft] = useState(() => safeParse(ssrContent.pricing_cta_left, DEFAULT_CTA_LEFT));
+  const [ctaRight, setCtaRight] = useState(() => safeParse(ssrContent.pricing_cta_right, DEFAULT_CTA_RIGHT));
 
   useEffect(() => {
     if (!editMode) return;
+    const setters: Record<string, (v: unknown) => void> = {
+      pricing_hero: setHero as (v: unknown) => void,
+      pricing_hero_stats: setHeroStats as (v: unknown) => void,
+      pricing_why: setWhyHeading as (v: unknown) => void,
+      pricing_why_items: setWhyItems as (v: unknown) => void,
+      pricing_faq: setFaqItems as (v: unknown) => void,
+      pricing_cta_left: setCtaLeft as (v: unknown) => void,
+      pricing_cta_right: setCtaRight as (v: unknown) => void,
+    };
     const handler = (e: MessageEvent) => {
-      if (e.data?.type === 'content-update' && e.data.section === 'pricing_hero') {
-        setHero(e.data.data);
+      if (e.data?.type === 'content-update') {
+        const fn = setters[e.data.section];
+        if (fn) fn(e.data.data);
       }
     };
     window.addEventListener('message', handler);
@@ -86,14 +117,10 @@ export default function PricingPageClient({ ssrContent }: { ssrContent: Record<s
             >무료 체험</Link>
           </div>
           <div data-hero style={{ display: 'flex', justifyContent: 'center', gap: 64 }}>
-            {[
-              { v: '3,000+', l: 'Enterprise Customers' },
-              { v: 'GS 인증', l: 'Certified Quality' },
-              { v: '20년+', l: 'Partner Experience' },
-            ].map(s => (
-              <div key={s.l}>
-                <span style={{ fontSize: 28, fontWeight: 700, color: '#F9FAFB', display: 'block' }}>{s.v}</span>
-                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.06em' }}>{s.l}</span>
+            {heroStats.map((s, i) => (
+              <div key={i}>
+                <span style={{ fontSize: 28, fontWeight: 700, color: '#F9FAFB', display: 'block' }}><E id={`pricing_hero_stats.${i}.v`} editMode={editMode}>{s.v}</E></span>
+                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.06em' }}><E id={`pricing_hero_stats.${i}.l`} editMode={editMode}>{s.l}</E></span>
               </div>
             ))}
           </div>
@@ -248,20 +275,15 @@ export default function PricingPageClient({ ssrContent }: { ssrContent: Record<s
         <div ref={whyRef} style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 56px' }}>
           <div data-anim style={{ marginBottom: 64 }}>
             <p style={{ fontSize: 13, color: '#98A2B3', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>WHY DATAWARE</p>
-            <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em' }}>DATAWARE를 선택하는 이유</h2>
+            <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em' }}><E id="pricing_why.title" editMode={editMode}>{whyHeading.title}</E></h2>
           </div>
 
           <div data-anim style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px 96px' }}>
-            {[
-              { n: '01', t: '논리적인 설계', d: '개괄 모델부터 개념, 논리, 물리 모델까지 데이터 아키텍처 구축의 모든 단계를 지원' },
-              { n: '02', t: '효율적인 생산', d: 'M:M 해소, 테이블 구조 변경 가능, 변경 내용 논리/물리 모델 실시간 반영' },
-              { n: '03', t: '직관적인 표현', d: '엔터티 상태, 관계, 목적 등 의미를 분명하게 파악할 수 있는 다양한 유형 설정 기능' },
-              { n: '04', t: '원활한 협업', d: '주제 영역별 동시 모델링 지원, 모든 작업자들에게 모델 공유, 동기화' },
-            ].map(item => (
-              <div key={item.n}>
+            {whyItems.map((item, i) => (
+              <div key={i}>
                 <span style={{ fontSize: 48, fontWeight: 800, color: 'rgba(15,23,42,0.06)', display: 'block', marginBottom: 16, letterSpacing: '-0.04em' }}>{item.n}</span>
-                <h3 style={{ fontSize: 20, fontWeight: 700, color: '#101828', marginBottom: 12 }}>{item.t}</h3>
-                <p style={{ fontSize: 16, color: '#475467', lineHeight: 1.7 }}>{item.d}</p>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: '#101828', marginBottom: 12 }}><E id={`pricing_why_items.${i}.t`} editMode={editMode}>{item.t}</E></h3>
+                <p style={{ fontSize: 16, color: '#475467', lineHeight: 1.7 }}><E id={`pricing_why_items.${i}.d`} editMode={editMode}>{item.d}</E></p>
               </div>
             ))}
           </div>
@@ -304,13 +326,13 @@ export default function PricingPageClient({ ssrContent }: { ssrContent: Record<s
           </div>
 
           <div>
-            {FAQ.map((item, i) => (
+            {faqItems.map((item, i) => (
               <div key={i} data-anim style={{ borderBottom: '1px solid rgba(15,23,42,0.06)' }}>
                 <button onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ width: '100%', textAlign: 'left', padding: '24px 0', fontSize: 16, fontWeight: 600, color: '#101828', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  {item.q}
+                  <E id={`pricing_faq.${i}.q`} editMode={editMode}>{item.q}</E>
                   <span style={{ fontSize: 18, color: G, transform: openFaq === i ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, marginLeft: 16 }}>+</span>
                 </button>
-                {openFaq === i && <div style={{ padding: '0 0 24px', fontSize: 15, color: '#475467', lineHeight: 1.8 }}>{item.a}</div>}
+                {openFaq === i && <div style={{ padding: '0 0 24px', fontSize: 15, color: '#475467', lineHeight: 1.8 }}><E id={`pricing_faq.${i}.a`} editMode={editMode}>{item.a}</E></div>}
               </div>
             ))}
           </div>
@@ -325,9 +347,9 @@ export default function PricingPageClient({ ssrContent }: { ssrContent: Record<s
         >
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 20 }}>CONTACT SALES</p>
           <h3 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 700, color: '#F9FAFB', lineHeight: 1.2, marginBottom: 16 }}>
-            요금제 선택이<br />어려우신가요<span style={{ color: G }}>?</span>
+            <E id="pricing_cta_left.title" editMode={editMode}>{ctaLeft.title}</E><span style={{ color: G }}>?</span>
           </h3>
-          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, maxWidth: 360, marginBottom: 28 }}>전문 컨설턴트가 귀사에 맞는 최적의 구성을 제안합니다.</p>
+          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, maxWidth: 360, marginBottom: 28 }}><E id="pricing_cta_left.desc" editMode={editMode}>{ctaLeft.desc}</E></p>
           <span style={{ fontSize: 15, fontWeight: 600, color: G }}>무료 상담 신청 →</span>
         </Link>
         <Link href="/download" style={{ backgroundColor: G, padding: '72px 56px', textDecoration: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 320, transition: 'filter 0.2s' }}
@@ -336,9 +358,9 @@ export default function PricingPageClient({ ssrContent }: { ssrContent: Record<s
         >
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 20 }}>FREE DOWNLOAD</p>
           <h3 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 700, color: '#fff', lineHeight: 1.2, marginBottom: 16 }}>
-            DA# 무료 체험<br />시작하기<span style={{ opacity: 0.5 }}>.</span>
+            <E id="pricing_cta_right.title" editMode={editMode}>{ctaRight.title}</E><span style={{ opacity: 0.5 }}>.</span>
           </h3>
-          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, maxWidth: 360, marginBottom: 28 }}>개인용 DA#을 무료로 다운로드하고 직접 체험해보세요.</p>
+          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, maxWidth: 360, marginBottom: 28 }}><E id="pricing_cta_right.desc" editMode={editMode}>{ctaRight.desc}</E></p>
           <span style={{ fontSize: 15, fontWeight: 600, color: '#fff' }}>소개서 다운로드 →</span>
         </Link>
       </div>

@@ -1,7 +1,7 @@
 import PricingPageClient from "./PricingPageClient";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
-const CONTENT_KEYS = ['pricing_hero'];
+const CONTENT_KEYS = ['pricing_hero', 'pricing_hero_stats', 'pricing_why', 'pricing_why_items', 'pricing_faq', 'pricing_cta_left', 'pricing_cta_right'];
 
 async function getContent(): Promise<Record<string, string>> {
   try {
