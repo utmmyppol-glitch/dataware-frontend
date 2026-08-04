@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { E } from '@/lib/editable';
 
@@ -50,10 +51,9 @@ export default function NewsSection({ sectionRef, editMode, content }: NewsSecti
               onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = ''; }}
             >
               <div style={{ position: 'relative', height: 180, overflow: 'hidden', backgroundColor: '#0b1220' }}>
-                <img src={lecture.thumb} alt={lecture.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
-                  loading="lazy"
+                <Image src={lecture.thumb} alt={lecture.title} width={400} height={180} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.05)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.transform = ''; }}
                 />
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.15)', opacity: 0, transition: 'opacity 0.3s' }}
                   onMouseEnter={e => { e.currentTarget.style.opacity = '1'; }}
@@ -81,10 +81,9 @@ export default function NewsSection({ sectionRef, editMode, content }: NewsSecti
               onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = ''; }}
             >
               <div style={{ height: 160, overflow: 'hidden', backgroundColor: '#f0f2f5' }}>
-                <img src={a.thumb} alt={a.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
-                  loading="lazy"
+                <Image src={a.thumb} alt={a.title} width={400} height={160} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.05)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.transform = ''; }}
                 />
               </div>
               <div style={{ padding: '18px 22px' }}>

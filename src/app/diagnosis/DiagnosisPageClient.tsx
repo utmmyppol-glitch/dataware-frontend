@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, FormEvent } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { api } from '@/lib/api';
@@ -870,8 +871,7 @@ export default function DiagnosisPageClient({ ssrContent }: { ssrContent: Record
               <h3 style={{ fontSize: 20, fontWeight: 800, color: '#111', marginBottom: 12, letterSpacing: '-0.02em' }}><E id="diagnosis_arch.title" editMode={editMode}>{arch.title}</E></h3>
               <p style={{ fontSize: 13, color: '#676767', lineHeight: 1.7 }}><E id="diagnosis_arch.desc" editMode={editMode}>{arch.desc}</E></p>
             </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/encore/solutions_data3-img3.jpg" alt="META# 아키텍처" style={{ width: '100%', height: 'auto' }} />
+            <Image src="/images/encore/solutions_data3-img3.jpg" alt="META# 아키텍처" width={800} height={500} style={{ width: '100%', height: 'auto' }} />
           </div>
 
           {/* ── 제품 라인업 전체 ── */}

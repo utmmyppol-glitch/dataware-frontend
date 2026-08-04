@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { COPY, IMAGES } from '@/data';
 import { E } from '@/lib/editable';
 
@@ -34,7 +35,7 @@ export default function WhySection({ sectionRef, editMode, content }: WhySection
           </div>
           <div data-anim style={{ position: 'relative' }}>
             <div style={{ border: '1px solid #E7E2D8', backgroundColor: '#fff', padding: '24px', boxShadow: '0 10px 30px rgba(15,23,42,0.08)' }}>
-              <img src={IMAGES.hero.da.img} alt="DA# Architecture" style={{ width: '100%', height: 'auto', display: 'block' }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} loading="lazy" />
+              <Image src={IMAGES.hero.da.img} alt="DA# Architecture" width={800} height={500} style={{ width: '100%', height: 'auto', display: 'block' }} />
             </div>
             <div style={{ position: 'absolute', top: '-16px', right: '-16px', backgroundColor: '#36c88a', padding: '12px 20px', boxShadow: '0 4px 12px rgba(54,200,138,0.2)' }}>
               <span style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>GS인증 1등급</span>

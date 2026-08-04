@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { IMAGES } from '@/data';
 
@@ -108,7 +109,7 @@ export default function CustomerDetailClient({ story }: { story: Story | null })
               {detail.pageHeading}
             </h2>
             {images?.main && (
-              <img src={images.main} alt={story.company} style={{ width: '100%', height: 'auto', display: 'block' }} />
+              <Image src={images.main} alt={story.company} width={800} height={500} style={{ width: '100%', height: 'auto', display: 'block' }} />
             )}
           </div>
         </div>
@@ -148,7 +149,7 @@ export default function CustomerDetailClient({ story }: { story: Story | null })
         {/* 상세 이미지 */}
         {images?.detail && (
           <div style={{ marginBottom: 40 }}>
-            <img src={images.detail} alt={`${story.company} 시스템 구성`} style={{ width: '100%', height: 'auto', display: 'block' }} />
+            <Image src={images.detail} alt={`${story.company} 시스템 구성`} width={800} height={500} style={{ width: '100%', height: 'auto', display: 'block' }} />
           </div>
         )}
 

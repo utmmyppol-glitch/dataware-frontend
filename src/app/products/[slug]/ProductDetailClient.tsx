@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   DATAWARE_OVERVIEW, DA_SHARP, META_SHARP, DQ_SHARP,
@@ -158,7 +159,7 @@ export default function ProductDetailClient() {
                   <div style={{ position: 'absolute', inset: '-12px', border: `1px solid ${accent}12`, pointerEvents: 'none', zIndex: 1 }} />
                   <div style={{ position: 'absolute', top: '-12px', left: '-12px', width: '24px', height: '24px', borderTop: `2px solid ${accent}`, borderLeft: `2px solid ${accent}`, zIndex: 2 }} />
                   <div style={{ position: 'absolute', bottom: '-12px', right: '24px', width: '24px', height: '24px', borderBottom: `2px solid ${accent}`, borderRight: `2px solid ${accent}`, zIndex: 2 }} />
-                  <img src={images.main} alt={product.name} style={{ width: '100%', height: 'auto', maxHeight: '480px', objectFit: 'contain', position: 'relative', zIndex: 1, filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.3))' }} />
+                  <Image src={images.main} alt={product.name} width={800} height={480} style={{ width: '100%', height: 'auto', maxHeight: '480px', objectFit: 'contain', position: 'relative', zIndex: 1, filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.3))' }} />
                   <div style={{ position: 'absolute', bottom: '-24px', left: '20px', zIndex: 3, backgroundColor: accent, padding: '6px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <div style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse-ring 2s infinite' }} />
                     <span style={{ fontSize: '10px', fontWeight: 700, color: '#fff', letterSpacing: '0.06em' }}>DATAWARE LINEUP</span>
@@ -218,7 +219,7 @@ export default function ProductDetailClient() {
             <div style={{ display: 'grid', gridTemplateColumns: images?.logo ? '200px 1fr' : '1fr', gap: '48px', alignItems: 'start', marginBottom: '56px' }}>
               {images?.logo && (
                 <div data-anim style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-                  <img src={images.logo} alt={`${product.name} logo`} style={{ width: '160px', height: 'auto' }} />
+                  <Image src={images.logo} alt={`${product.name} logo`} width={160} height={60} style={{ width: '160px', height: 'auto' }} />
                 </div>
               )}
               <div>
@@ -357,7 +358,7 @@ export default function ProductDetailClient() {
                   <span style={{ fontSize: '10px', color: '#D0D5DD', letterSpacing: '0.08em' }}>{product.name} SYSTEM</span>
                 </div>
                 <div data-anim style={{ position: 'relative', border: '1px solid rgba(15,23,42,0.06)' }}>
-                  <img src={images.architecture} alt={`${product.name} 아키텍처`} style={{ width: '100%', height: 'auto', display: 'block' }} loading="lazy" />
+                  <Image src={images.architecture} alt={`${product.name} 아키텍처`} width={1200} height={600} style={{ width: '100%', height: 'auto', display: 'block' }} />
                 </div>
               </div>
             )}
@@ -382,7 +383,7 @@ export default function ProductDetailClient() {
                       <span style={{ fontSize: '9px', color: '#98A2B3' }}>{product.name.toLowerCase().replace('#', '')}.dataware.co.kr</span>
                     </div>
                   </div>
-                  <img src={images.screenshot} alt={`${product.name} 화면`} style={{ width: '100%', height: 'auto', display: 'block' }} loading="lazy" />
+                  <Image src={images.screenshot} alt={`${product.name} 화면`} width={1200} height={600} style={{ width: '100%', height: 'auto', display: 'block' }} />
                 </div>
               </div>
             )}

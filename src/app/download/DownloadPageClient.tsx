@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, FormEvent } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { DOWNLOAD_CARDS, DOWNLOAD_PAGE, IMAGES } from '@/data';
@@ -159,8 +160,7 @@ export default function DownloadPageClient({ ssrContent }: { ssrContent: Record<
                       className="card"
                       style={{ borderRadius: 0, padding: '28px 24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={thumbMap[card.id]} alt={card.title} style={{ width: '100%', height: 80, objectFit: 'contain', marginBottom: 16 }} loading="lazy" />
+                      <Image src={thumbMap[card.id]} alt={card.title} width={400} height={80} style={{ width: '100%', height: 80, objectFit: 'contain', marginBottom: 16 }} />
                       <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', marginBottom: 6, minHeight: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{card.title}</h3>
                       <p style={{ fontSize: 13, color: '#64748b', flex: 1 }}>{card.desc}</p>
                       <a

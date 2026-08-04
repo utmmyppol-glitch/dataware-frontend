@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { COPY } from '@/data';
@@ -46,7 +47,7 @@ export default function HeroSection({ heroRef, editMode, content }: HeroSectionP
   return (
     <section ref={heroRef} style={{ minHeight: '100vh', background: '#fff', position: 'relative', overflow: 'hidden' }}>
       <div aria-hidden="true" style={{ position: 'absolute', bottom: '-5%', right: '-2%', zIndex: 1, opacity: 0.04, pointerEvents: 'none' }}>
-        <img src="/images/da-watermark.png" alt="" style={{ width: 'clamp(300px, 35vw, 500px)', height: 'auto' }} />
+        <Image src="/images/da-watermark.png" alt="" width={500} height={500} style={{ width: 'clamp(300px, 35vw, 500px)', height: 'auto' }} />
       </div>
       <div style={{ position: 'relative', minHeight: '100vh', zIndex: 2 }}>
         <div
