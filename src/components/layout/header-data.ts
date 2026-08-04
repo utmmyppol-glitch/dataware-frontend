@@ -19,7 +19,6 @@ export const SUPPORT_LINKS = [
   { label: '공지사항', href: '/resources/notices', desc: '최신 소식 및 업데이트' },
   { label: '다운로드 신청', href: '/download', desc: 'DA# 무료 다운로드 · 소개서' },
   { label: '데이터 진단', href: '/diagnosis', desc: '거버넌스 성숙도 진단' },
-  { label: '파트너 제휴', href: '/partner', desc: '솔루션 파트너 프로그램 안내' },
 ];
 
 export const EDUCATION_LINKS = [
