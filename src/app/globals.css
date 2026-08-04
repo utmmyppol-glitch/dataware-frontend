@@ -113,6 +113,15 @@
     color: #ffffff;
   }
 
+  /* ── 접근성: 키보드 포커스 표시 ── */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
