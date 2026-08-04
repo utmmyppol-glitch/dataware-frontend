@@ -304,6 +304,8 @@ export default function VideosPageClient({ ssrContent }: { ssrContent: Record<st
           {paged.map((video) => (
             <article
               key={video.id}
+              role="button"
+              tabIndex={0}
               style={{
                 backgroundColor: '#ffffff',
                 border: '1px solid #e6e8ec',
@@ -321,6 +323,7 @@ export default function VideosPageClient({ ssrContent }: { ssrContent: Record<st
                 (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
               }}
               onClick={() => setPlayingId(video.id)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPlayingId(video.id); } }}
             >
               {/* Thumbnail / Player area */}
               <div

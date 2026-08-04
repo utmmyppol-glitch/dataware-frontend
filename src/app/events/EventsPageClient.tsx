@@ -207,7 +207,10 @@ export default function EventsPageClient({ ssrContent }: { ssrContent: Record<st
               <article key={event.id} data-anim style={{ borderBottom: '1px solid rgba(15,23,42,0.06)' }}>
                 {/* Row header — always visible */}
                 <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setOpenId(isOpen ? null : event.id)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpenId(isOpen ? null : event.id); } }}
                   style={{
                     display: 'grid',
                     gridTemplateColumns: '100px 80px 56px 1fr auto',
