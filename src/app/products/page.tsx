@@ -1,11 +1,13 @@
 import { Metadata } from 'next';
 import { ProductResponse } from '@/lib/api';
 import ProductsPageClient from './ProductsPageClient';
+import { USE_MOCK, mockProducts, getMockContent } from '@/lib/mock';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
 const CONTENT_KEYS = ['products_hero', 'products_features', 'products_grid', 'products_cta', 'products_seo_title', 'products_seo_description'];
 
 async function getProducts(): Promise<ProductResponse[]> {
+  if (USE_MOCK) return mockProducts;
   try {
     const res = await fetch(`${API_BASE_URL}/products`, {
       next: { revalidate: 60 },
@@ -18,6 +20,7 @@ async function getProducts(): Promise<ProductResponse[]> {
 }
 
 async function getContent(): Promise<Record<string, string>> {
+  if (USE_MOCK) return getMockContent(CONTENT_KEYS);
   try {
     const base = API_BASE_URL.replace(/\/api\/dataware\/?$/, '');
     const res = await fetch(

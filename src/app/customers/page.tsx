@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { CustomerStoryResponse } from '@/lib/api';
 import CustomersPageClient from './CustomersPageClient';
+import { USE_MOCK, mockCustomerStories, getMockContent } from '@/lib/mock';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
 
@@ -15,6 +16,7 @@ const STATIC_STORIES: CustomerStoryResponse[] = [
 ];
 
 async function getCustomerStories(): Promise<CustomerStoryResponse[]> {
+  if (USE_MOCK) return mockCustomerStories;
   try {
     const res = await fetch(`${API_BASE_URL}/customer-stories?page=0&size=100`, {
       next: { revalidate: 60 },
@@ -30,6 +32,7 @@ async function getCustomerStories(): Promise<CustomerStoryResponse[]> {
 const CONTENT_KEYS = ['customers_hero', 'customers_cta', 'customers_seo_title', 'customers_seo_description'];
 
 async function getContent(): Promise<Record<string, string>> {
+  if (USE_MOCK) return getMockContent(CONTENT_KEYS);
   try {
     const base = API_BASE_URL.replace(/\/api\/dataware\/?$/, '');
     const res = await fetch(

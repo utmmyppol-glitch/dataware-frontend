@@ -1,10 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { IMAGES } from '@/data';
+import { USE_MOCK, mockConfig } from '@/lib/mock';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
 
 async function fetchConfig(): Promise<Record<string, string>> {
+  if (USE_MOCK) return mockConfig;
   try {
     const baseUrl = API_URL.replace('/api/dataware', '');
     const res = await fetch(`${baseUrl}/api/dataware/config`, {

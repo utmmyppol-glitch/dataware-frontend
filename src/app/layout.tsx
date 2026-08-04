@@ -5,6 +5,8 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ChatBot from "@/components/layout/ChatBot";
 
+import { USE_MOCK, mockMenuItems } from "@/lib/mock";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/dataware";
 
 export interface SsrMenuItem {
@@ -21,6 +23,7 @@ interface MenuApiItem {
 }
 
 async function getMenu(): Promise<SsrMenuItem[] | null> {
+  if (USE_MOCK) return mockMenuItems.map((m) => ({ url: m.url, sortOrder: m.sortOrder ?? 0 }));
   try {
     const base = API_URL.replace(/\/api\/dataware\/?$/, "");
     const res = await fetch(`${base}/api/dataware/menus`, { next: { revalidate: 60 } });

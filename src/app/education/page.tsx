@@ -1,10 +1,12 @@
 import { Metadata } from 'next';
 import EducationPageClient from "./EducationPageClient";
+import { USE_MOCK, getMockContent } from '@/lib/mock';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
 const CONTENT_KEYS = ['education_hero', 'education_benefits', 'education_videos', 'education_seo_title', 'education_seo_description'];
 
 async function getContent(): Promise<Record<string, string>> {
+  if (USE_MOCK) return getMockContent(CONTENT_KEYS);
   try {
     const base = API_URL.replace(/\/api\/dataware\/?$/, '');
     const res = await fetch(

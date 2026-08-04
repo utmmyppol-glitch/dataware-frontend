@@ -1,10 +1,12 @@
 import { Metadata } from 'next';
 import { PostResponse } from '@/lib/api';
 import ResourcesPageClient from './ResourcesPageClient';
+import { USE_MOCK, mockPosts, getMockContent } from '@/lib/mock';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
 
 async function getPosts(): Promise<PostResponse[]> {
+  if (USE_MOCK) return mockPosts;
   try {
     const res = await fetch(`${API_BASE_URL}/posts?page=0&size=50`, {
       next: { revalidate: 60 },
@@ -20,6 +22,7 @@ async function getPosts(): Promise<PostResponse[]> {
 const CONTENT_KEYS = ['resources_hero', 'resources_seo_title', 'resources_seo_description'];
 
 async function getContent(): Promise<Record<string, string>> {
+  if (USE_MOCK) return getMockContent(CONTENT_KEYS);
   try {
     const base = API_BASE_URL.replace(/\/api\/dataware\/?$/, '');
     const res = await fetch(
