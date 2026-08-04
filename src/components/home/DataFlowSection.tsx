@@ -7,7 +7,7 @@ const DATA_FLOW = [
   { label: 'Model', sub: '구조 설계', product: 'DA#' },
   { label: 'Govern', sub: '표준 관리', product: 'META#' },
   { label: 'Quality', sub: '품질 검증', product: 'DQ#' },
-  { label: 'Flow', sub: '흐름 분석', product: 'DF#' },
+  { label: 'Impact', sub: '영향도 분석', product: 'AP#' },
   { label: 'Catalog', sub: '포털 제공', product: 'DP#' },
 ];
 

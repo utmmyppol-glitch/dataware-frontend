@@ -79,7 +79,7 @@ function diagnose(
     title: '고도화 단계',
     description:
       '핵심 거버넌스 체계가 모두 갖춰져 있습니다. 데이터 흐름 분석과 영향도 관리를 통해 거버넌스를 고도화하고, 데이터 포털로 조직 전체의 데이터 접근성을 높이세요.',
-    products: ['DF#', 'AP#', 'DP#'],
+    products: ['AP#', 'DP#'],
   };
 }
 
@@ -103,12 +103,6 @@ const PRODUCT_DETAILS: Record<string, { subtitle: string; desc: string; color: s
     desc: '산재된 기업 데이터의 지속적 품질 관리로 데이터 가치를 향상시키고, 대용량 데이터를 빠르고 안정적으로 처리합니다.',
     color: '#5b9a7d',
     features: ['품질 기준 정의', '프로파일링·BR 검증', '오류 원인 분석·개선', '품질 현황 모니터링'],
-  },
-  'DF#': {
-    subtitle: '데이터 흐름 관리',
-    desc: '전사 데이터 구조를 수집·분석하여 시스템 간 데이터 흐름을 시각화하고 종합 모니터링합니다.',
-    color: '#5a9aaa',
-    features: ['Lineage 분석', 'DBMS·시스템 영향분석', 'CDC/ETL/EAI 흐름 시각화', '종합 모니터링'],
   },
   'AP#': {
     subtitle: '애플리케이션 영향도 분석',
@@ -786,7 +780,7 @@ export default function DiagnosisPageClient() {
                 { step: 'Model', label: '구조 설계', product: 'DA#' },
                 { step: 'Govern', label: '표준 관리', product: 'META#' },
                 { step: 'Quality', label: '품질 검증', product: 'DQ#' },
-                { step: 'Flow', label: '흐름 분석', product: 'DF#' },
+                { step: 'Impact', label: '영향도 분석', product: 'AP#' },
                 { step: 'Portal', label: '포털 제공', product: 'DP#' },
               ].map((s, i) => (
                 <div key={s.step} style={{ display: 'flex', alignItems: 'center' }}>
@@ -850,8 +844,6 @@ export default function DiagnosisPageClient() {
                 { name: 'META#', sub: '메타데이터 관리', color: '#8a7cb8', slug: 'meta-sharp' },
                 { name: 'DQ#', sub: '데이터 품질관리', color: '#5b9a7d', slug: 'dq-sharp' },
                 { name: 'AP#', sub: '영향도 분석', color: '#c4975a', slug: 'ap-sharp' },
-                { name: 'DF#', sub: '데이터 흐름 관리', color: '#5a9aaa', slug: 'df-sharp' },
-                { name: 'ETT#', sub: '데이터 마이그레이션', color: '#b07a8a', slug: 'ett-sharp' },
                 { name: 'DP#', sub: '데이터 포털', color: '#b8a060', slug: 'dp-sharp' },
               ].map((p) => (
                 <Link

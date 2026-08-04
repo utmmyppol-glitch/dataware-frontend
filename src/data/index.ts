@@ -11,8 +11,6 @@ export {
   META_SHARP,
   DQ_SHARP,
   AP_SHARP,
-  DF_SHARP,
-  ETT_SHARP,
   DP_SHARP,
   DATAWARE_LINEUP,
 } from './products';

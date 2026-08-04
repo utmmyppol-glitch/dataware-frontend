@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   DATAWARE_OVERVIEW, DA_SHARP, META_SHARP, DQ_SHARP,
-  AP_SHARP, DF_SHARP, ETT_SHARP, DP_SHARP,
+  AP_SHARP, DP_SHARP,
   DA_DQ_EDITION, DA_TOTAL_PACKAGE, IMAGES, ENCORE_IMAGES,
 } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
@@ -30,8 +30,6 @@ const PRODUCT_MAP: Record<string, ProductData> = {
   'meta-sharp': { ...META_SHARP, features: META_SHARP.features },
   'dq-sharp': { ...DQ_SHARP, features: DQ_SHARP.features },
   'ap-sharp': { ...AP_SHARP, features: AP_SHARP.features },
-  'df-sharp': { ...DF_SHARP, features: DF_SHARP.features },
-  'ett-sharp': { ...ETT_SHARP, features: ETT_SHARP.features },
   'dp-sharp': { ...DP_SHARP, features: DP_SHARP.features },
 };
 
@@ -41,8 +39,6 @@ const IMAGE_MAP: Record<string, { main?: string; screenshot?: string; architectu
   'meta-sharp': { main: ENCORE_IMAGES.meta.main, screenshot: ENCORE_IMAGES.meta.screenshot, architecture: ENCORE_IMAGES.meta.architecture, logo: ENCORE_IMAGES.meta.logo },
   'dq-sharp': { main: ENCORE_IMAGES.dq.main, screenshot: ENCORE_IMAGES.dq.screenshot, architecture: ENCORE_IMAGES.dq.architecture, logo: ENCORE_IMAGES.dq.logo },
   'ap-sharp': { main: ENCORE_IMAGES.ap.main, screenshot: ENCORE_IMAGES.ap.screenshot, architecture: ENCORE_IMAGES.ap.architecture, logo: ENCORE_IMAGES.ap.logo },
-  'df-sharp': { main: ENCORE_IMAGES.df.main, screenshot: ENCORE_IMAGES.df.screenshot, architecture: ENCORE_IMAGES.df.architecture, logo: ENCORE_IMAGES.df.logo },
-  'ett-sharp': { main: ENCORE_IMAGES.ett.main, screenshot: ENCORE_IMAGES.ett.screenshot, architecture: ENCORE_IMAGES.ett.architecture, logo: ENCORE_IMAGES.ett.logo },
   'dp-sharp': { main: ENCORE_IMAGES.dp.main, screenshot: ENCORE_IMAGES.dp.screenshot, architecture: ENCORE_IMAGES.dp.architecture, logo: ENCORE_IMAGES.dp.logo },
 };
 
@@ -52,8 +48,6 @@ const ACCENT_MAP: Record<string, string> = {
   'meta-sharp': '#8a7cb8',
   'dq-sharp': '#5b9a7d',
   'ap-sharp': '#c4975a',
-  'df-sharp': '#5a9aaa',
-  'ett-sharp': '#b07a8a',
   'dp-sharp': '#b8a060',
   'da-dq-edition': '#5b9a7d',
   'da-total-package': '#c4975a',
@@ -416,9 +410,7 @@ export default function ProductDetailPage() {
               { name: 'DA#', slug: 'da-sharp', sub: '데이터 모델링', color: '#6b8cae' },
               { name: 'META#', slug: 'meta-sharp', sub: '메타데이터 관리', color: '#8a7cb8' },
               { name: 'DQ#', slug: 'dq-sharp', sub: '품질관리', color: '#5b9a7d' },
-              { name: 'DF#', slug: 'df-sharp', sub: '흐름관리', color: '#5a9aaa' },
               { name: 'AP#', slug: 'ap-sharp', sub: '영향도 분석', color: '#c4975a' },
-              { name: 'ETT#', slug: 'ett-sharp', sub: '마이그레이션', color: '#b07a8a' },
               { name: 'DP#', slug: 'dp-sharp', sub: '데이터 포털', color: '#b8a060' },
               { name: 'DATAWARE', slug: 'dataware', sub: 'All-in-One', color: '#36c88a' },
             ].filter(p => p.slug !== slug).slice(0, 4).map((p) => (

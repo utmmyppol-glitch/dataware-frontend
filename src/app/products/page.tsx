@@ -4,10 +4,10 @@ import ProductsPageClient from './ProductsPageClient';
 
 export const metadata: Metadata = {
   title: '제품 소개 | UNION DATAWARE',
-  description: 'DA#, META#, DQ#, AP#, DF#, ETT#, DP# - 데이터 거버넌스 All-in-One 솔루션 라인업',
+  description: 'DA#, META#, DQ#, AP#, DP# - 데이터 거버넌스 All-in-One 솔루션 라인업',
   openGraph: {
     title: '제품 소개 | UNION DATAWARE',
-    description: 'DA#, META#, DQ#, AP#, DF#, ETT#, DP# - 데이터 거버넌스 All-in-One 솔루션 라인업',
+    description: 'DA#, META#, DQ#, AP#, DP# - 데이터 거버넌스 All-in-One 솔루션 라인업',
   },
 };
 

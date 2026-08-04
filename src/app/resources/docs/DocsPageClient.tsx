@@ -12,7 +12,6 @@ const DOCS = [
   { id: 5, title: 'DQ# 운영 가이드', desc: '데이터 품질 기준 정의, 프로파일링, 규칙 설정, 오류 분석 등을 다룹니다.', category: 'DQ#', categoryColor: '#10b981', fileSize: '7.8 MB', fileType: 'PDF', updated: '2025-12-20' },
   { id: 6, title: 'DATAWARE API 레퍼런스', desc: 'DATAWARE 외부 연계를 위한 REST API 명세서입니다.', category: 'API', categoryColor: '#f59e0b', fileSize: '3.2 MB', fileType: 'PDF', updated: '2025-12-01' },
   { id: 7, title: 'DA# AI Powered Pack 가이드', desc: 'ChatGPT 기반 자동 모델링 기능 활성화 및 사용 방법을 안내합니다.', category: 'DA#', categoryColor: '#36c88a', fileSize: '5.5 MB', fileType: 'PDF', updated: '2025-11-15' },
-  { id: 8, title: 'ETT# 마이그레이션 가이드', desc: '이기종 RDBMS 및 Cloud DB 간 데이터 마이그레이션 방법을 설명합니다.', category: 'ETT#', categoryColor: '#ec4899', fileSize: '6.3 MB', fileType: 'PDF', updated: '2025-10-30' },
 ];
 
 export default function DocsPageClient() {

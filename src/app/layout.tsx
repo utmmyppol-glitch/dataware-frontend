@@ -45,7 +45,7 @@ const notoSansKr = Noto_Sans_KR({
 
 export const metadata: Metadata = {
   title: "UNION DATAWARE - DA# 데이터 모델링 & DATAWARE 솔루션",
-  description: "DA#, META#, DQ#, AP#, DF#, ETT#, DP# - 데이터 거버넌스 All-in-One Package. 유니온시스템즈는 엔코아 DATAWARE 공식 총판입니다.",
+  description: "DA#, META#, DQ#, AP#, DP# - 데이터 거버넌스 All-in-One Package. 유니온시스템즈는 엔코아 DATAWARE 공식 총판입니다.",
 };
 
 export const viewport: Viewport = {

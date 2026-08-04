@@ -211,7 +211,7 @@ export const DATAWARE_OVERVIEW = {
     { key: 'portal', name: 'Portal', product: 'DP#', desc: '데이터 포털', features: ['IT메타/Biz 메타에 대한 통합 검색', '전사 데이터 관리 현황 대시보드', '인기 검색어/데이터셋 등 다양한 통계 정보', '댓글, 게시판, Q&A 등 커뮤니케이션 채널'] },
     { key: 'meta', name: 'Meta', product: 'META#', desc: '메타 정보 관리', features: ['DB 카탈로그 수집 및 추적 관리', '데이터 모델-DB Gap 분석', '표준-모델-구조 간의 연관정보 분석', '범정부 중앙 메타시스템 연계'] },
     { key: 'quality', name: 'Quality', product: 'DQ#', desc: '데이터 품질 관리', features: ['품질관리를 위한 다계층 구조 지원', '오류 데이터 원인 분석 및 개선 관리', '모델링 도구 및 메타데이터 기능 연계', '안정적인 대용량 데이터 처리'] },
-    { key: 'flow', name: 'Flow', product: 'DF#/AP#', desc: '흐름 및 영향도 분석', features: ['DB에서 소스코드까지 데이터 흐름 시각화', 'DB 및 소스코드 간 매트릭스 분석', 'SQL, 문자열, 주석, DB오브젝트 검색', 'DB별 다양한 통계 및 보고서 제공'] },
+    { key: 'flow', name: 'Flow', product: 'AP#', desc: '애플리케이션 영향도 분석', features: ['DB에서 소스코드까지 영향도 분석', 'DB 및 소스코드 간 매트릭스 분석', 'SQL, 문자열, 주석, DB오브젝트 검색', 'DB별 다양한 통계 및 보고서 제공'] },
   ],
   coreFeatures: [
     '최적의 End-to-End 데이터 거버넌스 관리 체계 제공',
@@ -243,7 +243,7 @@ export const META_SHARP = {
     { category: '프로세스 관리', items: ['표준부터 모델, DB 반영까지의 모든 메타데이터에 대한 라이프사이클 관리'] },
     { category: '편의성', items: ['모든 메타데이터의 엑셀 일괄 업로드 및 다운로드 기능 제공', '메타 데이터의 다양한 현황 정보 제공', '표준 항목 형태소 분석(자동 분할) 및 추천 기능'] },
   ],
-  integrations: ['DA#', 'AP#', 'DQ#', 'DF#', '범정부 중앙 메타시스템'],
+  integrations: ['DA#', 'AP#', 'DQ#', '범정부 중앙 메타시스템'],
   featuresSummary: '체계적인 메타 데이터 관리는 물론 데이터 모델링 도구와의 편리한 연계로 개발 생산성 제고',
   architectureCaption: '편리한 메타 데이터 관리는 물론 DATAWARE™ 각 솔루션과의 유연한 연계를 지원하는 아키텍처',
   screenshotCaption: '웹 기반의 가시적인 포탈 화면 제공으로 편리한 메타 데이터 관리',
@@ -271,7 +271,7 @@ export const DQ_SHARP = {
     { category: '대용량 데이터 처리', items: ['대용량 DB 기술을 적용하여 프로파일링, BR 검증 등 대용량 데이터 처리를 빠르고 안정적으로 수행'] },
     { category: '효율적인 품질관리', items: ['품질 기준 정의부터 결과 분석, 오류 개선까지 통합 관리', '품질 현황, 등록 현황 등 다양한 현황 정보 제공', '메타데이터 및 모델링 도구 연계를 통한 메타데이터 기반 품질 관리'] },
   ],
-  integrations: ['DA#', 'META#', 'AP#', 'DF#'],
+  integrations: ['DA#', 'META#', 'AP#'],
   featuresSummary: '데이터 품질 관리를 위한 편리한 기능과 가시적인 품질 현황 모니터링 기능 제공',
   architectureCaption: '명확한 데이터 품질 관리 기준을 적용함은 물론 다양한 OS, 브라우저를 지원하는 웹 기반 솔루션',
   screenshotCaption: '지속적인 데이터 품질 관리와 가시적인 모니터링으로 언제나 최적의 데이터 품질 확보',
@@ -297,7 +297,7 @@ export const AP_SHARP = {
     { category: '편의성', items: ['영향 분석에 대한 다양한 통계 및 보고서 제공', 'Web 기반으로 사용자 접근성 향상 및 관리 편의성 향상', 'HTML5 지원 및 다양한 브라우저 지원'] },
     { category: '성능 및 안정성', items: ['UNIX 서버 프로그램, 빠르고 안정적인 시스템 최적화된 분석 엔진', 'WAS의 Context를 활용한 배포 및 서비스 제공으로 타 SW에 영향 최소화'] },
   ],
-  integrations: ['META#', 'DQ#', 'DF#', 'DA#'],
+  integrations: ['META#', 'DQ#', 'DA#'],
   featuresSummary: '애플리케이션 소스 분석은 물론 다양한 검색 및 보고 기능으로 편의성 극대화',
   architectureCaption: '독립성과 확장성 동시 지원으로 유연한 아키텍처 제공',
   screenshotCaption: 'DB에서 소스코드까지 영향도 분석',
@@ -306,53 +306,6 @@ export const AP_SHARP = {
     { num: '02', title: '매트릭스 분석', desc: '소스-소스 포함관계, 소스-함수 호출관계, 클래스 상속관계, 소스-테이블 CRUD 매트릭스' },
     { num: '03', title: '다양한 검색 기능', desc: 'DB 오브젝트, 소스 객체, SQL, 문자열, 주석 등 다양한 검색' },
     { num: '04', title: '보고서 및 산출물', desc: 'PDF, 엑셀 등 통계 보고서 및 산출물 제공' },
-  ],
-};
-
-/* ─── DF# ─── */
-export const DF_SHARP = {
-  name: 'DF#',
-  slug: 'df-sharp',
-  tagline: '데이터 흐름 관리 솔루션',
-  subtitle: '기업의 시스템과 데이터의 흐름을 종합적으로 추적하여 분석 결과를 비즈니스에 활용할 수 있도록 지원합니다.',
-  description: '기업의 중요한 자산인 시스템 및 데이터의 흐름을 종합적으로 추적하기 위해 복잡한 전사 데이터 구조를 종합적으로 수집 및 분석하여 체계적이고 효율적으로 관리하는 데이터 흐름 분석 솔루션입니다.',
-  strengths: [
-    { category: '연계 및 확장성', items: ['다양한 플랫폼(OS, 브라우저)을 지원하는 웹 기반 솔루션', '모델링 도구, META#, AP#, DQ# 등 다양한 시스템과의 연계 자동화', 'CDC, ETL, EAI, ESB, 대외 연계 데이터 흐름 시각화'] },
-  ],
-  integrations: ['META#', 'AP#', 'DQ#', 'DA#'],
-  featuresSummary: '데이터의 Lineage 분석에서 연계 분석까지 편리하게 확인할 수 있는 편의 기능 제공',
-  architectureCaption: '분석에서 모니터링, 솔루션 연계가 가능한 유연한 아키텍처',
-  screenshotCaption: '엔터프라이즈 시스템의 데이터 흐름을 종합적으로 분석 모니터링',
-  features: [
-    { num: '01', title: '데이터 구조 추출 및 Lineage 분석', desc: '데이터 흐름 정보를 매핑 정의서 등록, 모델 기반 매핑, 수집기 개발 등으로 분석' },
-    { num: '02', title: 'DBMS 및 시스템 영향분석', desc: 'DB 오브젝트를 사용하는 시스템간 영향도 분석' },
-    { num: '03', title: 'CDC/ETL/EAI/ESB 데이터 흐름 시각화', desc: '정보자산간 데이터 흐름의 기준 정보 수집 및 분석' },
-    { num: '04', title: '애플리케이션 영향도 연계 분석', desc: '정보 자산과 애플리케이션 서비스의 연관 관계 분석' },
-    { num: '05', title: '데이터 모델 및 품질 연계 분석', desc: '데이터 모델과 품질 항목의 데이터 흐름 확인' },
-    { num: '06', title: '데이터 흐름 종합 모니터링', desc: '가시적인 시각화로 편리한 모니터링' },
-  ],
-};
-
-/* ─── ETT# ─── */
-export const ETT_SHARP = {
-  name: 'ETT#',
-  slug: 'ett-sharp',
-  tagline: '초고속 데이터 마이그레이션 솔루션',
-  subtitle: '이기종 데이터, RDBMS, NoSQL, Cloud까지 기업 시스템 간의 데이터 마이그레이션을 효율적으로 지원합니다.',
-  description: '일반적인 ETL 솔루션과 달리 데이터의 추출, 변환, 적재 및 검증을 효과적이고 안정적으로 처리하여, 기업의 데이터를 필요한 요소에 적시에 제공함으로써 데이터의 분석 및 활용을 용이하게 하여 기업 자산으로써의 데이터 가치를 높여줍니다. 차세대 시스템 구축을 위한 데이터 이행 및 Cloud 마이그레이션을 위한 고가용성 데이터 통합 도구로써도 공급됩니다.',
-  strengths: [
-    { category: 'DA# 연계', items: ['DBMS 리버스(Reverse)를 통한 모델 및 TOBE 모델 연동 가능', 'TOBE 모델 및 컬럼 정보 변경 시 자동 체크 가능'] },
-    { category: 'META# 연계', items: ['ASIS/TOBE 코드 매핑 기능을 활용한 코드 검증 연계 가능'] },
-    { category: '고속 데이터 처리', items: ['Text(fixed width, delimiter), XML, XLS, 상용DBMS(국산 DB 포함) 등 다양한 소스로부터 고속 추출 및 적재'] },
-  ],
-  integrations: ['DA#', 'META#'],
-  featuresSummary: '고속 데이터 추출과 적재의 안정적 처리를 위한 독자적인 기능과 성능 제공',
-  architectureCaption: 'DBMS는 물론 다양한 파일까지 빠르고 정확한 이행 지원',
-  screenshotCaption: '직관적인 GUI 환경 제공으로 데이터의 Extract, Transform, Load 전 프로세스를 효율적으로 관리',
-  features: [
-    { num: '01', title: '소스-타겟 간의 매핑 정의', desc: '데이터의 추출, 변환, 적재 및 검증을 효과적이고 안정적으로 처리' },
-    { num: '02', title: '다양한 데이터 변환 기능', desc: '1:1/컬럼통합/서브/로우 통합, 사용자 정의 중심의 데이터 변환' },
-    { num: '03', title: '다양한 실행 방식 및 실시간 모니터링', desc: '직접실행/스케줄링/API 방식, 실시간 모니터링' },
   ],
 };
 
@@ -365,9 +318,9 @@ export const DP_SHARP = {
   description: '효율적인 기업의 데이터 포털 구축을 위한 솔루션으로 손쉬운 데이터 탐색, 요청, 분석 및 활용을 가능하게 합니다. IT 관리자는 물론 일반 사용자까지 데이터 관리와 활용이 가능하며 Cloud에서 On-Premise 환경까지 다양한 고객의 IT환경을 지원합니다.',
   strengths: [
     { category: '현업 담당자를 위한 포털 환경', items: ['직관적인 비즈니스 분류와 용어 검색 및 데이터 활용', '데이터 카탈로그, 통합 검색, 데이터 신청, 작업 요청, 오류 신고를 하나의 패키지로 제공', '각종 사용자 커뮤니케이션 및 정보 전달을 위한 유기적 기능 제공'] },
-    { category: '최적의 데이터 관리를 위한 확장성', items: ['DA#, META#, DQ#, AP#, DF# add-in 연계 지원', 'ITSM/SSO/전자결재, 기타 시스템 연동', 'JDBC 표준 인터페이스를 지원하는 모든 종류의 RDB 및 NoSQL DBMS 지원'] },
+    { category: '최적의 데이터 관리를 위한 확장성', items: ['DA#, META#, DQ#, AP# add-in 연계 지원', 'ITSM/SSO/전자결재, 기타 시스템 연동', 'JDBC 표준 인터페이스를 지원하는 모든 종류의 RDB 및 NoSQL DBMS 지원'] },
   ],
-  integrations: ['DA#', 'META#', 'DQ#', 'AP#', 'DF#', 'ITSM/SSO/전자결재', 'DV# add-in', 'SQL# add-in'],
+  integrations: ['DA#', 'META#', 'DQ#', 'AP#', 'ITSM/SSO/전자결재', 'DV# add-in', 'SQL# add-in'],
   featuresSummary: '효율적인 데이터 작업을 위한 기능과 편리한 데이터 활용을 위한 통합 검색 기능 제공',
   architectureCaption: '다양한 데이터 전문 솔루션과의 유연한 연계로 효율적인 데이터 포털 구축',
   screenshotCaption: '기업 데이터 활용을 극대화하는 데이터 포털의 효율적 구축',
@@ -392,7 +345,5 @@ export const DATAWARE_LINEUP = [
   { name: 'META#', slug: 'meta-sharp', subtitle: '메타데이터 관리', isNew: true, gs: true },
   { name: 'DQ#', slug: 'dq-sharp', subtitle: '데이터 품질관리', isNew: true, gs: true },
   { name: 'AP#', slug: 'ap-sharp', subtitle: '애플리케이션 영향도 분석', isNew: true, gs: true },
-  { name: 'DF#', slug: 'df-sharp', subtitle: '데이터 흐름 관리', isNew: true },
-  { name: 'ETT#', slug: 'ett-sharp', subtitle: '데이터 마이그레이션', isNew: true },
   { name: 'DP#', slug: 'dp-sharp', subtitle: '데이터 포털', isNew: true },
 ] as const;

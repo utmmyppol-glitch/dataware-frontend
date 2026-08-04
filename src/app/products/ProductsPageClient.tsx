@@ -10,8 +10,6 @@ const PRODUCT_COLORS: Record<string, string> = {
   'meta-sharp': '#8a7cb8',
   'dq-sharp': '#5b9a7d',
   'ap-sharp': '#c4975a',
-  'df-sharp': '#5a9aaa',
-  'ett-sharp': '#b07a8a',
   'dp-sharp': '#b8a060',
 };
 
