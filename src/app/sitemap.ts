@@ -4,7 +4,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://dataware.unionsyst
 
 const PRODUCT_SLUGS = [
   'dataware', 'da-sharp', 'meta-sharp', 'dq-sharp',
-  'ap-sharp', 'dp-sharp',
+  'ap-sharp', 'dp-sharp', 'meta-ai', 'da-ai-pack',
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

@@ -11,6 +11,8 @@ const PRODUCT_COLORS: Record<string, string> = {
   'dq-sharp': '#5b9a7d',
   'ap-sharp': '#c4975a',
   'dp-sharp': '#b8a060',
+  'meta-ai': '#7c5cbf',
+  'da-ai-pack': '#5a8cb0',
 };
 
 export default function ProductsPageClient({ products }: { products: ProductResponse[] }) {

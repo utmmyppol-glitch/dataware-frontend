@@ -13,6 +13,11 @@ export const DATAWARE_PRODUCTS = [
   { name: 'DP#',      slug: 'dp-sharp',  subtitle: '데이터 포털',           color: '#b8a060', isNew: true,  initial: 'DP' },
 ];
 
+export const AI_PRODUCTS = [
+  { name: 'META# AI',           slug: 'meta-ai',        subtitle: 'AI 거버넌스 자동화',   color: '#7c5cbf', isNew: true, initial: 'AI' },
+  { name: 'DA# AI Powered Pack', slug: 'da-ai-pack',    subtitle: 'AI 모델링 자동화',     color: '#5a8cb0', isNew: true, initial: 'AP' },
+];
+
 export const SUPPORT_LINKS = [
   { label: '공지사항', href: '/resources/notices', desc: '최신 소식 및 업데이트' },
   { label: '다운로드 신청', href: '/download', desc: 'DA# 무료 다운로드 · 소개서' },

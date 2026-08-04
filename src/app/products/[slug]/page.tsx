@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   DATAWARE_OVERVIEW, DA_SHARP, META_SHARP, DQ_SHARP,
-  AP_SHARP, DP_SHARP,
+  AP_SHARP, DP_SHARP, META_SHARP_AI, DA_AI_PACK,
   DA_DQ_EDITION, DA_TOTAL_PACKAGE, IMAGES, ENCORE_IMAGES,
 } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
@@ -31,6 +31,8 @@ const PRODUCT_MAP: Record<string, ProductData> = {
   'dq-sharp': { ...DQ_SHARP, features: DQ_SHARP.features },
   'ap-sharp': { ...AP_SHARP, features: AP_SHARP.features },
   'dp-sharp': { ...DP_SHARP, features: DP_SHARP.features },
+  'meta-ai': { name: META_SHARP_AI.name, tagline: META_SHARP_AI.tagline, subtitle: META_SHARP_AI.subtitle, description: META_SHARP_AI.description, strengths: META_SHARP_AI.strengths, integrations: META_SHARP_AI.integrations, featuresSummary: META_SHARP_AI.featuresSummary, features: META_SHARP_AI.features },
+  'da-ai-pack': { name: DA_AI_PACK.name, tagline: DA_AI_PACK.headline, subtitle: 'AI 기반 업무 프로세스 자동화를 통해 80% 이상 공수 절감', features: DA_AI_PACK.features.map((f, i) => ({ num: String(i + 1).padStart(2, '0'), title: f.title, desc: f.desc })) },
 };
 
 const IMAGE_MAP: Record<string, { main?: string; screenshot?: string; architecture?: string; logo?: string }> = {
@@ -40,6 +42,8 @@ const IMAGE_MAP: Record<string, { main?: string; screenshot?: string; architectu
   'dq-sharp': { main: ENCORE_IMAGES.dq.main, screenshot: ENCORE_IMAGES.dq.screenshot, architecture: ENCORE_IMAGES.dq.architecture, logo: ENCORE_IMAGES.dq.logo },
   'ap-sharp': { main: ENCORE_IMAGES.ap.main, screenshot: ENCORE_IMAGES.ap.screenshot, architecture: ENCORE_IMAGES.ap.architecture, logo: ENCORE_IMAGES.ap.logo },
   'dp-sharp': { main: ENCORE_IMAGES.dp.main, screenshot: ENCORE_IMAGES.dp.screenshot, architecture: ENCORE_IMAGES.dp.architecture, logo: ENCORE_IMAGES.dp.logo },
+  'meta-ai': { main: '/images/encore/ai/meta-ai-main.jpg', architecture: '/images/encore/ai/meta-ai-workflow.jpg', screenshot: '/images/encore/ai/meta-ai-rag.jpg' },
+  'da-ai-pack': { main: '/images/encore/ai/da-ai-pack-main.jpg', logo: '/images/encore/ai/da-ai-pack-logo.jpg' },
 };
 
 const ACCENT_MAP: Record<string, string> = {
@@ -51,6 +55,8 @@ const ACCENT_MAP: Record<string, string> = {
   'dp-sharp': '#b8a060',
   'da-dq-edition': '#5b9a7d',
   'da-total-package': '#c4975a',
+  'meta-ai': '#7c5cbf',
+  'da-ai-pack': '#5a8cb0',
 };
 
 export default function ProductDetailPage() {
@@ -413,6 +419,8 @@ export default function ProductDetailPage() {
               { name: 'AP#', slug: 'ap-sharp', sub: '영향도 분석', color: '#c4975a' },
               { name: 'DP#', slug: 'dp-sharp', sub: '데이터 포털', color: '#b8a060' },
               { name: 'DATAWARE', slug: 'dataware', sub: 'All-in-One', color: '#36c88a' },
+              { name: 'META# AI', slug: 'meta-ai', sub: 'AI 거버넌스', color: '#7c5cbf' },
+              { name: 'DA# AI Pack', slug: 'da-ai-pack', sub: 'AI 모델링', color: '#5a8cb0' },
             ].filter(p => p.slug !== slug).slice(0, 4).map((p) => (
               <Link key={p.slug} href={`/products/${p.slug}`} style={{
                 padding: '24px 20px', backgroundColor: '#fff', textDecoration: 'none', position: 'relative', overflow: 'hidden', display: 'block',

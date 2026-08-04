@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { DATAWARE_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS, NAV_ITEMS, QUICK_LINKS } from './header-data';
+import { DATAWARE_PRODUCTS, AI_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS, NAV_ITEMS, QUICK_LINKS } from './header-data';
 import type { SsrMenuItem } from '@/app/layout';
 
 interface MobileMenuProps {
@@ -49,7 +49,36 @@ export default function MobileMenu({ onClose, ssrMenu }: MobileMenuProps) {
               className="ml-4 mt-1 space-y-1 pl-4"
               style={{ borderLeft: '2px solid #e6e8ec' }}
             >
+              <p className="text-xs font-bold mt-1 mb-1 px-3" style={{ color: '#94a3b8', letterSpacing: '0.08em' }}>DATA</p>
               {DATAWARE_PRODUCTS.map((product) => (
+                <Link
+                  key={product.slug}
+                  href={`/products/${product.slug}`}
+                  onClick={() => { onClose(); setDatawareOpen(false); }}
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors"
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#f6f8fa'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'transparent'; }}
+                >
+                  <span
+                    className="w-7 h-7 flex items-center justify-center font-bold shrink-0"
+                    style={{
+                      color: product.color,
+                      backgroundColor: product.color + '18',
+                      fontSize: product.initial.length > 1 ? '9px' : '13px',
+                      letterSpacing: product.initial.length > 1 ? '-0.5px' : '0',
+                    }}
+                  >
+                    {product.initial}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold" style={{ color: '#111111' }}>{product.name}</span>
+                    <span className="text-xs" style={{ color: '#888d94' }}>{product.subtitle}</span>
+                  </div>
+                </Link>
+              ))}
+              <div style={{ margin: '8px 12px', height: 1, background: '#e6e8ec' }} />
+              <p className="text-xs font-bold mt-1 mb-1 px-3" style={{ color: '#94a3b8', letterSpacing: '0.08em' }}>AI</p>
+              {AI_PRODUCTS.map((product) => (
                 <Link
                   key={product.slug}
                   href={`/products/${product.slug}`}

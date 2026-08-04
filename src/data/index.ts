@@ -12,6 +12,8 @@ export {
   DQ_SHARP,
   AP_SHARP,
   DP_SHARP,
+  META_SHARP_AI,
+  DA_AI_PACK,
   DATAWARE_LINEUP,
 } from './products';
 export {

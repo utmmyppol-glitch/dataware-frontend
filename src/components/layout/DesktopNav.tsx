@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { NAV_ITEMS, DATAWARE_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS } from './header-data';
+import { NAV_ITEMS, DATAWARE_PRODUCTS, AI_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS } from './header-data';
 import type { SsrMenuItem } from '@/app/layout';
 
 export default function DesktopNav({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null }) {
@@ -91,6 +91,17 @@ export default function DesktopNav({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null
                     <div style={{ margin: '8px 20px', height: 1, background: '#e6e8ec' }} />
                     <p style={{ padding: '10px 20px 6px', fontSize: 10, fontWeight: 600, color: '#98A2B3', letterSpacing: '0.08em' }}>DATA</p>
                     {DATAWARE_PRODUCTS.map(p => (
+                      <Link key={p.slug} href={`/products/${p.slug}`} onClick={closeDropdown}
+                        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 20px', fontSize: 13, fontWeight: 600, color: '#33363b', textDecoration: 'none', transition: 'background 0.15s' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = '#eef0f2'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>
+                        <span style={{ width: 4, height: 4, background: p.color, flexShrink: 0 }} />
+                        {p.name}
+                      </Link>
+                    ))}
+                    <div style={{ margin: '8px 20px', height: 1, background: '#e6e8ec' }} />
+                    <p style={{ padding: '10px 20px 6px', fontSize: 10, fontWeight: 600, color: '#98A2B3', letterSpacing: '0.08em' }}>AI</p>
+                    {AI_PRODUCTS.map(p => (
                       <Link key={p.slug} href={`/products/${p.slug}`} onClick={closeDropdown}
                         style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 20px', fontSize: 13, fontWeight: 600, color: '#33363b', textDecoration: 'none', transition: 'background 0.15s' }}
                         onMouseEnter={e => { e.currentTarget.style.background = '#eef0f2'; }}

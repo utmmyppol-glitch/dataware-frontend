@@ -332,6 +332,27 @@ export const DP_SHARP = {
   ],
 };
 
+/* ─── META# AI ─── */
+export const META_SHARP_AI = {
+  name: 'META# AI',
+  slug: 'meta-ai',
+  tagline: 'AI 기반 데이터 거버넌스 자동 구축 솔루션',
+  subtitle: 'AI를 활용해 데이터 표준화 워크플로우를 자동화하고 고품질 AI Ready Data를 빠르게 확보합니다.',
+  description: '엔코아의 데이터 관리 컨설팅 노하우와 AI를 결합하여, 데이터 표준화 워크플로우를 자동화하고 그 결과를 메타데이터 관리 시스템에 유연하게 적재합니다. LLM 기반 자동 표준화로 기존 수작업 방식 대비 리소스를 40% 절감할 수 있습니다.',
+  strengths: [
+    { category: 'AI 자동화', items: ['RAG 기반 엔터티명 자동 생성', '컬럼명 한글화 및 속성명 자동 도출', '비표준 단어·이음동의어·금칙어 자동 식별'] },
+    { category: '연계성', items: ['META# 플랫폼과 완벽 연계', '타사 메타관리시스템과도 호환 가능', '공공·대기업 확장성 최적화'] },
+  ],
+  integrations: ['META#', 'DA#'],
+  featuresSummary: 'AI 워크플로우로 데이터 표준화를 자동화하고 메타데이터 품질을 향상',
+  features: [
+    { num: '01', title: '엔터티명 자동 생성', desc: 'RAG 기반으로 업무 문서, 베이스사전, DB카탈로그를 활용한 AI 워크플로우' },
+    { num: '02', title: '컬럼명 한글화', desc: '속성명 자동 도출 및 분류어 정의' },
+    { num: '03', title: '비표준 단어 정의', desc: '이음동의어, 금칙어 식별을 통한 표준 사전 품질 향상' },
+    { num: '04', title: 'AI Ready Data', desc: 'LLM 기반 자동 표준화로 고품질 데이터 확보, 리소스 40% 절감' },
+  ],
+};
+
 /* ─── 제품 라인업 (GNB 메뉴 순서) ─── */
 export const PRODUCT_LINEUP = [
   { name: 'DA#', slug: 'da-shop', subtitle: '데이터 모델링', isNew: false },
@@ -346,4 +367,5 @@ export const DATAWARE_LINEUP = [
   { name: 'DQ#', slug: 'dq-sharp', subtitle: '데이터 품질관리', isNew: true, gs: true },
   { name: 'AP#', slug: 'ap-sharp', subtitle: '애플리케이션 영향도 분석', isNew: true, gs: true },
   { name: 'DP#', slug: 'dp-sharp', subtitle: '데이터 포털', isNew: true },
+  { name: 'META# AI', slug: 'meta-ai', subtitle: 'AI 거버넌스 자동화', isNew: true },
 ] as const;
