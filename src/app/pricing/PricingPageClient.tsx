@@ -140,10 +140,8 @@ export default function PricingPageClient() {
             ))}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 32 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32 }}>
             <a href={PROCUREMENT.da.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: G, fontWeight: 600, textDecoration: 'none' }}>{PROCUREMENT.da.label} →</a>
-            <span style={{ color: '#E7E2D8' }}>|</span>
-            <a href={PROCUREMENT.dq.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: G, fontWeight: 600, textDecoration: 'none' }}>{PROCUREMENT.dq.label} →</a>
           </div>
         </div>
       </section>

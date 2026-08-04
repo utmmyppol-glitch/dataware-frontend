@@ -56,12 +56,8 @@ export const SYSTEM_REQUIREMENTS = {
 
 export const PROCUREMENT = {
   da: {
-    label: 'DA# 조달청 바로가기',
-    link: 'https://digitalmall.g2b.go.kr/link/GDSF001_01/?ctrtItemMngNo=002460933_1030000017',
-  },
-  dq: {
-    label: 'DQ_Edition 조달청 바로가기',
-    link: 'https://digitalmall.g2b.go.kr/link/GDSF001_01/?ctrtItemMngNo=002460933_1030000016',
+    label: '조달청 바로가기',
+    link: 'https://digitalmall.g2b.go.kr/link/GDSD001_01/?searchKeyword=%EC%9C%A0%EB%8B%88%EC%98%A8%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%A6%88',
   },
 };
 

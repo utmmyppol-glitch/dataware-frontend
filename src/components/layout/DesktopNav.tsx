@@ -207,6 +207,7 @@ export default function DesktopNav({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null
           <li key={item.href}>
             <Link
               href={item.href}
+              {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               className="text-[15px] font-semibold px-5 py-2 transition-colors duration-150 block"
               style={{ color: '#33363b', borderBottom: '2px solid transparent' }}
               onMouseEnter={(e) => {
