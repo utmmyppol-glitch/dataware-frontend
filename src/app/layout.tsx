@@ -46,10 +46,14 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://dataware.unionsyst
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "UNION DATAWARE - DA# 데이터 모델링 & DATAWARE 솔루션",
-  description: "DA#, META#, DQ#, AP#, DF#, ETT#, DP# - 데이터 거버넌스 All-in-One Package. 유니온시스템즈는 엔코아 DATAWARE 공식 총판입니다.",
+  title: {
+    default: 'UNION DATAWARE - DA# 데이터 모델링 & DATAWARE 솔루션',
+    template: '%s | 데이터웨어(엔코아)',
+  },
+  description: 'DA#, META#, DQ#, AP#, DF#, ETT#, DP# - 데이터 거버넌스 All-in-One Package. 유니온시스템즈는 엔코아 DATAWARE 공식 총판입니다.',
+  keywords: ['DATAWARE', 'DA#', '데이터 모델링', '데이터 거버넌스', '엔코아', '메타데이터', '데이터 품질', '유니온시스템즈'],
   openGraph: {
-    siteName: 'UNION DATAWARE',
+    siteName: '데이터웨어(엔코아)',
     locale: 'ko_KR',
     type: 'website',
   },
