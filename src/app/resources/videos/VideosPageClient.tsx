@@ -1,188 +1,48 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { api, type PostResponse, type PageResponse } from '@/lib/api';
 import { formatDateDot as formatDate } from '@/lib/format';
+import EditMarker from '@/components/EditMarker';
 
-interface Video {
-  id: number;
-  series: string;
-  episode: string;
-  title: string;
-  speaker: string;
-  duration: string;
-  date: string;
-  views: string;
-  youtubeId: string;
-  tag: string;
-  tagColor: string;
+interface VideoDetail {
+  youtubeId?: string;
+  speaker?: string;
+  series?: string;
+  episode?: string;
+  duration?: string;
+  tag?: string;
+  tagColor?: string;
 }
 
-const VIDEOS: Video[] = [
-  {
-    id: 1,
-    series: 'DA#5 런칭 세미나',
-    episode: 'Episode 1',
-    title: '새로운 시대의 데이터모델링 — 이화식 대표',
-    speaker: '이화식 대표 (엔코아)',
-    duration: '',
-    date: '2021-11-10',
-    views: '',
-    youtubeId: '33nGO8uZOQ8',
-    tag: '세미나',
-    tagColor: '#36c88a',
-  },
-  {
-    id: 2,
-    series: 'DA#5 런칭 세미나',
-    episode: 'Episode 2',
-    title: '개발스토리 — 정철원 디렉터',
-    speaker: '정철원 디렉터 (엔코아)',
-    duration: '',
-    date: '2021-11-11',
-    views: '',
-    youtubeId: 'CLsXPIB6EH4',
-    tag: '세미나',
-    tagColor: '#36c88a',
-  },
-  {
-    id: 3,
-    series: 'DA#5 런칭 세미나',
-    episode: 'Episode 3',
-    title: '기본구조 및 개념 — 최광희 연구원',
-    speaker: '최광희 연구원 (엔코아)',
-    duration: '',
-    date: '2021-11-11',
-    views: '',
-    youtubeId: 'V-8w2lXyiqY',
-    tag: '세미나',
-    tagColor: '#36c88a',
-  },
-  {
-    id: 4,
-    series: 'DA#5 런칭 세미나',
-    episode: 'Episode 4',
-    title: '달라진 모델링 — 정민수 연구원',
-    speaker: '정민수 연구원 (엔코아)',
-    duration: '',
-    date: '2021-11-11',
-    views: '',
-    youtubeId: 'YMyKMXM3m4U',
-    tag: '세미나',
-    tagColor: '#36c88a',
-  },
-  {
-    id: 5,
-    series: 'DA#5 런칭 세미나',
-    episode: 'Episode 5',
-    title: 'API 그리고 편의기능 — 김기동 연구원',
-    speaker: '김기동 연구원 (엔코아)',
-    duration: '',
-    date: '2021-11-11',
-    views: '',
-    youtubeId: 'CN93yT8UL44',
-    tag: '세미나',
-    tagColor: '#36c88a',
-  },
-  {
-    id: 6,
-    series: 'DA#5 런칭 세미나',
-    episode: 'Episode 6',
-    title: '초보자도 할 수 있는 현행모델 파헤치기 — 이임형 연구원',
-    speaker: '이임형 연구원 (엔코아)',
-    duration: '',
-    date: '2021-11-11',
-    views: '',
-    youtubeId: '1qP1zbsChQc',
-    tag: '세미나',
-    tagColor: '#36c88a',
-  },
-  {
-    id: 7,
-    series: 'DA#5 튜토리얼',
-    episode: 'Tutorial 1',
-    title: '물리객체생성',
-    speaker: '엔코아 기술지원팀',
-    duration: '',
-    date: '2021-11-22',
-    views: '',
-    youtubeId: 'HA7kcXJ3IIo',
-    tag: '튜토리얼',
-    tagColor: '#60a5fa',
-  },
-  {
-    id: 8,
-    series: 'DA#5 튜토리얼',
-    episode: 'Tutorial 2',
-    title: '여러물리모델',
-    speaker: '엔코아 기술지원팀',
-    duration: '',
-    date: '2021-11-22',
-    views: '',
-    youtubeId: 'T1ZCYyOyL3Q',
-    tag: '튜토리얼',
-    tagColor: '#60a5fa',
-  },
-  {
-    id: 9,
-    series: 'DA#5 튜토리얼',
-    episode: 'Tutorial 3',
-    title: '서식적용',
-    speaker: '엔코아 기술지원팀',
-    duration: '',
-    date: '2021-11-22',
-    views: '',
-    youtubeId: 'RXHDtaAUBKs',
-    tag: '튜토리얼',
-    tagColor: '#60a5fa',
-  },
-  {
-    id: 10,
-    series: 'DA#5 튜토리얼',
-    episode: 'Tutorial 4',
-    title: 'DB 리버스',
-    speaker: '엔코아 기술지원팀',
-    duration: '',
-    date: '2021-11-22',
-    views: '',
-    youtubeId: 'jwNKCliYAEw',
-    tag: '튜토리얼',
-    tagColor: '#60a5fa',
-  },
-  {
-    id: 11,
-    series: 'DA#5 튜토리얼',
-    episode: 'Tutorial 5',
-    title: '리버스 후 모델 자동 배치',
-    speaker: '엔코아 기술지원팀',
-    duration: '',
-    date: '2021-11-22',
-    views: '',
-    youtubeId: 'OAFBHAElESQ',
-    tag: '튜토리얼',
-    tagColor: '#60a5fa',
-  },
-  {
-    id: 12,
-    series: 'DA#5 튜토리얼',
-    episode: 'Tutorial 6',
-    title: '자동관계생성',
-    speaker: '엔코아 기술지원팀',
-    duration: '',
-    date: '2021-11-22',
-    views: '',
-    youtubeId: 't12UZTlIR80',
-    tag: '튜토리얼',
-    tagColor: '#60a5fa',
-  },
-];
+function parseVideoDetail(post: PostResponse): VideoDetail {
+  if (!post.detailJson) return {};
+  try { return JSON.parse(post.detailJson); } catch { return {}; }
+}
 
 export default function VideosPageClient() {
   const PER_PAGE = 6;
   const [page, setPage] = useState(0);
   const [playingId, setPlayingId] = useState<number | null>(null);
-  const totalPages = Math.ceil(VIDEOS.length / PER_PAGE);
-  const paged = VIDEOS.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+  const [videos, setVideos] = useState<PostResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    api.getPosts('VIDEO', page, PER_PAGE)
+      .then((data: PageResponse<PostResponse>) => {
+        setVideos(data.content);
+        setTotalPages(data.totalPages);
+        setTotalElements(data.totalElements);
+      })
+      .catch(() => setVideos([]))
+      .finally(() => setLoading(false));
+  }, [page]);
+
+  const paged = videos;
 
   return (
     <main style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
@@ -259,9 +119,7 @@ export default function VideosPageClient() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
             {[
-              { label: '총 강의', value: `${VIDEOS.length}편` },
-              { label: '세미나', value: `${VIDEOS.filter(v => v.tag === '세미나').length}편` },
-              { label: '튜토리얼', value: `${VIDEOS.filter(v => v.tag === '튜토리얼').length}편` },
+              { label: '총 강의', value: `${totalElements}편` },
             ].map((stat) => (
               <div key={stat.label} style={{ textAlign: 'center' }}>
                 <p style={{ fontSize: '28px', fontWeight: '800', color: '#36c88a', margin: '0 0 4px' }}>{stat.value}</p>
@@ -273,9 +131,19 @@ export default function VideosPageClient() {
       </div>
 
       {/* Video Grid */}
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '36px 24px 52px' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '36px 24px 52px', position: 'relative' }}>
+        <EditMarker path="/dataware/posts" />
+        {loading && <p style={{ textAlign: 'center', padding: 40, color: '#94a3b8' }}>불러오는 중...</p>}
         <div key={page} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '24px', minHeight: '500px' }}>
-          {paged.map((video) => (
+          {paged.map((video) => {
+            const vd = parseVideoDetail(video);
+            const youtubeId = vd.youtubeId || '';
+            const speaker = vd.speaker || '';
+            const episode = vd.episode || '';
+            const duration = vd.duration || '';
+            const tag = vd.tag || 'VIDEO';
+            const tagColor = vd.tagColor || '#36c88a';
+            return (
             <article
               key={video.id}
               style={{
@@ -308,10 +176,10 @@ export default function VideosPageClient() {
                   overflow: 'hidden',
                 }}
               >
-                {playingId === video.id ? (
+                {playingId === video.id && youtubeId ? (
                   /* YouTube embed */
                   <iframe
-                    src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1`}
+                    src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
                     title={video.title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -322,7 +190,7 @@ export default function VideosPageClient() {
                     {/* YouTube thumbnail */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={`https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`}
+                      src={youtubeId ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg` : (video.thumbnailUrl || '')}
                       alt={video.title}
                       style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                     />
@@ -352,7 +220,7 @@ export default function VideosPageClient() {
                     </div>
 
                     {/* Duration badge */}
-                    {video.duration && (
+                    {duration && (
                       <span
                         style={{
                           position: 'absolute',
@@ -367,12 +235,12 @@ export default function VideosPageClient() {
                           padding: '2px 7px',
                         }}
                       >
-                        {video.duration}
+                        {duration}
                       </span>
                     )}
 
                     {/* Episode badge */}
-                    <span
+                    {episode && <span
                       style={{
                         position: 'absolute',
                         top: '10px',
@@ -386,8 +254,8 @@ export default function VideosPageClient() {
                         padding: '2px 8px',
                       }}
                     >
-                      {video.episode}
-                    </span>
+                      {episode}
+                    </span>}
                   </>
                 )}
               </div>
@@ -399,15 +267,15 @@ export default function VideosPageClient() {
                     style={{
                       fontSize: '11px',
                       fontWeight: '700',
-                      color: video.tagColor,
-                      backgroundColor: video.tagColor + '18',
+                      color: tagColor,
+                      backgroundColor: tagColor + '18',
                       borderRadius: '4px',
                       padding: '2px 8px',
                     }}
                   >
-                    {video.tag}
+                    {tag}
                   </span>
-                  <span style={{ fontSize: '12px', color: '#888d94' }}>{formatDate(video.date)}</span>
+                  <span style={{ fontSize: '12px', color: '#888d94' }}>{formatDate(video.createdAt)}</span>
                 </div>
 
                 <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#111111', margin: '0 0 8px', lineHeight: 1.45 }}>
@@ -432,21 +300,22 @@ export default function VideosPageClient() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </div>
-                  <span style={{ fontSize: '12px', color: '#676767' }}>{video.speaker}</span>
+                  <span style={{ fontSize: '12px', color: '#676767' }}>{speaker}</span>
                 </div>
 
-                {video.views && (
+                {video.viewCount > 0 && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '12px' }}>
                     <svg width="13" height="13" fill="none" stroke="#888d94" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
-                    <span style={{ fontSize: '12px', color: '#888d94' }}>조회수 {video.views}</span>
+                    <span style={{ fontSize: '12px', color: '#888d94' }}>조회수 {video.viewCount}</span>
                   </div>
                 )}
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
 
         {/* Pagination */}

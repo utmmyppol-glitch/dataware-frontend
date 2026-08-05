@@ -201,6 +201,8 @@ export default function EducationPageClient() {
                 <form onSubmit={async (e) => {
                   e.preventDefault();
                   const fd = new FormData(e.currentTarget);
+                  const consent = fd.get('consentPrivacy');
+                  if (!consent) { alert('개인정보 수집·이용에 동의해 주세요.'); return; }
                   try {
                     await api.submitEducation({
                       name: fd.get('name') as string,
@@ -214,7 +216,9 @@ export default function EducationPageClient() {
                       consentThirdParty: false,
                     });
                     setNotifySubmitted(true);
-                  } catch { setNotifySubmitted(true); }
+                  } catch {
+                    alert('신청 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+                  }
                 }} style={{ textAlign: 'left' }}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4" style={{ marginBottom: 16 }}>
                     <div>
@@ -234,6 +238,12 @@ export default function EducationPageClient() {
                       <input name="email" type="email" required placeholder="이메일" className={inputBase} value={notifyEmail} onChange={e => setNotifyEmail(e.target.value)} />
                     </div>
                   </div>
+                  <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 20, cursor: 'pointer' }}>
+                    <input type="checkbox" name="consentPrivacy" value="true" required style={{ marginTop: 3 }} />
+                    <span style={{ fontSize: 13, color: '#475467', lineHeight: 1.5 }}>
+                      개인정보 수집·이용에 동의합니다. <span style={{ color: '#ef4444' }}>*</span>
+                    </span>
+                  </label>
                   <div style={{ textAlign: 'center' }}>
                     <button type="submit" style={{ padding: '14px 40px', backgroundColor: '#36c88a', color: '#fff', fontSize: 15, fontWeight: 700, border: 'none', cursor: 'pointer' }}>
                       교육 알림 신청하기

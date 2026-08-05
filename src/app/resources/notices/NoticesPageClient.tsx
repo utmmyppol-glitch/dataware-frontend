@@ -1,19 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
-import { NOTICES } from '@/data/notices';
+import { api, type PostResponse, type PageResponse } from '@/lib/api';
 import { formatDateDot as formatDate } from '@/lib/format';
+import EditMarker from '@/components/EditMarker';
 
 export default function NoticesPageClient() {
   const PER_PAGE = 6;
   const [page, setPage] = useState(0);
+  const [notices, setNotices] = useState<PostResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
   const heroRef = useHeroAnim();
   const listRef = useGsapReveal();
 
-  const totalPages = Math.ceil(NOTICES.length / PER_PAGE);
-  const paged = NOTICES.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+  useEffect(() => {
+    setLoading(true);
+    api.getPosts('NOTICE', page, PER_PAGE)
+      .then((data: PageResponse<PostResponse>) => {
+        setNotices(data.content);
+        setTotalPages(data.totalPages);
+      })
+      .catch(() => setNotices([]))
+      .finally(() => setLoading(false));
+  }, [page]);
 
   return (
     <div style={{ background: '#ffffff' }}>
@@ -39,13 +51,16 @@ export default function NoticesPageClient() {
       </section>
 
       {/* ── 2. Notices Card Grid ── */}
-      <section className="section-pad" style={{ backgroundColor: '#f8fafc', minHeight: '60vh' }}>
+      <section className="section-pad" style={{ backgroundColor: '#f8fafc', minHeight: '60vh', position: 'relative' }}>
+        <EditMarker path="/dataware/posts" label="N" />
         <div ref={listRef} style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
           <div key={page} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 24 }}>
-            {paged.map((notice) => (
+            {loading && <p style={{ color: '#94a3b8', gridColumn: '1 / -1', textAlign: 'center', padding: 40 }}>불러오는 중...</p>}
+            {!loading && notices.length === 0 && <p style={{ color: '#94a3b8', gridColumn: '1 / -1', textAlign: 'center', padding: 40 }}>등록된 공지사항이 없습니다.</p>}
+            {notices.map((notice) => (
               <Link
                 key={notice.id}
-                href={`/resources/notices/${notice.slug}`}
+                href={`/resources/notices/${notice.slug || notice.id}`}
                 data-anim
                 style={{
                   display: 'block',
@@ -61,9 +76,9 @@ export default function NoticesPageClient() {
               >
                 {/* 썸네일 */}
                 <div style={{ height: 180, backgroundColor: '#f0f2f5', overflow: 'hidden' }}>
-                  {notice.thumbnail ? (
+                  {notice.thumbnailUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={notice.thumbnail} alt={notice.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                    <img src={notice.thumbnailUrl} alt={notice.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
                       onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
                       onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
                       loading="lazy"
@@ -76,7 +91,7 @@ export default function NoticesPageClient() {
                 </div>
                 {/* 카드 바디 */}
                 <div style={{ padding: '20px 24px' }}>
-                  <p style={{ fontSize: 12, color: '#94a3b8', marginBottom: 8 }}>{formatDate(notice.date)}</p>
+                  <p style={{ fontSize: 12, color: '#94a3b8', marginBottom: 8 }}>{formatDate(notice.createdAt)}</p>
                   <h3 style={{ fontSize: 17, fontWeight: 700, color: '#101828', lineHeight: 1.4, marginBottom: 10 }}>
                     {notice.title}
                   </h3>

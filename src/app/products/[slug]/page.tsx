@@ -1,13 +1,16 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   DATAWARE_OVERVIEW, DA_SHARP, META_SHARP, DQ_SHARP,
   AP_SHARP, DP_SHARP, META_SHARP_AI, DA_AI_PACK,
-  DA_DQ_EDITION, DA_TOTAL_PACKAGE, IMAGES, ENCORE_IMAGES,
+  DA_DQ_EDITION, DA_TOTAL_PACKAGE, ENCORE_IMAGES,
 } from '@/data';
+import { api, type ProductResponse } from '@/lib/api';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import EditMarker from '@/components/EditMarker';
 
 /* ── slug → product data (enriched) ── */
 type ProductData = {
@@ -22,6 +25,7 @@ type ProductData = {
   features: { num: string; title: string; desc: string }[];
 };
 
+/* 하드코딩 fallback — DB에 detailJson 입력 전까지 사용 */
 const PRODUCT_MAP: Record<string, ProductData> = {
   'dataware': { name: DATAWARE_OVERVIEW.name, tagline: DATAWARE_OVERVIEW.tagline, subtitle: DATAWARE_OVERVIEW.description, description: DATAWARE_OVERVIEW.description, features: DATAWARE_OVERVIEW.components.map((c, i) => ({ num: String(i + 1).padStart(2, '0'), title: `${c.product} — ${c.desc}`, desc: c.features.join(', ') })) },
   'da-sharp': { name: DA_SHARP.name, tagline: DA_SHARP.tagline, subtitle: DA_SHARP.subtitle, features: Object.values(DA_SHARP.features).map((g, i) => ({ num: String(i + 1).padStart(2, '0'), title: g.label, desc: g.tabs.map(t => t.title).join(' · ') })) },
@@ -37,13 +41,13 @@ const PRODUCT_MAP: Record<string, ProductData> = {
 
 const IMAGE_MAP: Record<string, { main?: string; screenshot?: string; architecture?: string; logo?: string }> = {
   'dataware': { main: ENCORE_IMAGES.dataware.overview },
-  'da-sharp': { main: IMAGES.hero.da.img },
-  'meta-sharp': { main: ENCORE_IMAGES.meta.main, screenshot: ENCORE_IMAGES.meta.screenshot, architecture: ENCORE_IMAGES.meta.architecture, logo: ENCORE_IMAGES.meta.logo },
-  'dq-sharp': { main: ENCORE_IMAGES.dq.main, screenshot: ENCORE_IMAGES.dq.screenshot, architecture: ENCORE_IMAGES.dq.architecture, logo: ENCORE_IMAGES.dq.logo },
-  'ap-sharp': { main: ENCORE_IMAGES.ap.main, screenshot: ENCORE_IMAGES.ap.screenshot, architecture: ENCORE_IMAGES.ap.architecture, logo: ENCORE_IMAGES.ap.logo },
-  'dp-sharp': { main: ENCORE_IMAGES.dp.main, screenshot: ENCORE_IMAGES.dp.screenshot, architecture: ENCORE_IMAGES.dp.architecture, logo: ENCORE_IMAGES.dp.logo },
-  'meta-ai': { main: '/images/encore/ai/meta-ai-main.jpg', architecture: '/images/encore/ai/meta-ai-workflow.jpg', screenshot: '/images/encore/ai/meta-ai-rag.jpg' },
-  'da-ai-pack': { main: '/images/encore/ai/da-ai-pack-main.jpg', logo: '/images/encore/ai/da-ai-pack-logo.jpg' },
+  'da-sharp': { main: ENCORE_IMAGES.da.main },
+  'meta-sharp': { main: ENCORE_IMAGES.meta.screenshot, architecture: ENCORE_IMAGES.meta.architecture, logo: ENCORE_IMAGES.meta.logo },
+  'dq-sharp': { main: ENCORE_IMAGES.dq.screenshot, architecture: ENCORE_IMAGES.dq.architecture, logo: ENCORE_IMAGES.dq.logo },
+  'ap-sharp': { main: ENCORE_IMAGES.ap.screenshot, architecture: ENCORE_IMAGES.ap.architecture, logo: ENCORE_IMAGES.ap.logo },
+  'dp-sharp': { main: ENCORE_IMAGES.dp.screenshot, architecture: ENCORE_IMAGES.dp.architecture, logo: ENCORE_IMAGES.dp.logo },
+  'meta-ai': { main: ENCORE_IMAGES.metaAi.main, architecture: ENCORE_IMAGES.metaAi.architecture, screenshot: ENCORE_IMAGES.metaAi.screenshot },
+  'da-ai-pack': { main: ENCORE_IMAGES.daAiPack.main, architecture: ENCORE_IMAGES.daAiPack.architecture, screenshot: ENCORE_IMAGES.daAiPack.screenshot },
 };
 
 const ACCENT_MAP: Record<string, string> = {
@@ -59,10 +63,42 @@ const ACCENT_MAP: Record<string, string> = {
   'da-ai-pack': '#5a8cb0',
 };
 
+function apiToProductData(apiProduct: ProductResponse): ProductData | null {
+  if (!apiProduct.detailJson) return null;
+  try {
+    const detail = JSON.parse(apiProduct.detailJson);
+    return {
+      name: apiProduct.name,
+      tagline: detail.tagline || apiProduct.subtitle || '',
+      subtitle: apiProduct.subtitle || '',
+      certification: apiProduct.certification || detail.certification,
+      description: apiProduct.description || detail.description,
+      strengths: detail.strengths,
+      integrations: detail.integrations,
+      featuresSummary: detail.featuresSummary,
+      architectureCaption: detail.architectureCaption,
+      screenshotCaption: detail.screenshotCaption,
+      features: detail.features || [],
+    };
+  } catch { return null; }
+}
+
 export default function ProductDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const product = PRODUCT_MAP[slug];
+  const [apiProduct, setApiProduct] = useState<ProductData | null>(null);
+
+  useEffect(() => {
+    api.getProduct(slug)
+      .then((resp) => {
+        const parsed = apiToProductData(resp);
+        if (parsed) setApiProduct(parsed);
+      })
+      .catch(() => {});
+  }, [slug]);
+
+  // API 데이터 우선, 없으면 하드코딩 fallback
+  const product = apiProduct || PRODUCT_MAP[slug];
   const images = IMAGE_MAP[slug];
   const accent = ACCENT_MAP[slug] || '#36c88a';
   const heroRef = useHeroAnim();
@@ -88,6 +124,7 @@ export default function ProductDetailPage() {
           SCENE 1 — HERO
           ═══════════════════════════════════════════════════════════ */}
       <section ref={heroRef} style={{ position: 'relative', minHeight: '100vh', width: '100%', backgroundColor: '#0B1220', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
+        <EditMarker path="/dataware/products" style={{ top: 100, zIndex: 10 }} />
         <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
           <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px)', backgroundSize: '72px 72px' }} />
           <div style={{ position: 'absolute', top: '10%', right: '5%', width: '40vw', height: '40vw', maxWidth: '600px', maxHeight: '600px', background: `radial-gradient(circle, ${accent}08 0%, transparent 50%)` }} />

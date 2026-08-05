@@ -36,6 +36,14 @@ export const api = {
     fetchApi<PageResponse<CustomerStoryResponse>>(
       `/customer-stories?page=${page}&size=${size}${industry ? `&industry=${industry}` : ''}`
     ),
+  getCustomerStory: (id: number) =>
+    fetchApi<CustomerStoryResponse>(`/customer-stories/${id}`),
+  getCustomerStoryBySlug: (slug: string) =>
+    fetchApi<CustomerStoryResponse>(`/customer-stories/slug/${slug}`),
+
+  // Posts by slug
+  getPostBySlug: (slug: string) =>
+    fetchApi<PostResponse>(`/posts/slug/${slug}`),
 
   // Banners
   getBanners: (position?: string) =>
@@ -104,16 +112,19 @@ interface ProductResponse {
   iconUrl: string;
   thumbnailUrl: string;
   certification: string;
+  detailJson: string | null;
   sortOrder: number;
 }
 
 interface PostResponse {
   id: number;
   title: string;
+  slug: string;
   content: string;
   excerpt: string;
   category: string;
   thumbnailUrl: string;
+  detailJson: string | null;
   viewCount: number;
   createdAt: string;
 }
@@ -121,11 +132,13 @@ interface PostResponse {
 interface CustomerStoryResponse {
   id: number;
   company: string;
+  slug: string;
   industry: string;
   title: string;
   content: string;
   thumbnailUrl: string;
   logoUrl: string;
+  detailJson: string | null;
   createdAt: string;
 }
 

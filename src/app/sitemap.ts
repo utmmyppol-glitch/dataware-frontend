@@ -20,14 +20,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/customers`, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${SITE_URL}/resources`, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${SITE_URL}/resources/notices`, changeFrequency: 'weekly', priority: 0.6 },
-    { url: `${SITE_URL}/resources/docs`, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/resources/videos`, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/events`, changeFrequency: 'weekly', priority: 0.6 },
     { url: `${SITE_URL}/education`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/seminar`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/download`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/contact`, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${SITE_URL}/faq`, changeFrequency: 'monthly', priority: 0.6 },
   ];
 
   // Dynamically add customer story pages

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { CustomerStoryResponse } from '@/lib/api';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
-import { CUSTOMER_STORIES } from '@/data/customers';
+import EditMarker from '@/components/EditMarker';
 
 const ACCENT = '#36c88a';
 const INDUSTRIES = ['전체', '공공기관', '금융', '유통', '제조'];
@@ -40,7 +40,8 @@ export default function CustomersPageClient({ initialStories }: { initialStories
       </section>
 
       {/* ═══ FILTERS + CARD GRID ═══ */}
-      <section ref={gridRef} style={{ backgroundColor: '#f8fafc', minHeight: '60vh' }}>
+      <section ref={gridRef} style={{ backgroundColor: '#f8fafc', minHeight: '60vh', position: 'relative' }}>
+        <EditMarker path="/dataware/customer-stories" />
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '56px 24px 80px' }}>
           {/* 필터 */}
           <div data-anim style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 8, marginBottom: 48 }}>
@@ -61,9 +62,8 @@ export default function CustomersPageClient({ initialStories }: { initialStories
           {/* 카드 그리드 — 원본 사이트처럼 썸네일 카드 */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 24 }}>
             {filtered.map((story) => {
-              const matched = CUSTOMER_STORIES.find(cs => cs.company === story.company || story.company.includes(cs.company));
-              const slug = matched?.slug;
-              const hasDetail = !!(matched?.detail);
+              const slug = story.slug;
+              const hasDetail = !!(slug);
 
               const card = (
                 <div

@@ -1,133 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { api, type PostResponse, type PageResponse } from '@/lib/api';
 import { formatDateDot as formatDate } from '@/lib/format';
+import EditMarker from '@/components/EditMarker';
 
-const STATIC_EVENTS = [
-  {
-    id: 19,
-    title: '2025 DA# 조달 캠페인',
-    date: '2025-11-03',
-    excerpt: '2025 연말 맞이 DA# 조달 구매 캠페인. NO.1 데이터 모델링 툴 DA# 도입과 함께 따뜻한 한 끼를 전하세요! 솔루션 도입을 넘어 사회적 가치 실현까지!',
-    detail: '2025 연말 맞이 DA# 조달 구매 캠페인입니다.\n\nNO.1 데이터 모델링 툴 DA# 도입과 함께 따뜻한 한 끼를 전하세요!\n솔루션 도입을 넘어 사회적 가치 실현까지!\n\n• 대상: 조달청 나라장터를 통한 DA# 신규 구매 고객\n• 혜택: 구매 고객 전원 기부 참여 + 무료 교육 제공\n• 문의: 02-706-8999',
-    image: '/images/uniondata/%EC%9C%A0%EB%8B%88%EC%98%A82025DA_%EC%A1%B0%EB%8B%AC%EA%B5%AC%EB%A7%A4%EC%BA%A0%ED%8E%98%EC%9D%B8.png',
-    tag: '이벤트',
-    tagColor: '#36c88a',
-    status: '진행중',
-  },
-  {
-    id: 18,
-    title: 'DA~드리는 DA# 여름 할인 이벤트',
-    date: '2025-07-01',
-    excerpt: 'AI 시대 데이터 자산화 전략 START! DA# 여름 할인 이벤트. 빠른 결정, 더욱 합리적인 혜택! 2025년 8월 29일까지 이번 여름 마지막 기회를 놓치지 마세요~!',
-    detail: 'AI 시대 데이터 자산화 전략 START!\n\nDA# 여름 할인 이벤트\n빠른 결정, 더욱 합리적인 혜택!\n\n• 기간: 2025년 7월 1일 ~ 8월 29일\n• 대상: DA# 신규 구매 고객\n• 혜택: 특별 할인가 적용\n• 문의: 02-706-8999',
-    image: '/images/uniondata/0707_head.png',
-    tag: '프로모션',
-    tagColor: '#f59e0b',
-    status: '진행중',
-  },
-  {
-    id: 17,
-    title: '2025 을사년 맞이 BBAM! 프로모션',
-    date: '2025-02-03',
-    excerpt: '2025년 을사년 맞이 기간 내 신규 구매 고객께 BBAM!하게 드리는 구매 프로모션. 견적 문의 02-706-8999',
-    detail: '2025년 을사년 맞이 BBAM! 프로모션\n\n기간 내 신규 구매 고객께 BBAM!하게 드리는 구매 프로모션입니다.\n\n• 기간: 2025년 2월 3일 ~ 3월 31일\n• 대상: DA# 신규 구매 고객\n• 견적 문의: 02-706-8999',
-    image: '/images/uniondata/0000.png',
-    tag: '프로모션',
-    tagColor: '#f59e0b',
-    status: '종료',
-  },
-  {
-    id: 16,
-    title: 'DATAWARE DA# 통합 패키지 출시 이벤트',
-    date: '2024-11-29',
-    excerpt: '4개 제품 스펙을 하나의 라이선스로! DA# 통합 패키지 출시 기념 이벤트. 제품 구매 문의 고객 선착순 30분께 모바일 주유권을 제공합니다.',
-    detail: 'DATAWARE DA# 통합 패키지 출시 이벤트\n\n4개 제품 스펙을 하나의 라이선스로!\nDA# 통합 패키지 출시 기념 이벤트입니다.\n\n• 혜택: 제품 구매 문의 고객 선착순 30분께 모바일 주유권 제공\n• 포함 제품: DA# Architecture + DQ Edition + Contents Builder + AI Powered Pack\n• 문의: 02-706-8999',
-    image: '/images/uniondata/0000-1.png',
-    tag: '이벤트',
-    tagColor: '#36c88a',
-    status: '종료',
-  },
-  {
-    id: 14,
-    title: 'DA# 보상판매 이벤트',
-    date: '2024-03-31',
-    excerpt: '국산 모델링 S/W 시장 점유율 및 인지도 1위 기념! 2024 데이터 모델링 툴 DA# 보상판매 이벤트. 최대 55% 할인!',
-    detail: '국산 모델링 S/W 시장 점유율 및 인지도 1위 기념!\n\n2024 데이터 모델링 툴 DA# 보상판매 이벤트\n최대 55% 할인!\n\n• 기간: 2024년 10월 1일 ~ 12월 31일\n• 조건: 기존 타 브랜드 정품 보유 시 인증 조건으로 할인 구매 가능\n• 할인가: 8,970,000원 → 4,000,000원\n• 문의: 02-706-8999',
-    image: '/images/uniondata/2023_thum.jpg',
-    tag: '프로모션',
-    tagColor: '#f59e0b',
-    status: '종료',
-  },
-  {
-    id: 15,
-    title: '2024 갑진년 맞이 값진 구매 프로모션',
-    date: '2024-01-23',
-    excerpt: '2024 청룡의 해 갑진년 맞이 유니온시스템즈와 함께 하는 값진 구매 프로모션! 선착순 24분께만 드리는 특별 혜택.',
-    detail: '2024 갑진년 맞이 값진 구매 프로모션\n\n2024 청룡의 해 갑진년 맞이\n유니온시스템즈와 함께 하는 값진 구매 프로모션!\n\n• 혜택: 선착순 24분께만 드리는 특별 혜택\n• 문의: 02-706-8999',
-    image: '',
-    tag: '프로모션',
-    tagColor: '#f59e0b',
-    status: '종료',
-  },
-  {
-    id: 13,
-    title: 'DA# 프로젝트 라이선스 출시 이벤트',
-    date: '2022-12-06',
-    excerpt: 'DA# 프로젝트 라이선스 출시 이벤트',
-    detail: 'DA# 프로젝트 라이선스 출시 이벤트\n\n• 기간: 2023.01.01 ~ 2023.12.31\n• 문의: 02-706-8999',
-    image: '',
-    tag: '이벤트',
-    tagColor: '#36c88a',
-    status: '종료',
-  },
-  {
-    id: 12,
-    title: '공공데이터 품질관리 수준평가 대응 설명회',
-    date: '2022-08-26',
-    excerpt: '공공데이터 품질관리 수준평가 대응 설명회',
-    detail: '공공데이터 품질관리 수준평가 대응 설명회\n\n• 문의: 02-706-8999',
-    image: '/images/uniondata/0922-001.png',
-    tag: '설명회',
-    tagColor: '#8b5cf6',
-    status: '종료',
-  },
-  {
-    id: 11,
-    title: 'ERD 시연, 데이터 관계파악 설명회',
-    date: '2022-03-14',
-    excerpt: 'ERD 시연, 데이터 관계파악 설명회',
-    detail: 'ERD 시연, 데이터 관계파악 설명회\n\n• 문의: 02-706-8999',
-    image: '',
-    tag: '설명회',
-    tagColor: '#8b5cf6',
-    status: '종료',
-  },
-  {
-    id: 10,
-    title: '찾아가는 데이터모델링 DA# 설명회',
-    date: '2022-02-08',
-    excerpt: '찾아가는 데이터모델링 DA# 설명회',
-    detail: '찾아가는 데이터모델링 DA# 설명회\n\n• 문의: 02-706-8999',
-    image: '',
-    tag: '설명회',
-    tagColor: '#8b5cf6',
-    status: '종료',
-  },
-];
+interface EventDetail {
+  tag?: string;
+  tagColor?: string;
+  status?: string;
+}
+
+function parseDetail(post: PostResponse): EventDetail {
+  if (!post.detailJson) return { tag: '이벤트', tagColor: '#36c88a', status: '종료' };
+  try { return JSON.parse(post.detailJson); } catch { return { tag: '이벤트', tagColor: '#36c88a', status: '종료' }; }
+}
 
 export default function EventsPageClient() {
-  const [events] = useState(STATIC_EVENTS);
+  const PER_PAGE = 4;
+  const [events, setEvents] = useState<PostResponse[]>([]);
+  const [totalElements, setTotalElements] = useState(0);
   const [openId, setOpenId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
   const heroRef = useHeroAnim();
   const contentRef = useGsapReveal();
-
-  const PER_PAGE = 4;
   const [page, setPage] = useState(0);
-  const totalPages = Math.ceil(events.length / PER_PAGE);
-  const paged = events.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+  const [totalPages, setTotalPages] = useState(0);
+
+  useEffect(() => {
+    setLoading(true);
+    api.getPosts('EVENT', page, PER_PAGE)
+      .then((data: PageResponse<PostResponse>) => {
+        setEvents(data.content);
+        setTotalPages(data.totalPages);
+        setTotalElements(data.totalElements);
+      })
+      .catch(() => setEvents([]))
+      .finally(() => setLoading(false));
+  }, [page]);
+
+  const paged = events;
 
   return (
     <main style={{ backgroundColor: '#fff', minHeight: '100vh' }}>
@@ -159,7 +73,7 @@ export default function EventsPageClient() {
           {/* Quick stats */}
           <div data-hero style={{ marginTop: '48px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', gap: '40px' }}>
             <div>
-              <span style={{ fontSize: '28px', fontWeight: 700, color: '#F9FAFB' }}>{events.length}</span>
+              <span style={{ fontSize: '28px', fontWeight: 700, color: '#F9FAFB' }}>{totalElements}</span>
               <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', marginTop: '2px' }}>전체 이벤트</p>
             </div>
           </div>
@@ -171,13 +85,19 @@ export default function EventsPageClient() {
       {/* ═══════════════════════════════════════════
           CONTENT — Featured + List
           ═══════════════════════════════════════════ */}
-      <div ref={contentRef} style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 24px' }}>
+      <div ref={contentRef} style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 24px', position: 'relative' }}>
+        <EditMarker path="/dataware/posts" />
         <div key={page} className="page-fade" style={{ minHeight: '600px' }}>
 
         {/* Events — clickable list with detail */}
+        {loading && <p style={{ textAlign: 'center', padding: 40, color: '#94a3b8' }}>불러오는 중...</p>}
         <div style={{ borderTop: '1px solid rgba(15,23,42,0.08)' }}>
           {paged.map((event) => {
             const isOpen = openId === event.id;
+            const detail = parseDetail(event);
+            const tag = detail.tag || '이벤트';
+            const tagColor = detail.tagColor || '#36c88a';
+            const status = detail.status || '종료';
             return (
               <article key={event.id} data-anim style={{ borderBottom: '1px solid rgba(15,23,42,0.06)' }}>
                 {/* Row header — always visible */}
@@ -197,12 +117,12 @@ export default function EventsPageClient() {
                   onMouseEnter={e => { if (!isOpen) { e.currentTarget.style.paddingLeft = '16px'; e.currentTarget.style.backgroundColor = '#fafafa'; } }}
                   onMouseLeave={e => { if (!isOpen) { e.currentTarget.style.paddingLeft = '0'; e.currentTarget.style.backgroundColor = ''; } }}
                 >
-                  <span style={{ fontSize: '13px', color: '#98A2B3', fontWeight: 500 }}>{formatDate(event.date)}</span>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, color: event.tagColor }}>
-                    <span style={{ width: '6px', height: '6px', backgroundColor: event.tagColor }} />
-                    {event.tag}
+                  <span style={{ fontSize: '13px', color: '#98A2B3', fontWeight: 500 }}>{formatDate(event.createdAt)}</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, color: tagColor }}>
+                    <span style={{ width: '6px', height: '6px', backgroundColor: tagColor }} />
+                    {tag}
                   </span>
-                  <span style={{ fontSize: '11px', fontWeight: 600, color: event.status === '진행중' ? '#5b9a7d' : '#98A2B3' }}>{event.status}</span>
+                  <span style={{ fontSize: '11px', fontWeight: 600, color: status === '진행중' ? '#5b9a7d' : '#98A2B3' }}>{status}</span>
                   <div style={{ minWidth: 0 }}>
                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#101828', marginBottom: '4px', lineHeight: 1.3 }}>{event.title}</h3>
                     {!isOpen && <p style={{ fontSize: '14px', color: '#98A2B3', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{event.excerpt}</p>}
@@ -215,19 +135,19 @@ export default function EventsPageClient() {
                 {/* Detail — expanded */}
                 {isOpen && (
                   <div style={{ padding: '0 0 32px 16px', animation: 'fadeInUp 0.3s ease-out' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: event.image ? '280px 1fr' : '1fr', gap: '32px', alignItems: 'start' }}>
-                      {event.image && (
+                    <div style={{ display: 'grid', gridTemplateColumns: event.thumbnailUrl ? '280px 1fr' : '1fr', gap: '32px', alignItems: 'start' }}>
+                      {event.thumbnailUrl && (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={event.image} alt={event.title} style={{ width: '100%', height: 'auto', border: '1px solid rgba(15,23,42,0.06)' }} loading="lazy"
+                        <img src={event.thumbnailUrl} alt={event.title} style={{ width: '100%', height: 'auto', border: '1px solid rgba(15,23,42,0.06)' }} loading="lazy"
                           onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                         />
                       )}
                       <div>
                         <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-                          <span style={{ fontSize: 11, fontWeight: 600, color: '#fff', backgroundColor: event.tagColor, padding: '3px 10px' }}>{event.tag}</span>
-                          <span style={{ fontSize: 11, fontWeight: 600, color: event.status === '진행중' ? '#fff' : '#98A2B3', backgroundColor: event.status === '진행중' ? '#5b9a7d' : '#f1f5f9', padding: '3px 10px' }}>{event.status}</span>
+                          <span style={{ fontSize: 11, fontWeight: 600, color: '#fff', backgroundColor: tagColor, padding: '3px 10px' }}>{tag}</span>
+                          <span style={{ fontSize: 11, fontWeight: 600, color: status === '진행중' ? '#fff' : '#98A2B3', backgroundColor: status === '진행중' ? '#5b9a7d' : '#f1f5f9', padding: '3px 10px' }}>{status}</span>
                         </div>
-                        <p style={{ fontSize: 15, color: '#475467', lineHeight: 1.8, whiteSpace: 'pre-line', marginBottom: 24 }}>{event.detail}</p>
+                        <p style={{ fontSize: 15, color: '#475467', lineHeight: 1.8, whiteSpace: 'pre-line', marginBottom: 24 }}>{event.content}</p>
                         <div style={{ display: 'flex', gap: 12 }}>
                           <Link href="/contact" style={{ padding: '12px 24px', backgroundColor: '#101828', color: '#fff', fontSize: 14, fontWeight: 600, textDecoration: 'none', transition: 'opacity 0.2s' }}
                             onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; }}

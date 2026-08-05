@@ -68,7 +68,6 @@ function buildSearchIndex(): SearchItem[] {
     { title: '가격안내', desc: '라이선스 가격 및 구매 방법', href: '/pricing', keywords: ['가격', 'price', '구매', '라이선스', '비용'] },
     { title: '도입문의', desc: '제품 도입 상담 신청', href: '/contact', keywords: ['문의', 'contact', '도입', '상담'] },
     { title: '데이터 진단', desc: '데이터 거버넌스 수준 진단 · 맞춤 리포트', href: '/diagnosis', keywords: ['진단', 'diagnosis', '거버넌스', '데이터', '리포트'] },
-    { title: 'FAQ', desc: '자주 묻는 질문', href: '/faq', keywords: ['faq', '질문', '자주'] },
   ];
   resources.forEach((r) => {
     items.push({

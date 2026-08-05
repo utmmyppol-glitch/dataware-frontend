@@ -151,22 +151,22 @@ export const DA_DQ_EDITION = {
   ],
 };
 
-/* ─── DA# AI Powered Pack ─── */
+/* ─── DA# AI Powered Pack (DATAWARE AI HUB) ─── */
 export const DA_AI_PACK = {
   name: 'DA# AI Powered Pack',
-  headline: 'AI 기반 업무 프로세스 자동화를 통해 80% 이상 공수 절감 효과',
+  headline: '기업 DATA 활용의 극대화를 위해 DATA와 생성형 AI를 연결',
   features: [
     {
-      title: 'ChatGPT 기반 데이터 표준화',
-      desc: 'ChatGPT를 활용한 데이터 표준 자동화 기능 탑재 (DB 논리명 분석·변환, 업무 요구사항 분석 및 테이블·컬럼 자동 생성 등), 데이터 표준사전생성·출력 자동화',
+      title: '편리한 데이터 확보',
+      desc: '자연어 검색으로 IT 지원 없이 신속하게 데이터를 조회하고, 문서검색 기능으로 다양한 정형·비정형 데이터를 확보합니다.',
     },
     {
-      title: 'ChatGPT 기반 모델 현행화',
-      desc: '모든 종류의 SQL을 분석하여 쉽고 정확한 관계 분석을 통한 모델 현행화 자동화',
+      title: 'AI 활용 극대화',
+      desc: 'LLM 선택 옵션과 안전한 AI 서비스를 제공하며, ChatService & API를 통해 기업 맞춤형 AI 활용을 지원합니다.',
     },
     {
-      title: 'ChatGPT 기반 비즈니스 분류',
-      desc: 'AI 기반 누구나 빠르고 효과적으로 할 수 있는 비즈니스 분류 및 매핑',
+      title: '다양한 IT 기술 지원',
+      desc: 'RDBMS, Data Lake, Vector DB, Knowledge Graph 등 다중 DB 환경을 지원하고, 온프레미스/클라우드 환경 모두 대응합니다.',
     },
   ],
 };
@@ -332,24 +332,24 @@ export const DP_SHARP = {
   ],
 };
 
-/* ─── META# AI ─── */
+/* ─── META# AI (Unified META) ─── */
 export const META_SHARP_AI = {
   name: 'META# AI',
   slug: 'meta-ai',
-  tagline: 'AI 기반 데이터 거버넌스 자동 구축 솔루션',
-  subtitle: 'AI를 활용해 데이터 표준화 워크플로우를 자동화하고 고품질 AI Ready Data를 빠르게 확보합니다.',
-  description: '엔코아의 데이터 관리 컨설팅 노하우와 AI를 결합하여, 데이터 표준화 워크플로우를 자동화하고 그 결과를 메타데이터 관리 시스템에 유연하게 적재합니다. LLM 기반 자동 표준화로 기존 수작업 방식 대비 리소스를 40% 절감할 수 있습니다.',
+  tagline: '기업의 AI Agent 활용 극대화에 필요한 데이터 맥락 지도',
+  subtitle: 'AI 도입 실패의 근본적인 원인인 데이터 준비도, 신뢰성, 연결의 문제를 해결합니다.',
+  description: '엔코아의 AI Ready Data Platform으로, 기업 내 데이터의 의미·관계·흐름을 연결하여 AI가 신속하게 이해할 수 있도록 지원합니다. Graph 기반 맥락 지도를 통해 정형/비정형/반정형 데이터의 메타데이터를 통합 관리하고, 의미·맥락 기반의 AI-Ready Data 신뢰성을 향상시킵니다.',
   strengths: [
-    { category: 'AI 자동화', items: ['RAG 기반 엔터티명 자동 생성', '컬럼명 한글화 및 속성명 자동 도출', '비표준 단어·이음동의어·금칙어 자동 식별'] },
-    { category: '연계성', items: ['META# 플랫폼과 완벽 연계', '타사 메타관리시스템과도 호환 가능', '공공·대기업 확장성 최적화'] },
+    { category: 'AI 자동화', items: ['정형/비정형/반정형 데이터 기반 메타데이터 구현', 'Semantic Integrity & 품질 규칙 자동 검증', 'Query 최적화로 성능·비용 개선'] },
+    { category: '연계성', items: ['Graph 기반 맥락 지도 제공', 'AI 모델/서비스 최적화된 데이터 경로', 'Cloud/On-premise/Native/Modular 환경 지원'] },
   ],
   integrations: ['META#', 'DA#'],
-  featuresSummary: 'AI 워크플로우로 데이터 표준화를 자동화하고 메타데이터 품질을 향상',
+  featuresSummary: 'AI Agent가 활용할 수 있는 데이터 맥락 지도 구축',
   features: [
-    { num: '01', title: '엔터티명 자동 생성', desc: 'RAG 기반으로 업무 문서, 베이스사전, DB카탈로그를 활용한 AI 워크플로우' },
-    { num: '02', title: '컬럼명 한글화', desc: '속성명 자동 도출 및 분류어 정의' },
-    { num: '03', title: '비표준 단어 정의', desc: '이음동의어, 금칙어 식별을 통한 표준 사전 품질 향상' },
-    { num: '04', title: 'AI Ready Data', desc: 'LLM 기반 자동 표준화로 고품질 데이터 확보, 리소스 40% 절감' },
+    { num: '01', title: '메타데이터 통합 구현', desc: '정형/비정형/반정형 데이터 기반 메타데이터를 하나의 플랫폼으로 구현' },
+    { num: '02', title: 'Graph 기반 맥락 지도', desc: '데이터의 의미·관계·흐름을 연결하여 AI가 신속하게 이해 가능' },
+    { num: '03', title: '품질 자동 검증', desc: 'Semantic Integrity 및 품질 규칙 자동 검증으로 데이터 신뢰성 향상' },
+    { num: '04', title: 'AI-Ready Data', desc: '의미/맥락 기반 AI-Ready Data로 AI 모델·서비스에 최적화된 데이터 경로 제공' },
   ],
 };
 

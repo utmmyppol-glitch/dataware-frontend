@@ -32,6 +32,8 @@ export default function EducationDetailPage() {
     setErrors({});
     setLoading(true);
     try {
+      const consentPrivacy = formData.get('consentPrivacy') === 'on';
+      if (!consentPrivacy) { setErrors({ submit: '개인정보 수집·이용에 동의해 주세요.' }); setLoading(false); return; }
       await api.submitEducation({
         name: formData.get('name') as string,
         company: formData.get('company') as string,
@@ -40,8 +42,8 @@ export default function EducationDetailPage() {
         position: '',
         preferredDate: session?.date ?? '',
         note: session?.title ?? '',
-        consentPrivacy: true,
-        consentThirdParty: false,
+        consentPrivacy,
+        consentThirdParty: formData.get('consentThirdParty') === 'on',
       });
       setSubmitted(true);
     } catch {

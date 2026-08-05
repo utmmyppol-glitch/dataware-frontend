@@ -205,45 +205,58 @@ const ENCORE = '/images/encore';
 
 export const ENCORE_IMAGES = {
   dataware: {
-    overview: `${ENCORE}/data_img1.png`,
+    overview: `${ENCORE}/solutions_data13-phone.jpg`,
     logo1: `${ENCORE}/data_logo1.jpg`,
     logo2: `${ENCORE}/data_logo2.jpg`,
     logo3: `${ENCORE}/data_logo3.jpg`,
+    /* DATAWARE 제품 로고 (8개 솔루션 아이콘) */
+    productLogos: [
+      `${ENCORE}/solutions_data13-logo1-1.jpg`,
+      `${ENCORE}/solutions_data13-logo1-2.jpg`,
+      `${ENCORE}/solutions_data13-logo1-3.jpg`,
+      `${ENCORE}/solutions_data13-logo1-4.jpg`,
+      `${ENCORE}/solutions_data13-logo1-5.jpg`,
+      `${ENCORE}/solutions_data13-logo1-6.jpg`,
+      `${ENCORE}/solutions_data13-logo1-7.jpg`,
+      `${ENCORE}/solutions_data13-logo1-8.jpg`,
+    ],
+  },
+  da: {
+    main: `${ENCORE}/data2_tmb1_3.jpg`,
+    tmb1: `${ENCORE}/data2_tmb1_1.jpg`,
+    tmb2: `${ENCORE}/data2_tmb1_2.jpg`,
+    tmb3: `${ENCORE}/data2_tmb1_3.jpg`,
+    tmb4: `${ENCORE}/data2_tmb1_4.jpg`,
   },
   meta: {
-    main: `${ENCORE}/solutions_data3-img2.jpg`,
     screenshot: `${ENCORE}/solutions_data3-img2.jpg`,
     architecture: `${ENCORE}/solutions_data3-img3.jpg`,
     logo: `${ENCORE}/solutions_data3-logo1.jpg`,
   },
   dq: {
-    main: `${ENCORE}/solutions_data4-img2.jpg`,
     screenshot: `${ENCORE}/solutions_data4-img2.jpg`,
     architecture: `${ENCORE}/solutions_data4-img3.jpg`,
     logo: `${ENCORE}/solutions_data4-logo1.jpg`,
   },
   ap: {
-    main: `${ENCORE}/solutions_data5-img2.jpg`,
     screenshot: `${ENCORE}/solutions_data5-img2.jpg`,
     architecture: `${ENCORE}/solutions_data5-tbl-img1.jpg`,
     logo: `${ENCORE}/solutions_data5-logo1.jpg`,
   },
-  df: {
-    main: `${ENCORE}/solutions_data6-img2.jpg`,
-    screenshot: `${ENCORE}/solutions_data6-img2.jpg`,
-    architecture: `${ENCORE}/solutions_data6-tbl-img1.jpg`,
-    logo: `${ENCORE}/solutions_data6-logo1.jpg`,
-  },
-  ett: {
-    main: `${ENCORE}/solutions_data7-img2.jpg`,
-    screenshot: `${ENCORE}/solutions_data7-img2.jpg`,
-    architecture: `${ENCORE}/solutions_data7-tbl-img1.jpg`,
-    logo: `${ENCORE}/solutions_data7-logo1.jpg`,
-  },
   dp: {
-    main: `${ENCORE}/solutions_data10-img2.jpg`,
     screenshot: `${ENCORE}/solutions_data10-img2.jpg`,
     architecture: `${ENCORE}/solutions_data10-tbl-img1.jpg`,
     logo: `${ENCORE}/solutions_data10-logo1.jpg`,
+  },
+  /* AI 솔루션 */
+  metaAi: {
+    main: `${ENCORE}/ai/solutions_ai4-tbl-img1.jpg`,
+    screenshot: `${ENCORE}/ai/unified-meta-img2.jpg`,
+    architecture: `${ENCORE}/ai/unified-meta-img3.jpg`,
+  },
+  daAiPack: {
+    main: `${ENCORE}/ai/dataware-ai-hub-arch1.jpg`,
+    architecture: `${ENCORE}/ai/dataware-ai-hub-arch2.jpg`,
+    screenshot: `${ENCORE}/ai/solutions_ai5-img3.jpg`,
   },
 } as const;
