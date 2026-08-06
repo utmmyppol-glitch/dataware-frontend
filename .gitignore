@@ -39,3 +39,7 @@ next-env.d.ts
 *.dc.html
 *.zip
 _temp_refs/
+
+# secrets & local tooling
+.env*
+.claude/

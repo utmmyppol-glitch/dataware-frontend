@@ -1,5 +1,5 @@
 # ---- Stage 1: Build ----
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -7,10 +7,18 @@ COPY package.json package-lock.json* ./
 RUN npm ci
 
 COPY . .
+
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_SITE_URL
+ARG NEXT_PUBLIC_USE_MOCK
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_USE_MOCK=$NEXT_PUBLIC_USE_MOCK
+
 RUN npm run build
 
 # ---- Stage 2: Runtime ----
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
