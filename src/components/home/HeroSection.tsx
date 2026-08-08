@@ -5,7 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { COPY } from '@/data';
 import type { Solution } from '@/data/molecular-data';
-import EditMarker from '@/components/EditMarker';
+import { E } from '@/lib/editable';
 
 const MolecularU = dynamic(() => import('@/components/MolecularU'), { ssr: false });
 
@@ -30,9 +30,11 @@ function useCountUp(target: number, dur = 2400) {
 
 interface HeroSectionProps {
   heroRef: React.RefObject<HTMLElement>;
+  editMode?: boolean;
+  content?: { title?: string; desc?: string };
 }
 
-export default function HeroSection({ heroRef }: HeroSectionProps) {
+export default function HeroSection({ heroRef, editMode = false, content }: HeroSectionProps) {
   const [zoomedSolution, setZoomedSolution] = useState<Solution | null>(null);
   const [explorerMode, setExplorerMode] = useState(false);
   const isZoomed = zoomedSolution !== null;
@@ -43,7 +45,6 @@ export default function HeroSection({ heroRef }: HeroSectionProps) {
 
   return (
     <section ref={heroRef} style={{ minHeight: '100vh', background: '#fff', position: 'relative', overflow: 'hidden' }}>
-      <EditMarker path="/dataware/contents" label="H" style={{ top: 100, zIndex: 10 }} />
       <div aria-hidden="true" style={{ position: 'absolute', bottom: '-5%', right: '-2%', zIndex: 1, opacity: 0.04, pointerEvents: 'none' }}>
         <img src="/images/da-watermark.png" alt="" style={{ width: 'clamp(300px, 35vw, 500px)', height: 'auto' }} />
       </div>
@@ -78,26 +79,28 @@ export default function HeroSection({ heroRef }: HeroSectionProps) {
             }}>
               <div data-hero style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, fontSize: 12, fontWeight: 600, letterSpacing: '.12em', color: '#36c88a' }}>
                 <span style={{ width: 20, height: 1.5, background: '#36c88a' }} />
-                ENTERPRISE DATA PLATFORM
+                <E id="home_hero.badge" editMode={editMode}>ENTERPRISE DATA PLATFORM</E>
               </div>
 
               <h2 data-hero style={{ fontWeight: 900, fontSize: 'clamp(36px, 5.5vw, 64px)', lineHeight: 1.05, letterSpacing: '-0.05em', color: '#111', margin: '0 0 22px' }}>
-                {COPY.heroDA.line1}<br />{COPY.heroDA.line2}<br />{COPY.heroDA.line3.replace('.', '')}<span style={{ color: '#36c88a' }}>.</span>
+                <E id="home_hero.title" editMode={editMode}>{content?.title ?? `${COPY.heroDA.line1}\n${COPY.heroDA.line2}\n${COPY.heroDA.line3}`}</E>
               </h2>
 
-              <p data-hero style={{ fontWeight: 400, fontSize: 'clamp(15px, 1.4vw, 17px)', lineHeight: 1.75, color: '#676767', maxWidth: 640, margin: '0 0 24px' }}>{COPY.heroDA.subtitle}</p>
+              <p data-hero style={{ fontWeight: 400, fontSize: 'clamp(15px, 1.4vw, 17px)', lineHeight: 1.75, color: '#676767', maxWidth: 640, margin: '0 0 24px' }}>
+                <E id="home_hero.desc" editMode={editMode}>{content?.desc ?? COPY.heroDA.subtitle}</E>
+              </p>
 
               <div data-hero style={{ fontSize: 13, color: '#676767', marginBottom: 28, display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: 'rgba(54,200,138,.04)', border: '1px solid rgba(54,200,138,.1)' }}>
                 <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#36c88a', boxShadow: '0 0 0 3px rgba(54,200,138,.15)' }} />
-                민트 노드에 올려 살펴보고, 클릭해 안으로 들어가 보세요
+                <E id="home_hero.hint" editMode={editMode}>민트 노드에 올려 살펴보고, 클릭해 안으로 들어가 보세요</E>
               </div>
 
               <div data-hero style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
                 <Link href="/contact" className="hero-cta-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '18px 36px', backgroundColor: '#36c88a', color: '#fff', fontWeight: 700, fontSize: 15, textDecoration: 'none', boxShadow: '0 4px 20px -4px rgba(54,200,138,.35)', transition: 'transform .2s, box-shadow .2s' }}>
-                  도입문의하기<span style={{ fontSize: 15 }}>&rarr;</span>
+                  <E id="home_hero.cta_primary" editMode={editMode}>도입문의하기</E><span style={{ fontSize: 15 }}>&rarr;</span>
                 </Link>
                 <Link href="/download" className="hero-cta-secondary" style={{ display: 'inline-flex', alignItems: 'center', padding: '18px 36px', border: '1.5px solid #d5d8dd', background: 'transparent', color: '#111', fontWeight: 700, fontSize: 15, textDecoration: 'none', transition: 'transform .2s, background .2s, color .2s' }}>
-                  다운로드 신청하기
+                  <E id="home_hero.cta_secondary" editMode={editMode}>다운로드 신청하기</E>
                 </Link>
               </div>
 
@@ -109,9 +112,9 @@ export default function HeroSection({ heroRef }: HeroSectionProps) {
                 ].map((s, i) => (
                   <div key={i} style={{ flex: 1, paddingLeft: i > 0 ? 24 : 0, borderLeft: i > 0 ? '1px solid #e6e8ec' : 'none' }}>
                     <span ref={s.ref} style={{ fontSize: 28, fontWeight: 800, color: '#111', lineHeight: 1, display: 'block' }}>
-                      {s.accent ? <>{s.num}<span style={{ color: '#36c88a' }}>+</span></> : s.num}
+                      <E id={`home_hero.stat${i}_num`} editMode={editMode}>{s.accent ? <>{s.num}<span style={{ color: '#36c88a' }}>+</span></> : s.num}</E>
                     </span>
-                    <div style={{ fontSize: 12, color: '#676767', marginTop: 6, letterSpacing: '.04em' }}>{s.label}</div>
+                    <div style={{ fontSize: 12, color: '#676767', marginTop: 6, letterSpacing: '.04em' }}><E id={`home_hero.stat${i}_label`} editMode={editMode}>{s.label}</E></div>
                   </div>
                 ))}
               </div>
@@ -138,9 +141,9 @@ export default function HeroSection({ heroRef }: HeroSectionProps) {
                 <button onClick={() => { setZoomedSolution(null); setExplorerMode(false); }} style={{
                   background: 'none', border: '1px solid #d5d8dd', padding: '8px 20px',
                   fontSize: 13, fontWeight: 600, color: '#676767', cursor: 'pointer', transition: 'all .2s',
-                }}>← 메인으로 돌아가기</button>
+                }}><E id="home_hero.back_btn" editMode={editMode}>← 메인으로 돌아가기</E></button>
                 <span style={{ fontSize: 14, fontWeight: 700, color: '#111', letterSpacing: '-0.02em' }}>
-                  솔루션을 선택하세요
+                  <E id="home_hero.select_solution" editMode={editMode}>솔루션을 선택하세요</E>
                 </span>
               </div>
             )}

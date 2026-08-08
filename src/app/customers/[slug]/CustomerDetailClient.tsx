@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api, type CustomerStoryResponse } from '@/lib/api';
 import EditMarker from '@/components/EditMarker';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 
 const ACCENT = '#36c88a';
 
@@ -37,6 +38,8 @@ function formatDate(dateStr: string) {
 }
 
 export default function CustomerDetailClient({ slug }: { slug: string }) {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const [story, setStory] = useState<CustomerStoryResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -54,7 +57,7 @@ export default function CustomerDetailClient({ slug }: { slug: string }) {
   if (loading) {
     return (
       <main style={{ backgroundColor: '#ffffff', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: '#94a3b8' }}>불러오는 중...</p>
+        <p style={{ color: '#94a3b8' }}><E id="customer_detail.loading" editMode={editMode}>불러오는 중...</E></p>
       </main>
     );
   }
@@ -63,10 +66,10 @@ export default function CustomerDetailClient({ slug }: { slug: string }) {
     return (
       <main style={{ backgroundColor: '#ffffff', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', padding: '60px 24px' }}>
-          <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#111111', margin: '0 0 10px' }}>페이지를 찾을 수 없습니다</h2>
-          <p style={{ fontSize: '14px', color: '#676767', margin: '0 0 24px' }}>요청하신 고객사례를 찾을 수 없습니다.</p>
+          <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#111111', margin: '0 0 10px' }}><E id="customer_detail.error_title" editMode={editMode}>페이지를 찾을 수 없습니다</E></h2>
+          <p style={{ fontSize: '14px', color: '#676767', margin: '0 0 24px' }}><E id="customer_detail.error_desc" editMode={editMode}>요청하신 고객사례를 찾을 수 없습니다.</E></p>
           <Link href="/customers" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: ACCENT, color: '#ffffff', fontSize: '14px', fontWeight: '600', padding: '10px 22px', textDecoration: 'none' }}>
-            고객사례 목록으로 돌아가기
+            <E id="customer_detail.error_link" editMode={editMode}>고객사례 목록으로 돌아가기</E>
           </Link>
         </div>
       </main>
@@ -89,10 +92,10 @@ export default function CustomerDetailClient({ slug }: { slug: string }) {
             onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#667085'; }}
           >
             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-            고객사례 목록으로
+            <E id="customer_detail.back_link" editMode={editMode}>고객사례 목록으로</E>
           </Link>
           <h1 style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 800, color: '#101828', letterSpacing: '-0.03em', margin: 0, textAlign: 'center' }}>
-            {story.company}
+            <E id="customer_detail.company" editMode={editMode}>{story.company}</E>
           </h1>
         </div>
       </section>
@@ -106,12 +109,12 @@ export default function CustomerDetailClient({ slug }: { slug: string }) {
             </span>
             <h3 style={{ fontSize: 15, fontWeight: 700, color: '#101828', marginBottom: 6 }}>{story.company}</h3>
             <div style={{ marginBottom: 20 }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: '#101828', marginBottom: 2 }}>업종:</p>
+              <p style={{ fontSize: 13, fontWeight: 700, color: '#101828', marginBottom: 2 }}><E id="customer_detail.label_industry" editMode={editMode}>업종:</E></p>
               <p style={{ fontSize: 13, color: '#667085' }}>{metaIndustry}</p>
             </div>
             {metaPurpose && (
               <div>
-                <p style={{ fontSize: 13, fontWeight: 700, color: '#101828', marginBottom: 2 }}>목적 · 효과:</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: '#101828', marginBottom: 2 }}><E id="customer_detail.label_purpose" editMode={editMode}>목적 · 효과:</E></p>
                 <p style={{ fontSize: 13, color: '#667085', lineHeight: 1.6 }}>{metaPurpose}</p>
               </div>
             )}
@@ -139,7 +142,7 @@ export default function CustomerDetailClient({ slug }: { slug: string }) {
 
         {detail.background && detail.background.length > 0 && (
           <div style={{ marginBottom: 40 }}>
-            <span style={{ display: 'inline-block', fontSize: 14, fontWeight: 700, color: ACCENT, border: `1px solid ${ACCENT}`, padding: '8px 20px', marginBottom: 20 }}>도입 배경</span>
+            <span style={{ display: 'inline-block', fontSize: 14, fontWeight: 700, color: ACCENT, border: `1px solid ${ACCENT}`, padding: '8px 20px', marginBottom: 20 }}><E id="customer_detail.badge_background" editMode={editMode}>도입 배경</E></span>
             <ul style={{ margin: 0, paddingLeft: 20, listStyle: 'disc' }}>
               {detail.background.map((item, i) => (
                 <li key={i} style={{ fontSize: 15, color: '#475467', lineHeight: 1.8, marginBottom: 6 }}>{item}</li>
@@ -150,7 +153,7 @@ export default function CustomerDetailClient({ slug }: { slug: string }) {
 
         {detail.features && detail.features.length > 0 && (
           <div style={{ marginBottom: 40 }}>
-            <span style={{ display: 'inline-block', fontSize: 14, fontWeight: 700, color: ACCENT, border: `1px solid ${ACCENT}`, padding: '8px 20px', marginBottom: 20 }}>적용 솔루션</span>
+            <span style={{ display: 'inline-block', fontSize: 14, fontWeight: 700, color: ACCENT, border: `1px solid ${ACCENT}`, padding: '8px 20px', marginBottom: 20 }}><E id="customer_detail.badge_solutions" editMode={editMode}>적용 솔루션</E></span>
             <ul style={{ margin: 0, paddingLeft: 20, listStyle: 'disc' }}>
               {detail.features.map((feat, i) => (
                 <li key={i} style={{ fontSize: 15, color: '#475467', lineHeight: 1.8, marginBottom: 6 }}>{feat}</li>
@@ -168,7 +171,7 @@ export default function CustomerDetailClient({ slug }: { slug: string }) {
 
         {detail.effects && detail.effects.length > 0 && (
           <div style={{ marginBottom: 40 }}>
-            <span style={{ display: 'inline-block', fontSize: 14, fontWeight: 700, color: ACCENT, border: `1px solid ${ACCENT}`, padding: '8px 20px', marginBottom: 20 }}>도입 효과</span>
+            <span style={{ display: 'inline-block', fontSize: 14, fontWeight: 700, color: ACCENT, border: `1px solid ${ACCENT}`, padding: '8px 20px', marginBottom: 20 }}><E id="customer_detail.badge_effects" editMode={editMode}>도입 효과</E></span>
             <ul style={{ margin: 0, paddingLeft: 20, listStyle: 'disc' }}>
               {detail.effects.map((effect, i) => (
                 <li key={i} style={{ fontSize: 15, color: '#475467', lineHeight: 1.8, marginBottom: 6 }}>{effect}</li>
@@ -189,13 +192,14 @@ export default function CustomerDetailClient({ slug }: { slug: string }) {
         {/* detailJson 없으면 content 본문 표시 */}
         {!story.detailJson && story.content && (
           <div style={{ marginBottom: 40 }}>
-            <div style={{ fontSize: 15, color: '#475467', lineHeight: 1.8, whiteSpace: 'pre-line' }}>{story.content}</div>
+            <div className="rich-html" style={{ fontSize: 15, color: '#475467', lineHeight: 1.8 }}
+              dangerouslySetInnerHTML={{ __html: story.content || '' }} />
           </div>
         )}
 
         <div style={{ paddingTop: 32, borderTop: '1px solid #e6e8ec' }}>
           <Link href="/customers" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 600, color: '#676767', textDecoration: 'none', backgroundColor: '#f6f8fa', border: '1px solid #e6e8ec', padding: '12px 20px' }}>
-            ← 고객사례 목록으로
+            <E id="customer_detail.back_btn" editMode={editMode}>← 고객사례 목록으로</E>
           </Link>
         </div>
       </section>
@@ -203,19 +207,20 @@ export default function CustomerDetailClient({ slug }: { slug: string }) {
       {/* ═══ 임팩트 CTA ═══ */}
       <section style={{ position: 'relative', background: 'linear-gradient(135deg, #0b1220 0%, #0f172a 60%, #101828 100%)', overflow: 'hidden', padding: 'clamp(64px, 10vw, 100px) 24px', textAlign: 'center' }}>
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 640, margin: '0 auto' }}>
-          <p style={{ fontSize: 13, fontWeight: 600, color: ACCENT, letterSpacing: '0.12em', marginBottom: 20 }}>NEXT STEP</p>
+          <p style={{ fontSize: 13, fontWeight: 600, color: ACCENT, letterSpacing: '0.12em', marginBottom: 20 }}><E id="customer_detail_cta.badge" editMode={editMode}>NEXT STEP</E></p>
           <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 900, color: '#F9FAFB', lineHeight: 1.2, marginBottom: 20 }}>
-            다음 성공사례의<br />주인공이 되어보세요<span style={{ color: ACCENT }}>.</span>
+            <E id="customer_detail_cta.title" editMode={editMode}>다음 성공사례의 주인공이 되어보세요</E><span style={{ color: ACCENT }}>.</span>
           </h2>
           <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, marginBottom: 40 }}>
-            3,000+ 기업이 선택한 데이터 거버넌스 솔루션,<br />지금 바로 전문가와 상담하세요.
+            <E id="customer_detail_cta.desc" editMode={editMode}>3,000+ 기업이 선택한 데이터 거버넌스 솔루션, 지금 바로 전문가와 상담하세요.</E>
           </p>
           <Link href="/contact" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '18px 48px', fontSize: 17, fontWeight: 700, color: '#fff', backgroundColor: ACCENT, textDecoration: 'none', boxShadow: `0 0 24px ${ACCENT}50, 0 8px 32px rgba(0,0,0,0.3)` }}>
-            도입문의 하기
+            <E id="customer_detail_cta.btn" editMode={editMode}>도입문의 하기</E>
             <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </Link>
         </div>
       </section>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </main>
   );
 }

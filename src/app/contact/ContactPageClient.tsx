@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { api } from '@/lib/api';
 import { INQUIRY_CATEGORIES, COMPANY } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import ConsentSection from '@/components/forms/ConsentSection';
 
 const ACCENT = '#36c88a';
@@ -12,6 +13,8 @@ const ACCENT = '#36c88a';
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
 export default function ContactPageClient() {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -59,6 +62,7 @@ export default function ContactPageClient() {
           product: formData.get('product') as string,
           consentPrivacy: true,
           consentThirdParty: true,
+          consentMarketing: formData.get('consentMarketingRadio') === 'yes',
         });
       }
       setSubmitted(true);
@@ -76,9 +80,9 @@ export default function ContactPageClient() {
           <div style={{ width: '64px', height: '64px', backgroundColor: `${ACCENT}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 28px' }}>
             <svg width="28" height="28" fill="none" stroke={ACCENT} strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
           </div>
-          <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#F9FAFB', marginBottom: '12px' }}>문의가 접수되었습니다</h2>
-          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, marginBottom: '32px' }}>담당자가 빠른 시일 내에 연락드리겠습니다.</p>
-          <Link href="/" style={{ padding: '14px 28px', backgroundColor: ACCENT, color: '#fff', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}>홈으로 돌아가기</Link>
+          <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#F9FAFB', marginBottom: '12px' }}><E id="contact_success.title" editMode={editMode}>문의가 접수되었습니다</E></h2>
+          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, marginBottom: '32px' }}><E id="contact_success.desc" editMode={editMode}>담당자가 빠른 시일 내에 연락드리겠습니다.</E></p>
+          <Link href="/" style={{ padding: '14px 28px', backgroundColor: ACCENT, color: '#fff', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}><E id="contact_success.home_btn" editMode={editMode}>홈으로 돌아가기</E></Link>
         </div>
       </div>
     );
@@ -94,10 +98,10 @@ export default function ContactPageClient() {
         </div>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <h1 data-hero style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 16 }}>
-            도입문의<span style={{ color: ACCENT }}>.</span>
+            <E id="contact_hero.title" editMode={editMode}>도입문의</E><span style={{ color: ACCENT }}>.</span>
           </h1>
           <p data-hero style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
-            DA# 도입에 관한 문의를 남겨주세요. &nbsp;|&nbsp; TEL {COMPANY.tel} &nbsp;|&nbsp; {COMPANY.email}
+            <E id="contact_hero.desc" editMode={editMode}>DA# 도입에 관한 문의를 남겨주세요. &nbsp;|&nbsp; TEL {COMPANY.tel} &nbsp;|&nbsp; {COMPANY.email}</E>
           </p>
         </div>
       </section>
@@ -105,13 +109,13 @@ export default function ContactPageClient() {
       {/* ═══ FORM (화면 꽉 차게) ═══ */}
       <section ref={contentRef} style={{ backgroundColor: '#ffffff' }}>
         <div style={{ maxWidth: '860px', margin: '0 auto', padding: '48px 24px 64px' }}>
-          <h2 data-anim style={{ fontSize: 22, fontWeight: 700, color: ACCENT, textAlign: 'center', marginBottom: 32 }}>도입문의</h2>
+          <h2 data-anim style={{ fontSize: 22, fontWeight: 700, color: ACCENT, textAlign: 'center', marginBottom: 32 }}><E id="contact_form.heading" editMode={editMode}>도입문의</E></h2>
 
           <form onSubmit={handleSubmit} noValidate>
             {/* 구분 */}
             <div style={{ marginBottom: 20 }}>
-              <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>구분 <span style={{ color: '#ef4444' }}>*</span></label>
-              <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>상담 구분을 선택해주세요.</p>
+              <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}><E id="contact_form.label_type" editMode={editMode}>구분</E> <span style={{ color: '#ef4444' }}>*</span></label>
+              <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}><E id="contact_form.hint_type" editMode={editMode}>상담 구분을 선택해주세요.</E></p>
               <select name="product" className={errors.product ? inputError : inputBase} style={{ appearance: 'auto' }}>
                 <option value="">상담 구분 선택</option>
                 {INQUIRY_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
@@ -122,14 +126,14 @@ export default function ContactPageClient() {
             {/* 회사명 + 이름 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4" style={{ marginBottom: 20 }}>
               <div>
-                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>회사명 <span style={{ color: '#ef4444' }}>*</span></label>
-                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>회사명을 입력해주세요.</p>
+                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}><E id="contact_form.label_company" editMode={editMode}>회사명</E> <span style={{ color: '#ef4444' }}>*</span></label>
+                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}><E id="contact_form.hint_company" editMode={editMode}>회사명을 입력해주세요.</E></p>
                 <input name="company" className={errors.company ? inputError : inputBase} />
                 {errors.company && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.company}</p>}
               </div>
               <div>
-                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>이름 <span style={{ color: '#ef4444' }}>*</span></label>
-                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>이름을 입력해주세요.</p>
+                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}><E id="contact_form.label_name" editMode={editMode}>이름</E> <span style={{ color: '#ef4444' }}>*</span></label>
+                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}><E id="contact_form.hint_name" editMode={editMode}>이름을 입력해주세요.</E></p>
                 <input name="name" className={errors.name ? inputError : inputBase} />
                 {errors.name && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.name}</p>}
               </div>
@@ -138,14 +142,14 @@ export default function ContactPageClient() {
             {/* 연락처 + 이메일 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4" style={{ marginBottom: 20 }}>
               <div>
-                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>연락처 <span style={{ color: '#ef4444' }}>*</span></label>
-                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>ex) 010-0000-0000</p>
+                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}><E id="contact_form.label_phone" editMode={editMode}>연락처</E> <span style={{ color: '#ef4444' }}>*</span></label>
+                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}><E id="contact_form.hint_phone" editMode={editMode}>ex) 010-0000-0000</E></p>
                 <input name="phone" className={errors.phone ? inputError : inputBase} />
                 {errors.phone && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.phone}</p>}
               </div>
               <div>
-                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>이메일 <span style={{ color: '#ef4444' }}>*</span></label>
-                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>이메일을 입력해주세요.</p>
+                <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}><E id="contact_form.label_email" editMode={editMode}>이메일</E> <span style={{ color: '#ef4444' }}>*</span></label>
+                <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}><E id="contact_form.hint_email" editMode={editMode}>이메일을 입력해주세요.</E></p>
                 <input name="email" type="email" className={errors.email ? inputError : inputBase} />
                 {errors.email && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.email}</p>}
               </div>
@@ -153,15 +157,15 @@ export default function ContactPageClient() {
 
             {/* 문의작성 */}
             <div style={{ marginBottom: 20 }}>
-              <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>문의작성</label>
-              <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}>DA#도입에 궁금하신 점을 자세히 남겨주시면 빠른 상담이 가능합니다.</p>
+              <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}><E id="contact_form.label_message" editMode={editMode}>문의작성</E></label>
+              <p className="text-[12px] mb-1.5" style={{ color: '#98A2B3' }}><E id="contact_form.hint_message" editMode={editMode}>DA#도입에 궁금하신 점을 자세히 남겨주시면 빠른 상담이 가능합니다.</E></p>
               <textarea name="message" rows={4} className={`${inputBase} resize-none`} />
             </div>
 
             {/* 파일첨부 */}
             <div style={{ marginBottom: 28 }}>
-              <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>파일첨부</label>
-              <p className="text-[12px] mb-2" style={{ color: '#98A2B3' }}>첨부하고자 하는 파일을 선택하여 업로드 해주세요. (jpg, png, pdf 첨부 가능)</p>
+              <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}><E id="contact_form.label_file" editMode={editMode}>파일첨부</E></label>
+              <p className="text-[12px] mb-2" style={{ color: '#98A2B3' }}><E id="contact_form.hint_file" editMode={editMode}>첨부하고자 하는 파일을 선택하여 업로드 해주세요. (jpg, png, pdf 첨부 가능)</E></p>
               <div className="flex items-center gap-3">
                 <button
                   type="button"
@@ -174,7 +178,7 @@ export default function ContactPageClient() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
-                  파일첨부
+                  <E id="contact_form.file_btn" editMode={editMode}>파일첨부</E>
                 </button>
                 <span className="text-[13px] truncate" style={{ color: fileName ? '#101828' : '#98A2B3' }}>
                   {fileName || '선택된 파일 없음'}
@@ -215,7 +219,7 @@ export default function ContactPageClient() {
               }}
                 onMouseEnter={e => { if (!loading) { e.currentTarget.style.backgroundColor = '#2ba876'; e.currentTarget.style.transform = 'translateY(-2px)'; } }}
                 onMouseLeave={e => { if (!loading) { e.currentTarget.style.backgroundColor = ACCENT; e.currentTarget.style.transform = ''; } }}
-              >{loading ? '접수 중...' : '도입문의서 제출'}</button>
+              >{loading ? <E id="contact_form.loading" editMode={editMode}>접수 중...</E> : <E id="contact_form.submit_btn" editMode={editMode}>도입문의서 제출</E>}</button>
             </div>
           </form>
         </div>
@@ -227,23 +231,24 @@ export default function ContactPageClient() {
           onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#1e293b'; }}
           onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#101828'; }}
         >
-          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>DOWNLOAD</span>
+          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}><E id="contact_cta.download_badge" editMode={editMode}>DOWNLOAD</E></span>
           <h3 style={{ fontSize: 20, fontWeight: 700, color: '#F9FAFB', marginTop: 8, lineHeight: 1.3 }}>
-            DA# 소개서를 먼저 받아보세요<span style={{ color: ACCENT }}>.</span>
+            <E id="contact_cta.download" editMode={editMode}>DA# 소개서를 먼저 받아보세요</E><span style={{ color: ACCENT }}>.</span>
           </h3>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: ACCENT }}>소개서 다운로드 →</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: ACCENT }}><E id="contact_cta.download_link" editMode={editMode}>소개서 다운로드 →</E></span>
         </Link>
         <Link href="/education" style={{ backgroundColor: ACCENT, padding: '40px 48px', textDecoration: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', transition: 'filter 0.3s' }}
           onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(0.92)'; }}
           onMouseLeave={e => { e.currentTarget.style.filter = ''; }}
         >
-          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em' }}>EDUCATION</span>
+          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em' }}><E id="contact_cta.education_badge" editMode={editMode}>EDUCATION</E></span>
           <h3 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginTop: 8, lineHeight: 1.3 }}>
-            DA# 무료교육도 신청하세요<span style={{ opacity: 0.6 }}>.</span>
+            <E id="contact_cta.education" editMode={editMode}>DA# 무료교육도 신청하세요</E><span style={{ opacity: 0.6 }}>.</span>
           </h3>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: '#fff' }}>무료교육 신청 →</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13, fontWeight: 600, color: '#fff' }}><E id="contact_cta.education_link" editMode={editMode}>무료교육 신청 →</E></span>
         </Link>
       </div>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </>
   );
 }

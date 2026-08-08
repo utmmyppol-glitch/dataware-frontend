@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api, type PostResponse, type PageResponse } from '@/lib/api';
+import { E } from '@/lib/editable';
 
 interface VideoDetail {
   youtubeId?: string;
@@ -16,9 +17,11 @@ function parseVideoDetail(post: PostResponse): VideoDetail {
 
 interface NewsSectionProps {
   sectionRef: React.RefObject<HTMLElement>;
+  editMode?: boolean;
+  content?: { title?: string };
 }
 
-export default function NewsSection({ sectionRef }: NewsSectionProps) {
+export default function NewsSection({ sectionRef, editMode = false, content }: NewsSectionProps) {
   const [lectures, setLectures] = useState<PostResponse[]>([]);
   const [notices, setNotices] = useState<PostResponse[]>([]);
 
@@ -35,11 +38,11 @@ export default function NewsSection({ sectionRef }: NewsSectionProps) {
     <section ref={sectionRef} style={{ backgroundColor: '#fff', borderTop: '1px solid #E7E2D8' }}>
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: 'clamp(64px, 8vw, 100px) clamp(24px, 4vw, 56px)' }}>
         <div data-anim style={{ textAlign: 'center', marginBottom: '56px' }}>
-          <p style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.12em', marginBottom: '16px' }}>NEWS & LECTURES</p>
+          <p style={{ fontSize: '14px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.12em', marginBottom: '16px' }}><E id="home_news.badge" editMode={editMode}>NEWS &amp; LECTURES</E></p>
           <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 900, color: '#111214', lineHeight: 1.15, marginBottom: '12px' }}>
-            유니온시스템즈 소식<span style={{ color: '#36c88a' }}>.</span>
+            <E id="home_news.title" editMode={editMode}>{content?.title ?? '유니온시스템즈 소식.'}</E>
           </h2>
-          <p style={{ fontSize: '18px', color: '#6B655C' }}>성장하는 유니온시스템즈의 소식과 유용한 강의들을 만나보세요!</p>
+          <p style={{ fontSize: '18px', color: '#6B655C' }}><E id="home_news.desc" editMode={editMode}>성장하는 유니온시스템즈의 소식과 유용한 강의들을 만나보세요!</E></p>
         </div>
 
         {/* Lectures (Videos from API) */}
@@ -70,7 +73,7 @@ export default function NewsSection({ sectionRef }: NewsSectionProps) {
                         <svg width="20" height="20" fill="#fff" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                       </div>
                     </div>
-                    <span style={{ position: 'absolute', top: 10, left: 10, fontSize: 11, fontWeight: 700, color: '#fff', backgroundColor: 'rgba(54,200,138,0.9)', padding: '3px 10px' }}>동영상 강의</span>
+                    <span style={{ position: 'absolute', top: 10, left: 10, fontSize: 11, fontWeight: 700, color: '#fff', backgroundColor: 'rgba(54,200,138,0.9)', padding: '3px 10px' }}><E id="home_news.video_badge" editMode={editMode}>동영상 강의</E></span>
                   </div>
                   <div style={{ padding: '16px 20px' }}>
                     <h3 style={{ fontSize: 15, fontWeight: 700, color: '#111214', lineHeight: 1.4, marginBottom: 6 }}>{lecture.title}</h3>
@@ -97,7 +100,7 @@ export default function NewsSection({ sectionRef }: NewsSectionProps) {
                   )}
                 </div>
                 <div style={{ padding: '18px 22px' }}>
-                  <span style={{ fontSize: '12px', fontWeight: 600, color: '#36c88a', marginBottom: '8px', display: 'block' }}>공지</span>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: '#36c88a', marginBottom: '8px', display: 'block' }}><E id="home_news.notice_badge" editMode={editMode}>공지</E></span>
                   <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111214', lineHeight: 1.4, marginBottom: '8px' }}>{a.title}</h3>
                   <p style={{ fontSize: '13px', color: '#98A2B3' }}>{a.createdAt?.slice(0, 10).replace(/-/g, '.')}</p>
                 </div>
@@ -110,7 +113,7 @@ export default function NewsSection({ sectionRef }: NewsSectionProps) {
           <Link href="/resources/notices" style={{ fontSize: '14px', fontWeight: 600, color: '#6B655C', textDecoration: 'none', transition: 'color 0.2s' }}
             onMouseEnter={e => { e.currentTarget.style.color = '#36c88a'; }}
             onMouseLeave={e => { e.currentTarget.style.color = '#6B655C'; }}
-          >공지사항 전체 보기 &rarr;</Link>
+          ><E id="home_news.cta" editMode={editMode}>공지사항 전체 보기 &rarr;</E></Link>
         </div>
       </div>
     </section>

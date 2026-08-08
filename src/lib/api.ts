@@ -165,6 +165,7 @@ interface InquiryRequest {
   product?: string;
   consentPrivacy: boolean;
   consentThirdParty?: boolean;
+  consentMarketing?: boolean;
 }
 
 interface InquiryResponse {
