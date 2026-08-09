@@ -11,7 +11,7 @@
  * NEXT_PUBLIC_BACKOFFICE_URL 환경변수로 백오피스 URL 설정
  */
 
-const BACKOFFICE_URL = process.env.NEXT_PUBLIC_BACKOFFICE_URL || 'http://localhost:3001';
+const BACKOFFICE_URL = process.env.NEXT_PUBLIC_BACKOFFICE_URL || 'http://localhost:3002';
 
 interface EditMarkerProps {
   /** 백오피스 경로 (예: /dataware/posts) */

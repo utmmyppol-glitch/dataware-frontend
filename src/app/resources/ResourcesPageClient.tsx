@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { PostResponse } from '@/lib/api';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 
 const CATEGORIES = [
   { key: '', label: '전체' },
@@ -20,6 +21,8 @@ const QUICK_LINKS = [
 ];
 
 export default function ResourcesPageClient({ initialPosts }: { initialPosts: PostResponse[] }) {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const [posts] = useState<PostResponse[]>(initialPosts);
   const [activeCategory, setActiveCategory] = useState('');
 
@@ -27,18 +30,18 @@ export default function ResourcesPageClient({ initialPosts }: { initialPosts: Po
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-16" style={{ backgroundColor: '#ffffff' }}>
-      <h1 className="text-4xl font-bold text-center mb-4" style={{ color: '#111111' }}>자료실</h1>
-      <p className="text-center mb-8" style={{ color: '#676767' }}>공지사항, 동영상 강의, Documentation</p>
+      <h1 className="text-4xl font-bold text-center mb-4" style={{ color: '#111111' }}><E id="resources_hero.title" editMode={editMode}>자료실</E></h1>
+      <p className="text-center mb-8" style={{ color: '#676767' }}><E id="resources_hero.desc" editMode={editMode}>공지사항, 동영상 강의, Documentation</E></p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-        {QUICK_LINKS.map(({ href, label }) => (
+        {QUICK_LINKS.map(({ href, label }, i) => (
           <Link key={href} href={href}
             className="rounded-lg p-4 text-center font-semibold transition-colors"
             style={{ backgroundColor: '#e9f9f1', color: '#36c88a', border: '1px solid #d5d8dd' }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#36c88a'; (e.currentTarget as HTMLAnchorElement).style.color = '#ffffff'; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#e9f9f1'; (e.currentTarget as HTMLAnchorElement).style.color = '#36c88a'; }}
           >
-            <p className="font-semibold">{label}</p>
+            <p className="font-semibold"><E id={`resources_quicklink${i}.label`} editMode={editMode}>{label}</E></p>
           </Link>
         ))}
       </div>
@@ -78,6 +81,7 @@ export default function ResourcesPageClient({ initialPosts }: { initialPosts: Po
           </div>
         ))}
       </div>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </div>
   );
 }

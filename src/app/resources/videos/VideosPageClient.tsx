@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api, type PostResponse, type PageResponse } from '@/lib/api';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import { formatDateDot as formatDate } from '@/lib/format';
 import EditMarker from '@/components/EditMarker';
 
@@ -22,6 +23,8 @@ function parseVideoDetail(post: PostResponse): VideoDetail {
 }
 
 export default function VideosPageClient() {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const PER_PAGE = 6;
   const [page, setPage] = useState(0);
   const [playingId, setPlayingId] = useState<number | null>(null);
@@ -56,7 +59,7 @@ export default function VideosPageClient() {
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#36c88a'; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#888d94'; }}
             >
-              홈
+              <E id="videos_breadcrumb.home" editMode={editMode}>홈</E>
             </Link>
             <svg width="14" height="14" fill="none" stroke="#cccccc" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -67,16 +70,16 @@ export default function VideosPageClient() {
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#36c88a'; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#888d94'; }}
             >
-              자료실
+              <E id="videos_breadcrumb.resources" editMode={editMode}>자료실</E>
             </Link>
             <svg width="14" height="14" fill="none" stroke="#cccccc" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-            <span style={{ fontSize: '13px', color: '#36c88a', fontWeight: '600' }}>동영상 강의</span>
+            <span style={{ fontSize: '13px', color: '#36c88a', fontWeight: '600' }}><E id="videos_breadcrumb.current" editMode={editMode}>동영상 강의</E></span>
           </div>
-          <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#111111', margin: '0 0 10px' }}>동영상 강의</h1>
+          <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#111111', margin: '0 0 10px' }}><E id="videos_hero.title" editMode={editMode}>동영상 강의</E></h1>
           <p style={{ fontSize: '16px', color: '#676767', margin: 0 }}>
-            DA#5 런칭 세미나 및 튜토리얼 강의를 무료로 시청하세요.
+            <E id="videos_hero.desc" editMode={editMode}>DA#5 런칭 세미나 및 튜토리얼 강의를 무료로 시청하세요.</E>
           </p>
         </div>
       </div>
@@ -107,14 +110,14 @@ export default function VideosPageClient() {
                   padding: '2px 8px',
                 }}
               >
-                시리즈
+                <E id="videos_series.badge" editMode={editMode}>시리즈</E>
               </span>
             </div>
             <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#ffffff', margin: '0 0 6px' }}>
-              DA#5 런칭 세미나 · 튜토리얼 시리즈
+              <E id="videos_series.title" editMode={editMode}>DA#5 런칭 세미나 · 튜토리얼 시리즈</E>
             </h2>
             <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.6)', margin: 0 }}>
-              세미나 6편 + 튜토리얼 6편 · 엔코아 전문 강사진 · 2021년 11월 진행
+              <E id="videos_series.desc" editMode={editMode}>세미나 6편 + 튜토리얼 6편 · 엔코아 전문 강사진 · 2021년 11월 진행</E>
             </p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
@@ -133,7 +136,7 @@ export default function VideosPageClient() {
       {/* Video Grid */}
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '36px 24px 52px', position: 'relative' }}>
         <EditMarker path="/dataware/posts" />
-        {loading && <p style={{ textAlign: 'center', padding: 40, color: '#94a3b8' }}>불러오는 중...</p>}
+        {loading && <p style={{ textAlign: 'center', padding: 40, color: '#94a3b8' }}><E id="videos_content.loading" editMode={editMode}>불러오는 중...</E></p>}
         <div key={page} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '24px', minHeight: '500px' }}>
           {paged.map((video) => {
             const vd = parseVideoDetail(video);
@@ -323,7 +326,7 @@ export default function VideosPageClient() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginTop: '40px' }}>
             <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}
               style={{ padding: '10px 20px', border: '1px solid rgba(15,23,42,0.1)', backgroundColor: page === 0 ? '#F7F7F5' : '#fff', color: page === 0 ? '#D0D5DD' : '#101828', fontSize: '13px', fontWeight: 600, cursor: page === 0 ? 'default' : 'pointer' }}
-            >이전</button>
+            ><E id="videos_pagination.prev" editMode={editMode}>이전</E></button>
             {Array.from({ length: totalPages }, (_, i) => (
               <button key={i} onClick={() => setPage(i)}
                 style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: page === i ? 'none' : '1px solid rgba(15,23,42,0.1)', backgroundColor: page === i ? '#101828' : '#fff', color: page === i ? '#fff' : '#667085', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
@@ -331,7 +334,7 @@ export default function VideosPageClient() {
             ))}
             <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}
               style={{ padding: '10px 20px', border: '1px solid rgba(15,23,42,0.1)', backgroundColor: page === totalPages - 1 ? '#F7F7F5' : '#fff', color: page === totalPages - 1 ? '#D0D5DD' : '#101828', fontSize: '13px', fontWeight: 600, cursor: page === totalPages - 1 ? 'default' : 'pointer' }}
-            >다음</button>
+            ><E id="videos_pagination.next" editMode={editMode}>다음</E></button>
           </div>
         )}
 
@@ -352,10 +355,10 @@ export default function VideosPageClient() {
         >
           <div>
             <h3 style={{ fontSize: '17px', fontWeight: '700', color: '#111111', margin: '0 0 6px' }}>
-              DA# 무료 교육도 신청해 보세요
+              <E id="videos_cta.title" editMode={editMode}>DA# 무료 교육도 신청해 보세요</E>
             </h3>
             <p style={{ fontSize: '14px', color: '#676767', margin: 0 }}>
-              강의 수강 후 실습 교육을 원하시면 무료교육 신청을 이용해 주세요.
+              <E id="videos_cta.desc" editMode={editMode}>강의 수강 후 실습 교육을 원하시면 무료교육 신청을 이용해 주세요.</E>
             </p>
           </div>
           <Link
@@ -377,10 +380,11 @@ export default function VideosPageClient() {
             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#2ba876'; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#36c88a'; }}
           >
-            무료교육 신청
+            <E id="videos_cta.btn" editMode={editMode}>무료교육 신청</E>
           </Link>
         </div>
       </div>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </main>
   );
 }

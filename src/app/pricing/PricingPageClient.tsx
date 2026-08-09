@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { PRICING_PLANS, SYSTEM_REQUIREMENTS, PROCUREMENT } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 
 const G = '#36c88a';
 
@@ -12,7 +13,6 @@ const COMPARE = [
   { feature: '표준 관리 / 데이터 사전', a: true, t: true, r: false },
   { feature: 'DQ Edition (품질진단)', a: false, t: true, r: false },
   { feature: 'Contents Builder Edition', a: false, t: true, r: false },
-  { feature: 'AI Powered Pack', a: false, t: true, r: false },
   { feature: 'Repository (모델 저장소)', a: false, t: true, r: true },
   { feature: '버전 관리 / 변경 이력', a: false, t: true, r: true },
   { feature: '팀 협업 / 권한 관리', a: false, t: true, r: true },
@@ -32,6 +32,8 @@ const Check = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
 const Dash = () => <span style={{ color: 'rgba(255,255,255,0.12)' }}>—</span>;
 
 export default function PricingPageClient() {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
   const cardsRef = useGsapReveal() as React.RefObject<HTMLDivElement>;
@@ -50,32 +52,32 @@ export default function PricingPageClient() {
         </div>
 
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '160px 56px 96px', position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <p data-hero style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 32 }}>PRICING</p>
+          <p data-hero style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 32 }}><E id="pricing_hero.badge" editMode={editMode}>PRICING</E></p>
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: 24 }}>
-            Enterprise licensing<br />for every stage<br />of data governance<span style={{ color: G }}>.</span>
+            <E id="pricing_hero.title" editMode={editMode}>Enterprise licensing{'\n'}for every stage{'\n'}of data governance</E><span style={{ color: G }}>.</span>
           </h1>
           <p data-hero style={{ fontSize: 18, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 48px' }}>
-            업무 환경에 맞춰 영구, 1년 구독형으로 구매할 수 있습니다.
+            <E id="pricing_hero.desc" editMode={editMode}>업무 환경에 맞춰 영구, 1년 구독형으로 구매할 수 있습니다.</E>
           </p>
           <div data-hero style={{ display: 'flex', justifyContent: 'center', gap: 16, marginBottom: 72 }}>
             <a href="#plans" style={{ padding: '16px 36px', backgroundColor: G, color: '#fff', fontSize: 15, fontWeight: 700, textDecoration: 'none', transition: 'opacity 0.15s' }}
               onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; }}
               onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
-            >요금제 비교</a>
+            ><E id="pricing_hero.compare_btn" editMode={editMode}>요금제 비교</E></a>
             <Link href="/download" style={{ padding: '16px 36px', border: '1px solid rgba(255,255,255,0.12)', color: '#F9FAFB', fontSize: 15, fontWeight: 700, textDecoration: 'none', transition: 'border-color 0.15s' }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; }}
-            >무료 체험</Link>
+            ><E id="pricing_hero.trial_btn" editMode={editMode}>무료 체험</E></Link>
           </div>
           <div data-hero style={{ display: 'flex', justifyContent: 'center', gap: 64 }}>
             {[
               { v: '3,000+', l: 'Enterprise Customers' },
               { v: 'GS 인증', l: 'Certified Quality' },
               { v: '20년+', l: 'Partner Experience' },
-            ].map(s => (
+            ].map((s, i) => (
               <div key={s.l}>
-                <span style={{ fontSize: 28, fontWeight: 700, color: '#F9FAFB', display: 'block' }}>{s.v}</span>
-                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.06em' }}>{s.l}</span>
+                <span style={{ fontSize: 28, fontWeight: 700, color: '#F9FAFB', display: 'block' }}><E id={`pricing_hero.stat${i}_value`} editMode={editMode}>{s.v}</E></span>
+                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.06em' }}><E id={`pricing_hero.stat${i}_label`} editMode={editMode}>{s.l}</E></span>
               </div>
             ))}
           </div>
@@ -86,8 +88,8 @@ export default function PricingPageClient() {
       <section id="plans" style={{ backgroundColor: '#F7F7F5' }}>
         <div ref={cardsRef} style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 56px' }}>
           <div data-anim style={{ textAlign: 'center', marginBottom: 64 }}>
-            <p style={{ fontSize: 13, color: '#98A2B3', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>PLANS</p>
-            <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em' }}>조직의 규모에 맞는 요금제를 선택하세요</h2>
+            <p style={{ fontSize: 13, color: '#98A2B3', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}><E id="pricing_plans.badge" editMode={editMode}>PLANS</E></p>
+            <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em' }}><E id="pricing_plans.title" editMode={editMode}>조직의 규모에 맞는 요금제를 선택하세요</E></h2>
           </div>
 
           <div data-anim style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, alignItems: 'start' }}>
@@ -114,11 +116,11 @@ export default function PricingPageClient() {
 
                 <div style={{ borderTop: '1px solid rgba(15,23,42,0.06)', paddingTop: 24, marginBottom: 32, flex: 1 }}>
                   {(i === 0 ? ['개념/논리/물리 모델링', '표준 관리', '100+ DBMS 지원', '리포트 출력'] :
-                    i === 1 ? ['Architecture 전 기능 포함', 'DQ Edition', 'Contents Builder', 'AI Powered Pack', 'Repository 포함'] :
-                    ['중앙 모델 저장소', '버전 관리', '팀 협업/권한', '100+ DBMS 지원']).map(f => (
+                    i === 1 ? ['Architecture 전 기능 포함', 'DQ Edition', 'Contents Builder', 'Repository 포함'] :
+                    ['중앙 모델 저장소', '버전 관리', '팀 협업/권한', '100+ DBMS 지원']).map((f, fi) => (
                     <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                       <Check />
-                      <span style={{ fontSize: 15, color: '#475467' }}>{f}</span>
+                      <span style={{ fontSize: 15, color: '#475467' }}><E id={`pricing_plan${i}_feature${fi}`} editMode={editMode}>{f}</E></span>
                     </div>
                   ))}
                 </div>
@@ -150,8 +152,8 @@ export default function PricingPageClient() {
       <section style={{ backgroundColor: '#0B1220', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
         <div ref={compareRef} style={{ width: '100%', maxWidth: 1440, margin: '0 auto', padding: 'clamp(64px, 8vw, 100px) clamp(24px, 4vw, 72px)' }}>
           <div data-anim style={{ textAlign: 'center', marginBottom: 64 }}>
-            <p style={{ fontSize: 14, color: G, letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 16 }}>COMPARE</p>
-            <h2 style={{ fontSize: 'clamp(32px, 4vw, 48px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.03em' }}>제품별 기능 비교</h2>
+            <p style={{ fontSize: 14, color: G, letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 16 }}><E id="pricing_compare.badge" editMode={editMode}>COMPARE</E></p>
+            <h2 style={{ fontSize: 'clamp(32px, 4vw, 48px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.03em' }}><E id="pricing_compare.title" editMode={editMode}>제품별 기능 비교</E></h2>
           </div>
 
           <div data-anim style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
@@ -159,7 +161,7 @@ export default function PricingPageClient() {
               { name: 'DA# Architecture', key: 'a' as const, desc: 'DB 모델링의 필수', count: COMPARE.filter(r => r.a).length, price: '₩2,400,000', period: '1년' },
               { name: 'DA# 통합 패키지', key: 't' as const, desc: '올인원 데이터 모델링', count: COMPARE.filter(r => r.t).length, best: true, price: '₩6,000,000', period: '평생' },
               { name: 'DA# Repository', key: 'r' as const, desc: '통합 모델링의 시작', count: COMPARE.filter(r => r.r).length, price: '₩15,000,000', period: '평생' },
-            ].map((plan) => (
+            ].map((plan, pi) => (
               <div key={plan.name} style={{
                 display: 'flex', flexDirection: 'column',
                 border: plan.best ? `2px solid ${G}` : '1px solid rgba(255,255,255,0.08)',
@@ -172,14 +174,14 @@ export default function PricingPageClient() {
                 )}
                 {/* 카드 헤더 */}
                 <div style={{ padding: '40px 32px 28px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                  <h3 style={{ fontSize: 22, fontWeight: 800, color: '#F9FAFB', marginBottom: 6 }}>{plan.name}</h3>
-                  <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', marginBottom: 20 }}>{plan.desc}</p>
-                  <p style={{ fontSize: 32, fontWeight: 800, color: plan.best ? G : '#F9FAFB' }}>{plan.price}</p>
-                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', marginTop: 4 }}>{plan.period} 라이선스 · VAT 별도</p>
+                  <h3 style={{ fontSize: 22, fontWeight: 800, color: '#F9FAFB', marginBottom: 6 }}><E id={`pricing_compare${pi}.name`} editMode={editMode}>{plan.name}</E></h3>
+                  <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', marginBottom: 20 }}><E id={`pricing_compare${pi}.desc`} editMode={editMode}>{plan.desc}</E></p>
+                  <p style={{ fontSize: 32, fontWeight: 800, color: plan.best ? G : '#F9FAFB' }}><E id={`pricing_compare${pi}.price`} editMode={editMode}>{plan.price}</E></p>
+                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', marginTop: 4 }}><E id={`pricing_compare${pi}.price_note`} editMode={editMode}>{plan.period} 라이선스 · VAT 별도</E></p>
                 </div>
                 {/* 기능 목록 */}
                 <div style={{ padding: '24px 28px 32px', flex: 1 }}>
-                  <p style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em', marginBottom: 16 }}>{plan.count}개 기능 포함</p>
+                  <p style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em', marginBottom: 16 }}><E id={`pricing_compare${pi}.feature_count`} editMode={editMode}>{plan.count}개 기능 포함</E></p>
                   {COMPARE.map((row) => {
                     const included = row[plan.key];
                     return (
@@ -215,7 +217,7 @@ export default function PricingPageClient() {
                   }}
                     onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; if (!plan.best) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}
                     onMouseLeave={e => { e.currentTarget.style.opacity = '1'; if (!plan.best) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; }}
-                  >{plan.best ? '무료 체험하기' : '견적 문의'}</a>
+                  >{plan.best ? <E id={`pricing_compare${pi}.cta_best`} editMode={editMode}>무료 체험하기</E> : <E id={`pricing_compare${pi}.cta`} editMode={editMode}>견적 문의</E>}</a>
                 </div>
               </div>
             ))}
@@ -227,8 +229,8 @@ export default function PricingPageClient() {
       <section style={{ backgroundColor: '#F7F7F5' }}>
         <div ref={whyRef} style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 56px' }}>
           <div data-anim style={{ marginBottom: 64 }}>
-            <p style={{ fontSize: 13, color: '#98A2B3', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>WHY DATAWARE</p>
-            <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em' }}>DATAWARE를 선택하는 이유</h2>
+            <p style={{ fontSize: 13, color: '#98A2B3', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}><E id="pricing_why.badge" editMode={editMode}>WHY DATAWARE</E></p>
+            <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em' }}><E id="pricing_why.title" editMode={editMode}>DATAWARE를 선택하는 이유</E></h2>
           </div>
 
           <div data-anim style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px 96px' }}>
@@ -237,11 +239,11 @@ export default function PricingPageClient() {
               { n: '02', t: '효율적인 생산', d: 'M:M 해소, 테이블 구조 변경 가능, 변경 내용 논리/물리 모델 실시간 반영' },
               { n: '03', t: '직관적인 표현', d: '엔터티 상태, 관계, 목적 등 의미를 분명하게 파악할 수 있는 다양한 유형 설정 기능' },
               { n: '04', t: '원활한 협업', d: '주제 영역별 동시 모델링 지원, 모든 작업자들에게 모델 공유, 동기화' },
-            ].map(item => (
+            ].map((item, i) => (
               <div key={item.n}>
                 <span style={{ fontSize: 48, fontWeight: 800, color: 'rgba(15,23,42,0.06)', display: 'block', marginBottom: 16, letterSpacing: '-0.04em' }}>{item.n}</span>
-                <h3 style={{ fontSize: 20, fontWeight: 700, color: '#101828', marginBottom: 12 }}>{item.t}</h3>
-                <p style={{ fontSize: 16, color: '#475467', lineHeight: 1.7 }}>{item.d}</p>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: '#101828', marginBottom: 12 }}><E id={`pricing_why.item${i}_title`} editMode={editMode}>{item.t}</E></h3>
+                <p style={{ fontSize: 16, color: '#475467', lineHeight: 1.7 }}><E id={`pricing_why.item${i}_desc`} editMode={editMode}>{item.d}</E></p>
               </div>
             ))}
           </div>
@@ -252,8 +254,8 @@ export default function PricingPageClient() {
       <section style={{ backgroundColor: '#fff' }}>
         <div ref={reqRef} style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 56px' }}>
           <div data-anim style={{ marginBottom: 48 }}>
-            <p style={{ fontSize: 13, color: '#98A2B3', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>REQUIREMENTS</p>
-            <h2 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em' }}>시스템 요구사항</h2>
+            <p style={{ fontSize: 13, color: '#98A2B3', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}><E id="pricing_requirements.badge" editMode={editMode}>REQUIREMENTS</E></p>
+            <h2 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em' }}><E id="pricing_requirements.title" editMode={editMode}>시스템 요구사항</E></h2>
           </div>
 
           <div data-anim style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
@@ -279,18 +281,18 @@ export default function PricingPageClient() {
       <section style={{ backgroundColor: '#F7F7F5' }}>
         <div ref={faqRef} style={{ maxWidth: 800, margin: '0 auto', padding: '96px 56px' }}>
           <div data-anim style={{ textAlign: 'center', marginBottom: 48 }}>
-            <p style={{ fontSize: 13, color: '#98A2B3', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>FAQ</p>
-            <h2 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em' }}>자주 묻는 질문</h2>
+            <p style={{ fontSize: 13, color: '#98A2B3', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}><E id="pricing_faq.badge" editMode={editMode}>FAQ</E></p>
+            <h2 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em' }}><E id="pricing_faq.title" editMode={editMode}>자주 묻는 질문</E></h2>
           </div>
 
           <div>
             {FAQ.map((item, i) => (
               <div key={i} data-anim style={{ borderBottom: '1px solid rgba(15,23,42,0.06)' }}>
                 <button onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ width: '100%', textAlign: 'left', padding: '24px 0', fontSize: 16, fontWeight: 600, color: '#101828', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  {item.q}
+                  <E id={`pricing_faq.q${i}`} editMode={editMode}>{item.q}</E>
                   <span style={{ fontSize: 18, color: G, transform: openFaq === i ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, marginLeft: 16 }}>+</span>
                 </button>
-                {openFaq === i && <div style={{ padding: '0 0 24px', fontSize: 15, color: '#475467', lineHeight: 1.8 }}>{item.a}</div>}
+                {openFaq === i && <div style={{ padding: '0 0 24px', fontSize: 15, color: '#475467', lineHeight: 1.8 }}><E id={`pricing_faq.a${i}`} editMode={editMode}>{item.a}</E></div>}
               </div>
             ))}
           </div>
@@ -303,25 +305,26 @@ export default function PricingPageClient() {
           onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#0D1728'; }}
           onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#07111F'; }}
         >
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 20 }}>CONTACT SALES</p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 20 }}><E id="pricing_cta.contact_badge" editMode={editMode}>CONTACT SALES</E></p>
           <h3 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 700, color: '#F9FAFB', lineHeight: 1.2, marginBottom: 16 }}>
-            요금제 선택이<br />어려우신가요<span style={{ color: G }}>?</span>
+            <E id="pricing_cta.contact_title" editMode={editMode}>요금제 선택이{'\n'}어려우신가요</E><span style={{ color: G }}>?</span>
           </h3>
-          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, maxWidth: 360, marginBottom: 28 }}>전문 컨설턴트가 귀사에 맞는 최적의 구성을 제안합니다.</p>
-          <span style={{ fontSize: 15, fontWeight: 600, color: G }}>무료 상담 신청 →</span>
+          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, maxWidth: 360, marginBottom: 28 }}><E id="pricing_cta.desc" editMode={editMode}>전문 컨설턴트가 귀사에 맞는 최적의 구성을 제안합니다.</E></p>
+          <span style={{ fontSize: 15, fontWeight: 600, color: G }}><E id="pricing_cta.contact_link" editMode={editMode}>무료 상담 신청 →</E></span>
         </Link>
         <Link href="/download" style={{ backgroundColor: G, padding: '72px 56px', textDecoration: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 320, transition: 'filter 0.2s' }}
           onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(0.92)'; }}
           onMouseLeave={e => { e.currentTarget.style.filter = ''; }}
         >
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 20 }}>FREE DOWNLOAD</p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 20 }}><E id="pricing_cta.download_badge" editMode={editMode}>FREE DOWNLOAD</E></p>
           <h3 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 700, color: '#fff', lineHeight: 1.2, marginBottom: 16 }}>
-            DA# 무료 체험<br />시작하기<span style={{ opacity: 0.5 }}>.</span>
+            <E id="pricing_cta.download_title" editMode={editMode}>DA# 무료 체험{'\n'}시작하기</E><span style={{ opacity: 0.5 }}>.</span>
           </h3>
-          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, maxWidth: 360, marginBottom: 28 }}>개인용 DA#을 무료로 다운로드하고 직접 체험해보세요.</p>
-          <span style={{ fontSize: 15, fontWeight: 600, color: '#fff' }}>소개서 다운로드 →</span>
+          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, maxWidth: 360, marginBottom: 28 }}><E id="pricing_cta.download_desc" editMode={editMode}>개인용 DA#을 무료로 다운로드하고 직접 체험해보세요.</E></p>
+          <span style={{ fontSize: 15, fontWeight: 600, color: '#fff' }}><E id="pricing_cta.download_link" editMode={editMode}>소개서 다운로드 →</E></span>
         </Link>
       </div>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </>
   );
 }

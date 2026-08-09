@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { DATAWARE_LINEUP } from '@/data';
 import { CUSTOMER_STORIES } from '@/data/customers';
+import { useEditMode, E } from '@/lib/editable';
 
 /* ── 검색 가능 데이터 정의 ── */
 
@@ -166,6 +167,7 @@ interface SearchOverlayProps {
 }
 
 export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
+  const editMode = useEditMode();
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchItem[]>([]);
@@ -338,7 +340,7 @@ export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
               {recentSearches.length > 0 && (
                 <div style={{ marginBottom: 20 }}>
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-[11px] font-bold uppercase" style={{ color: '#94a3b8', letterSpacing: '0.08em' }}>최근 검색</p>
+                    <p className="text-[11px] font-bold uppercase" style={{ color: '#94a3b8', letterSpacing: '0.08em' }}><E id="search_empty.recent_label" editMode={editMode}>최근 검색</E></p>
                     <button
                       onClick={() => { clearRecentSearches(); setRecentSearches([]); }}
                       className="text-[11px] transition-colors"
@@ -346,7 +348,7 @@ export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
                       onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#ef4444'; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#94a3b8'; }}
                     >
-                      전체 삭제
+                      <E id="search_empty.clear_btn" editMode={editMode}>전체 삭제</E>
                     </button>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -369,7 +371,7 @@ export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
                 </div>
               )}
 
-              <p className="text-[11px] font-bold uppercase mb-2" style={{ color: '#94a3b8', letterSpacing: '0.08em' }}>인기 링크</p>
+              <p className="text-[11px] font-bold uppercase mb-2" style={{ color: '#94a3b8', letterSpacing: '0.08em' }}><E id="search_empty.popular_label" editMode={editMode}>인기 링크</E></p>
               <div className="flex flex-wrap gap-2">
                 {SUGGESTIONS.map((link) => (
                   <button
@@ -451,9 +453,9 @@ export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
               <p className="text-[15px] font-semibold mb-1" style={{ color: '#0f172a' }}>
                 &ldquo;{query}&rdquo;에 대한 결과가 없습니다
               </p>
-              <p className="text-[13px] mb-5" style={{ color: '#64748b' }}>다른 키워드로 검색하거나, 아래 링크를 확인해보세요.</p>
+              <p className="text-[13px] mb-5" style={{ color: '#64748b' }}><E id="search_noresult.desc" editMode={editMode}>다른 키워드로 검색하거나, 아래 링크를 확인해보세요.</E></p>
 
-              <p className="text-[11px] font-bold uppercase mb-2" style={{ color: '#94a3b8', letterSpacing: '0.08em' }}>이런 걸 찾으시나요?</p>
+              <p className="text-[11px] font-bold uppercase mb-2" style={{ color: '#94a3b8', letterSpacing: '0.08em' }}><E id="search_noresult.suggest_label" editMode={editMode}>이런 걸 찾으시나요?</E></p>
               <div className="flex flex-wrap justify-center gap-2">
                 {SUGGESTIONS.map((link) => (
                   <button

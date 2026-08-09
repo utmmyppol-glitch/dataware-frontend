@@ -4,11 +4,14 @@ import { useState, FormEvent } from 'react';
 import { api } from '@/lib/api';
 import { SEMINAR_STEPS } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import ConsentSection from '@/components/forms/ConsentSection';
 
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
 export default function SeminarPageClient() {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -98,11 +101,11 @@ export default function SeminarPageClient() {
             className="headline-lg"
             style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a', marginBottom: '12px' }}
           >
-            세미나 신청이 완료되었습니다
+            <E id="seminar_success.title" editMode={editMode}>세미나 신청이 완료되었습니다</E>
           </h1>
           <p style={{ color: '#64748b', lineHeight: 1.7 }}>
-            담당자가 일정을 확인 후 연락드리겠습니다.<br />
-            빠른 시일 내에 연락 드리겠습니다.
+            <E id="seminar_success.msg1" editMode={editMode}>담당자가 일정을 확인 후 연락드리겠습니다.</E><br />
+            <E id="seminar_success.msg2" editMode={editMode}>빠른 시일 내에 연락 드리겠습니다.</E>
           </p>
         </div>
       </div>
@@ -130,9 +133,9 @@ export default function SeminarPageClient() {
             <span style={{ fontSize: '10px', color: '#36c88a', letterSpacing: '0.08em' }}>VISIT SEMINAR</span>
           </div>
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1.05, marginBottom: '16px' }}>
-            DATAWARE 맞춤형<br />방문 세미나<span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
+            <E id="seminar_hero.title" editMode={editMode}>DATAWARE 맞춤형{'\n'}방문 세미나</E><span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
           </h1>
-          <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '520px' }}>전문 컨설턴트가 직접 방문하여 귀사의 데이터 환경에 맞는 최적의 솔루션을 제안해 드립니다.</p>
+          <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '520px' }}><E id="seminar_hero.desc" editMode={editMode}>전문 컨설턴트가 직접 방문하여 귀사의 데이터 환경에 맞는 최적의 솔루션을 제안해 드립니다.</E></p>
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(54,200,138,0.2), transparent)' }} />
       </section>
@@ -152,10 +155,10 @@ export default function SeminarPageClient() {
           {/* Section label */}
           <div style={{ textAlign: 'center', marginBottom: '72px' }}>
             <p style={{ color: '#36c88a', fontSize: '0.8125rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>
-              세미나 진행 프로세스
+              <E id="seminar_steps.badge" editMode={editMode}>세미나 진행 프로세스</E>
             </p>
             <h2 style={{ color: '#ffffff', fontSize: '1.75rem', fontWeight: 700 }}>
-              신청부터 완료까지 3단계
+              <E id="seminar_steps.title" editMode={editMode}>신청부터 완료까지 3단계</E>
             </h2>
           </div>
 
@@ -196,10 +199,10 @@ export default function SeminarPageClient() {
                         STEP {s.step}
                       </p>
                       <h3 style={{ color: '#ffffff', fontSize: '1.375rem', fontWeight: 700, marginBottom: '10px' }}>
-                        {s.label}
+                        <E id={`seminar_step${idx}.label`} editMode={editMode}>{s.label}</E>
                       </h3>
                       <p style={{ color: '#94a3b8', fontSize: '0.9375rem', lineHeight: 1.65 }}>
-                        {s.desc}
+                        <E id={`seminar_step${idx}.desc`} editMode={editMode}>{s.desc}</E>
                       </p>
                     </div>
                   ) : (
@@ -295,10 +298,10 @@ export default function SeminarPageClient() {
                         STEP {s.step}
                       </p>
                       <h3 style={{ color: '#ffffff', fontSize: '1.375rem', fontWeight: 700, marginBottom: '10px' }}>
-                        {s.label}
+                        <E id={`seminar_step${idx}.label_r`} editMode={editMode}>{s.label}</E>
                       </h3>
                       <p style={{ color: '#94a3b8', fontSize: '0.9375rem', lineHeight: 1.65 }}>
-                        {s.desc}
+                        <E id={`seminar_step${idx}.desc_r`} editMode={editMode}>{s.desc}</E>
                       </p>
                     </div>
                   )}
@@ -329,10 +332,10 @@ export default function SeminarPageClient() {
                 marginBottom: '12px',
               }}
             >
-              세미나 신청서 작성
+              <E id="seminar_form.title" editMode={editMode}>세미나 신청서 작성</E>
             </h2>
             <p style={{ color: '#64748b' }}>
-              아래 양식을 작성해 주시면 담당자가 확인 후 연락드립니다.
+              <E id="seminar_form.desc" editMode={editMode}>아래 양식을 작성해 주시면 담당자가 확인 후 연락드립니다.</E>
             </p>
           </div>
 
@@ -358,7 +361,7 @@ export default function SeminarPageClient() {
                 }}
               >
                 <div>
-                  <label className="block text-sm font-medium mb-1" style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}>이름 *</label>
+                  <label className="block text-sm font-medium mb-1" style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}><E id="seminar_form.label_name" editMode={editMode}>이름</E> *</label>
                   <input
                     name="name"
                     className={errors.name ? inputError : inputBase}
@@ -366,7 +369,7 @@ export default function SeminarPageClient() {
                   {errors.name && <p className="text-xs mt-1" style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '4px' }}>{errors.name}</p>}
                 </div>
                 <div>
-                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}>회사명 *</label>
+                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}><E id="seminar_form.label_company" editMode={editMode}>회사명</E> *</label>
                   <input
                     name="company"
                     className={errors.company ? inputError : inputBase}
@@ -374,7 +377,7 @@ export default function SeminarPageClient() {
                   {errors.company && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '4px' }}>{errors.company}</p>}
                 </div>
                 <div>
-                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}>연락처 *</label>
+                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}><E id="seminar_form.label_phone" editMode={editMode}>연락처</E> *</label>
                   <input
                     name="phone"
                     className={errors.phone ? inputError : inputBase}
@@ -382,7 +385,7 @@ export default function SeminarPageClient() {
                   {errors.phone && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '4px' }}>{errors.phone}</p>}
                 </div>
                 <div>
-                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}>이메일 *</label>
+                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}><E id="seminar_form.label_email" editMode={editMode}>이메일</E> *</label>
                   <input
                     name="email"
                     type="email"
@@ -391,14 +394,14 @@ export default function SeminarPageClient() {
                   {errors.email && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '4px' }}>{errors.email}</p>}
                 </div>
                 <div>
-                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}>부서</label>
+                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}><E id="seminar_form.label_dept" editMode={editMode}>부서</E></label>
                   <input
                     name="department"
                     className={inputBase}
                   />
                 </div>
                 <div>
-                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}>희망 방문일</label>
+                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}><E id="seminar_form.label_date" editMode={editMode}>희망 방문일</E></label>
                   <input
                     name="preferredDate"
                     type="date"
@@ -406,7 +409,7 @@ export default function SeminarPageClient() {
                   />
                 </div>
                 <div>
-                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}>참석 인원</label>
+                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}><E id="seminar_form.label_attendees" editMode={editMode}>참석 인원</E></label>
                   <input
                     name="attendees"
                     type="number"
@@ -415,7 +418,7 @@ export default function SeminarPageClient() {
                   />
                 </div>
                 <div>
-                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}>관심 주제</label>
+                  <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}><E id="seminar_form.label_topic" editMode={editMode}>관심 주제</E></label>
                   <input
                     name="topic"
                     placeholder="예: 데이터 모델링, 품질관리"
@@ -426,7 +429,7 @@ export default function SeminarPageClient() {
 
               {/* Full-width textarea */}
               <div style={{ marginBottom: '28px' }}>
-                <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}>비고</label>
+                <label style={{ color: '#0f172a', marginBottom: '6px', display: 'block', fontSize: '0.875rem', fontWeight: 600 }}><E id="seminar_form.label_note" editMode={editMode}>비고</E></label>
                 <textarea
                   name="note"
                   rows={3}
@@ -469,12 +472,13 @@ export default function SeminarPageClient() {
                   if (!loading) (e.currentTarget as HTMLButtonElement).style.opacity = '1';
                 }}
               >
-                {loading ? '신청 중...' : '세미나신청 제출'}
+                {loading ? <E id="seminar_form.loading" editMode={editMode}>신청 중...</E> : <E id="seminar_form.submit_btn" editMode={editMode}>세미나신청 제출</E>}
               </button>
             </form>
           </div>
         </div>
       </section>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </div>
   );
 }

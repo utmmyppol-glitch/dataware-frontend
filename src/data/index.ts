@@ -5,15 +5,10 @@
 export { IMAGES, ENCORE_IMAGES } from './images';
 export {
   DA_SHARP,
-  DA_DQ_EDITION,
-  DA_TOTAL_PACKAGE,
-  DATAWARE_OVERVIEW,
   META_SHARP,
   DQ_SHARP,
   AP_SHARP,
   DP_SHARP,
-  META_SHARP_AI,
-  DA_AI_PACK,
   DATAWARE_LINEUP,
 } from './products';
 export {

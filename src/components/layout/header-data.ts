@@ -5,7 +5,6 @@ export const QUICK_LINKS = [
 ];
 
 export const DATAWARE_PRODUCTS = [
-  { name: 'DATAWARE', slug: 'dataware',   subtitle: 'All-in-One Package',   color: '#36c88a', isNew: false, initial: 'D' },
   { name: 'DA#',      slug: 'da-sharp',   subtitle: '데이터 모델링',         color: '#6b8cae', isNew: false, initial: 'DA' },
   { name: 'META#',    slug: 'meta-sharp', subtitle: '메타데이터 관리',       color: '#8a7cb8', isNew: true,  initial: 'M' },
   { name: 'DQ#',      slug: 'dq-sharp',  subtitle: '데이터 품질관리',       color: '#5b9a7d', isNew: true,  initial: 'DQ' },
@@ -13,10 +12,7 @@ export const DATAWARE_PRODUCTS = [
   { name: 'DP#',      slug: 'dp-sharp',  subtitle: '데이터 포털',           color: '#b8a060', isNew: true,  initial: 'DP' },
 ];
 
-export const AI_PRODUCTS = [
-  { name: 'META# AI',           slug: 'meta-ai',        subtitle: 'AI 거버넌스 자동화',   color: '#7c5cbf', isNew: true, initial: 'AI' },
-  { name: 'DA# AI Powered Pack', slug: 'da-ai-pack',    subtitle: 'AI 모델링 자동화',     color: '#5a8cb0', isNew: true, initial: 'AP' },
-];
+export const AI_PRODUCTS: { name: string; slug: string; subtitle: string; color: string; isNew: boolean; initial: string }[] = [];
 
 export const SUPPORT_LINKS = [
   { label: '공지사항', href: '/resources/notices', desc: '최신 소식 및 업데이트' },

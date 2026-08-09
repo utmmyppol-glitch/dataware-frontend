@@ -5,11 +5,14 @@ import Link from 'next/link';
 import { api } from '@/lib/api';
 import { DOWNLOAD_CARDS, DOWNLOAD_PAGE, IMAGES } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import ConsentSection from '@/components/forms/ConsentSection';
 
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
 export default function DownloadPageClient() {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -53,8 +56,8 @@ export default function DownloadPageClient() {
       <div style={{ background: 'linear-gradient(180deg, #0b1220, #0f172a)', minHeight: '100vh' }}>
         <div className="grid-bg" style={{ paddingTop: 120, paddingBottom: 80, textAlign: 'center' }}>
           <div className="wrap">
-            <p className="eyebrow" style={{ marginBottom: 16 }}>다운로드</p>
-            <h1 className="headline-lg" style={{ color: '#ffffff', marginBottom: 12 }}>다운로드 신청</h1>
+            <p className="eyebrow" style={{ marginBottom: 16 }}><E id="download_success.eyebrow" editMode={editMode}>다운로드</E></p>
+            <h1 className="headline-lg" style={{ color: '#ffffff', marginBottom: 12 }}><E id="download_success.title" editMode={editMode}>다운로드 신청</E></h1>
           </div>
         </div>
         <div className="wrap" style={{ paddingTop: 64, paddingBottom: 120 }}>
@@ -62,8 +65,8 @@ export default function DownloadPageClient() {
             <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--accent-pale)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
               <span style={{ color: '#36c88a', fontSize: 32, lineHeight: 1 }}>✓</span>
             </div>
-            <h2 className="headline-md" style={{ color: '#0f172a', marginBottom: 12 }}>다운로드 신청 완료</h2>
-            <p style={{ color: '#64748b', fontSize: 16 }}>입력하신 이메일로 다운로드 링크를 발송해드립니다.</p>
+            <h2 className="headline-md" style={{ color: '#0f172a', marginBottom: 12 }}><E id="download_success.heading" editMode={editMode}>다운로드 신청 완료</E></h2>
+            <p style={{ color: '#64748b', fontSize: 16 }}><E id="download_success.msg" editMode={editMode}>입력하신 이메일로 다운로드 링크를 발송해드립니다.</E></p>
           </div>
         </div>
       </div>
@@ -88,9 +91,9 @@ export default function DownloadPageClient() {
         </div>
         <div ref={heroRef} style={{ padding: '0 56px', position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-            <Link href="/" style={{ fontSize: 13, color: 'rgba(255,255,255,.35)', textDecoration: 'none' }}>홈</Link>
+            <Link href="/" style={{ fontSize: 13, color: 'rgba(255,255,255,.35)', textDecoration: 'none' }}><E id="download_breadcrumb.home" editMode={editMode}>홈</E></Link>
             <span style={{ fontSize: 12, color: 'rgba(255,255,255,.2)' }}>›</span>
-            <span style={{ fontSize: 13, color: '#36c88a', fontWeight: 600 }}>다운로드</span>
+            <span style={{ fontSize: 13, color: '#36c88a', fontWeight: 600 }}><E id="download_breadcrumb.current" editMode={editMode}>다운로드</E></span>
           </div>
           <div data-hero style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
             <span style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.12em' }}>01</span>
@@ -98,9 +101,9 @@ export default function DownloadPageClient() {
             <span style={{ fontSize: '10px', color: '#36c88a', letterSpacing: '0.08em' }}>DOWNLOAD</span>
           </div>
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 0.95, marginBottom: '16px' }}>
-            다운로드 신청<span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
+            <E id="download_hero.title" editMode={editMode}>다운로드 신청</E><span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
           </h1>
-          <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '480px' }}>DA# 무료 다운로드 및 제품 소개서를 신청하세요.</p>
+          <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '480px' }}><E id="download_hero.desc" editMode={editMode}>DA# 무료 다운로드 및 제품 소개서를 신청하세요.</E></p>
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(54,200,138,0.2), transparent)' }} />
       </section>
@@ -109,7 +112,7 @@ export default function DownloadPageClient() {
       <section className="section-pad" style={{ background: '#f8fafc' }}>
         <div ref={cardsRef} className="wrap">
           <p style={{ textAlign: 'center', color: '#36c88a', fontWeight: 700, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 40 }}>
-            다운로드 항목
+            <E id="download_cards.badge" editMode={editMode}>다운로드 항목</E>
           </p>
 
           {DOWNLOAD_PAGE.sections.map((section) => {
@@ -164,14 +167,14 @@ export default function DownloadPageClient() {
       <section id="download-form" className="section-pad" style={{ background: '#ffffff' }}>
         <div ref={formRef} className="wrap">
           <p style={{ textAlign: 'center', color: '#36c88a', fontWeight: 700, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>
-            신청하기
+            <E id="download_form.badge" editMode={editMode}>신청하기</E>
           </p>
-          <h2 className="headline-md" style={{ textAlign: 'center', color: '#0f172a', marginBottom: 48 }}>다운로드 신청서</h2>
+          <h2 className="headline-md" style={{ textAlign: 'center', color: '#0f172a', marginBottom: 48 }}><E id="download_form.title" editMode={editMode}>다운로드 신청서</E></h2>
 
           <div className="card" style={{ maxWidth: 960, margin: '0 auto', borderRadius: 0, padding: 'clamp(28px, 5vw, 48px)' }}>
             <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               <div>
-                <label className="block text-sm font-medium mb-1" style={{ color: '#0f172a' }}>다운로드 항목</label>
+                <label className="block text-sm font-medium mb-1" style={{ color: '#0f172a' }}><E id="download_form.label_filetype" editMode={editMode}>다운로드 항목</E></label>
                 <select
                   name="fileType"
                   className={inputBase}
@@ -211,12 +214,13 @@ export default function DownloadPageClient() {
                 className="btn-accent w-full"
                 style={{ borderRadius: 0, opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer', fontSize: 16, padding: '16px 0' }}
               >
-                {loading ? '신청 중...' : '다운로드 신청'}
+                {loading ? <E id="download_form.loading" editMode={editMode}>신청 중...</E> : <E id="download_form.submit_btn" editMode={editMode}>다운로드 신청</E>}
               </button>
             </form>
           </div>
         </div>
       </section>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </div>
   );
 }

@@ -25,10 +25,10 @@ export const SOLUTIONS: Solution[] = [
     gain: ['표준화된 데이터 설계', '모델링 공수 절감', '산출물 자동 문서화'],
     feats: [
       { n: '개념·논리·물리', e: '아키텍처 전 단계 설계' },
-      { n: 'AI Powered Pack', e: 'ChatGPT 기반 표준화·현행화' },
       { n: 'Repository', e: '동시 모델링·공유·동기화' },
       { n: '리버스', e: 'ERD 자동 생성·관계 분석' },
       { n: '산출물', e: 'HWP·PDF·Excel 자동생성' },
+      { n: '표준 관리', e: '데이터 표준 자동 추천·검증' },
     ],
   },
   {

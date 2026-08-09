@@ -407,35 +407,35 @@ export default function DiagnosisPageClient() {
                   </div>
 
                   <h2 style={{ fontSize: 'clamp(30px, 4.5vw, 44px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 1.15, marginBottom: 14 }}>
-                    {diagStep === 0 && <>운용 중인 DB는<br />몇 개인가요<span style={{ color: ACCENT }}>?</span></>}
-                    {diagStep === 1 && <>데이터 표준이<br />수립되어 있나요<span style={{ color: ACCENT }}>?</span></>}
-                    {diagStep === 2 && <>메타데이터를<br />관리하고 있나요<span style={{ color: ACCENT }}>?</span></>}
-                    {diagStep === 3 && <>데이터 품질 진단 체계가<br />갖춰져 있나요<span style={{ color: ACCENT }}>?</span></>}
+                    {diagStep === 0 && <><E id="diagnosis_quiz.q0_title" editMode={editMode}>운용 중인 DB는<br />몇 개인가요</E><span style={{ color: ACCENT }}>?</span></>}
+                    {diagStep === 1 && <><E id="diagnosis_quiz.q1_title" editMode={editMode}>데이터 표준이<br />수립되어 있나요</E><span style={{ color: ACCENT }}>?</span></>}
+                    {diagStep === 2 && <><E id="diagnosis_quiz.q2_title" editMode={editMode}>메타데이터를<br />관리하고 있나요</E><span style={{ color: ACCENT }}>?</span></>}
+                    {diagStep === 3 && <><E id="diagnosis_quiz.q3_title" editMode={editMode}>데이터 품질 진단 체계가<br />갖춰져 있나요</E><span style={{ color: ACCENT }}>?</span></>}
                   </h2>
                   <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', lineHeight: 1.7, marginBottom: 48, maxWidth: 480 }}>
-                    {diagStep === 0 && <>현재 사내에서 운용 중인 <span style={{ color: ACCENT }}>데이터베이스의 수</span>를 선택하세요.</>}
-                    {diagStep === 1 && <>용어 사전, 도메인 정의 등 <span style={{ color: ACCENT }}>데이터 표준</span>이 정의·관리되고 있는지 선택하세요.</>}
-                    {diagStep === 2 && <><span style={{ color: ACCENT }}>메타데이터 수집·관리</span> 또는 시스템 간 영향도를 파악하고 있는지 선택하세요.</>}
-                    {diagStep === 3 && <>데이터 품질을 정기적으로 진단하고 <span style={{ color: ACCENT }}>오류를 모니터링</span>하는 체계가 있는지 선택하세요.</>}
+                    {diagStep === 0 && <E id="diagnosis_quiz.q0_desc" editMode={editMode}>현재 사내에서 운용 중인 <span style={{ color: ACCENT }}>데이터베이스의 수</span>를 선택하세요.</E>}
+                    {diagStep === 1 && <E id="diagnosis_quiz.q1_desc" editMode={editMode}>용어 사전, 도메인 정의 등 <span style={{ color: ACCENT }}>데이터 표준</span>이 정의·관리되고 있는지 선택하세요.</E>}
+                    {diagStep === 2 && <E id="diagnosis_quiz.q2_desc" editMode={editMode}><span style={{ color: ACCENT }}>메타데이터 수집·관리</span> 또는 시스템 간 영향도를 파악하고 있는지 선택하세요.</E>}
+                    {diagStep === 3 && <E id="diagnosis_quiz.q3_desc" editMode={editMode}>데이터 품질을 정기적으로 진단하고 <span style={{ color: ACCENT }}>오류를 모니터링</span>하는 체계가 있는지 선택하세요.</E>}
                   </p>
 
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-                    {diagStep === 0 && (['10미만', '10~50', '50~200', '200+'] as DbScale[]).map((v) => (
+                    {diagStep === 0 && (['10미만', '10~50', '50~200', '200+'] as DbScale[]).map((v, vi) => (
                       <ChoiceButton key={v} selected={dbCount === v} onClick={() => { setDbCount(v); advanceStep(0); }}>
-                        {v === '10미만' ? '10개 미만' : v}
+                        <E id={`diagnosis_quiz.db_opt${vi}`} editMode={editMode}>{v === '10미만' ? '10개 미만' : v}</E>
                       </ChoiceButton>
                     ))}
                     {diagStep === 1 && <>
-                      <ChoiceButton selected={hasStandard === true} onClick={() => { setHasStandard(true); advanceStep(1); }}>있음</ChoiceButton>
-                      <ChoiceButton selected={hasStandard === false} onClick={() => { setHasStandard(false); advanceStep(1); }}>없음</ChoiceButton>
+                      <ChoiceButton selected={hasStandard === true} onClick={() => { setHasStandard(true); advanceStep(1); }}><E id="diagnosis_quiz.q1_yes" editMode={editMode}>있음</E></ChoiceButton>
+                      <ChoiceButton selected={hasStandard === false} onClick={() => { setHasStandard(false); advanceStep(1); }}><E id="diagnosis_quiz.q1_no" editMode={editMode}>없음</E></ChoiceButton>
                     </>}
                     {diagStep === 2 && <>
-                      <ChoiceButton selected={hasMeta === true} onClick={() => { setHasMeta(true); advanceStep(2); }}>있음</ChoiceButton>
-                      <ChoiceButton selected={hasMeta === false} onClick={() => { setHasMeta(false); advanceStep(2); }}>없음</ChoiceButton>
+                      <ChoiceButton selected={hasMeta === true} onClick={() => { setHasMeta(true); advanceStep(2); }}><E id="diagnosis_quiz.q2_yes" editMode={editMode}>있음</E></ChoiceButton>
+                      <ChoiceButton selected={hasMeta === false} onClick={() => { setHasMeta(false); advanceStep(2); }}><E id="diagnosis_quiz.q2_no" editMode={editMode}>없음</E></ChoiceButton>
                     </>}
                     {diagStep === 3 && <>
-                      <ChoiceButton selected={hasQuality === true} onClick={() => { setHasQuality(true); advanceStep(3); }}>있음</ChoiceButton>
-                      <ChoiceButton selected={hasQuality === false} onClick={() => { setHasQuality(false); advanceStep(3); }}>없음</ChoiceButton>
+                      <ChoiceButton selected={hasQuality === true} onClick={() => { setHasQuality(true); advanceStep(3); }}><E id="diagnosis_quiz.q3_yes" editMode={editMode}>있음</E></ChoiceButton>
+                      <ChoiceButton selected={hasQuality === false} onClick={() => { setHasQuality(false); advanceStep(3); }}><E id="diagnosis_quiz.q3_no" editMode={editMode}>없음</E></ChoiceButton>
                     </>}
                   </div>
 
@@ -447,7 +447,7 @@ export default function DiagnosisPageClient() {
                       onMouseEnter={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.25)'; }}
                     >
-                      ← 이전
+                      <E id="diagnosis_quiz.prev_btn" editMode={editMode}>← 이전</E>
                     </button>
                   )}
                 </div>
@@ -456,11 +456,11 @@ export default function DiagnosisPageClient() {
                 <div style={{ paddingTop: 80 }}>
                   {/* 스텝 도트 */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 0, marginBottom: 48 }}>
-                    {['보유 DB', '데이터 표준', '메타데이터', '품질 진단'].map((label, i) => (
+                    {['보유 DB', '데이터 표준', '메타데이터', '품질 진단'].map((label, i: number) => (
                       <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 0', borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
                         <div style={{ width: 8, height: 8, background: i <= diagStep ? ACCENT : 'rgba(255,255,255,0.08)', boxShadow: i === diagStep ? `0 0 12px ${ACCENT}60` : 'none', transition: 'all 0.3s' }} />
                         <span style={{ fontSize: 15, fontWeight: i === diagStep ? 600 : 400, color: i === diagStep ? '#F9FAFB' : i < diagStep ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.3)', transition: 'color 0.3s' }}>
-                          {label}
+                          <E id={`diagnosis_step${i}.label`} editMode={editMode}>{label}</E>
                         </span>
                         {i < diagStep && (
                           <span style={{ marginLeft: 'auto', fontSize: 11, color: ACCENT }}>✓</span>
@@ -471,11 +471,9 @@ export default function DiagnosisPageClient() {
 
                   {/* 컨텍스트 힌트 */}
                   <div style={{ padding: '20px', background: `linear-gradient(135deg, ${ACCENT}08, transparent 60%)`, border: `1px solid ${ACCENT}15`, borderLeft: `2px solid ${ACCENT}` }}>
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.06em', marginBottom: 8 }}>진단 후 제공</p>
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.06em', marginBottom: 8 }}><E id="diagnosis_hint.label" editMode={editMode}>진단 후 제공</E></p>
                     <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', lineHeight: 1.7 }}>
-                      거버넌스 성숙도 레벨<br />
-                      우선 과제 및 추천 제품<br />
-                      이메일 상세 리포트
+                      <E id="diagnosis_hint.content" editMode={editMode}>거버넌스 성숙도 레벨<br />우선 과제 및 추천 제품<br />이메일 상세 리포트</E>
                     </p>
                   </div>
                 </div>
@@ -490,7 +488,7 @@ export default function DiagnosisPageClient() {
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
                       <div style={{ width: 48, height: 2, background: ACCENT, opacity: 0.6 }} />
-                      <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.08em', color: 'rgba(255,255,255,0.3)' }}>진단 리포트</span>
+                      <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.08em', color: 'rgba(255,255,255,0.3)' }}><E id="diagnosis_result.label" editMode={editMode}>진단 리포트</E></span>
                     </div>
                     <h2 style={{ fontSize: 'clamp(52px, 7vw, 80px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.05em', lineHeight: 0.9, marginBottom: 20 }}>
                       LEVEL {result.level}<span style={{ color: ACCENT, fontSize: '1.1em' }}>.</span>
@@ -506,15 +504,15 @@ export default function DiagnosisPageClient() {
                       onMouseEnter={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.25)'; }}
                     >
-                      ← 다시 진단하기
+                      <E id="diagnosis_result.retry_btn" editMode={editMode}>← 다시 진단하기</E>
                     </button>
                   </div>
 
                   {/* 우: 추천 제품 + 이메일 */}
                   <div>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.35)', letterSpacing: '.06em', marginBottom: 16, display: 'block' }}>추천 제품</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.35)', letterSpacing: '.06em', marginBottom: 16, display: 'block' }}><E id="diagnosis_result.recommend_label" editMode={editMode}>추천 제품</E></span>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 0, marginBottom: 40 }}>
-                      {result.products.map((p) => {
+                      {result.products.map((p, pi) => {
                         const detail = PRODUCT_DETAILS[p];
                         const isExpanded = expandedProduct === p;
                         return (
@@ -560,7 +558,7 @@ export default function DiagnosisPageClient() {
                                 <a href={`/products/${p.toLowerCase().replace('#', '-sharp')}`}
                                   target="_blank" rel="noopener noreferrer"
                                   style={{ fontSize: 13, fontWeight: 600, color: ACCENT, textDecoration: 'none' }}
-                                >제품 상세 보기 →</a>
+                                ><E id={`diagnosis_result.product_link${pi}`} editMode={editMode}>제품 상세 보기 →</E></a>
                               </div>
                             )}
                           </div>
@@ -571,7 +569,7 @@ export default function DiagnosisPageClient() {
                     {/* 이메일 리포트 */}
                     {!emailSubmitted ? (
                       <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 32 }}>
-                        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', marginBottom: 16 }}>상세 리포트를 이메일로 받아보세요.</p>
+                        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', marginBottom: 16 }}><E id="diagnosis_report.desc" editMode={editMode}>상세 리포트를 이메일로 받아보세요.</E></p>
                         <form ref={formRef} onSubmit={handleEmailSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                           <input placeholder="회사명" value={company} onChange={(e) => setCompany(e.target.value)}
                             style={{ width: '100%', padding: '14px 16px', background: 'rgba(255,255,255,0.04)', border: errors.company ? '1px solid #ef4444' : '1px solid rgba(255,255,255,0.06)', color: '#fff', fontSize: 14, outline: 'none', transition: 'border 0.2s' }}
@@ -589,14 +587,14 @@ export default function DiagnosisPageClient() {
                           <button type="submit" disabled={emailLoading}
                             style={{ padding: '14px 28px', backgroundColor: emailLoading ? '#475467' : ACCENT, color: '#fff', fontSize: 14, fontWeight: 600, border: 'none', cursor: emailLoading ? 'not-allowed' : 'pointer', transition: 'all 0.2s' }}
                           >
-                            {emailLoading ? '전송 중...' : '리포트 받기 →'}
+                            {emailLoading ? <E id="diagnosis_report.loading" editMode={editMode}>전송 중...</E> : <E id="diagnosis_report.submit_btn" editMode={editMode}>리포트 받기 →</E>}
                           </button>
                         </form>
                       </div>
                     ) : (
                       <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 32 }}>
-                        <p style={{ fontSize: 15, fontWeight: 600, color: '#F9FAFB', marginBottom: 6 }}>접수 완료</p>
-                        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>입력하신 이메일로 상세 진단 리포트를 보내드리겠습니다.</p>
+                        <p style={{ fontSize: 15, fontWeight: 600, color: '#F9FAFB', marginBottom: 6 }}><E id="diagnosis_report.success_title" editMode={editMode}>접수 완료</E></p>
+                        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}><E id="diagnosis_report.success_desc" editMode={editMode}>입력하신 이메일로 상세 진단 리포트를 보내드리겠습니다.</E></p>
                       </div>
                     )}
                   </div>
@@ -627,7 +625,7 @@ export default function DiagnosisPageClient() {
                 <E id="diagnosis_why.title" editMode={editMode}>진단이 먼저입니다</E><span style={{ color: ACCENT }}>.</span>
               </h2>
               <p data-anim style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, marginBottom: 36, maxWidth: 420 }}>
-                막연한 소개서 대신, 우리 회사 데이터의 <span style={{ color: ACCENT, fontWeight: 600 }}>현재 위치를 숫자로</span> 확인하세요. 어디부터 손대야 할지가 분명해집니다.
+                <E id="diagnosis_why.desc" editMode={editMode}>막연한 소개서 대신, 우리 회사 데이터의 <span style={{ color: ACCENT, fontWeight: 600 }}>현재 위치를 숫자로</span> 확인하세요. 어디부터 손대야 할지가 분명해집니다.</E>
               </p>
 
               {/* 키 넘버 */}
@@ -636,10 +634,10 @@ export default function DiagnosisPageClient() {
                   { num: '4', label: '진단 항목' },
                   { num: '30초', label: '소요 시간' },
                   { num: '즉시', label: '결과 확인' },
-                ].map((s) => (
+                ].map((s, i) => (
                   <div key={s.label}>
-                    <span style={{ fontSize: 24, fontWeight: 800, color: ACCENT, lineHeight: 1, display: 'block' }}>{s.num}</span>
-                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 6, letterSpacing: '.04em' }}>{s.label}</p>
+                    <span style={{ fontSize: 24, fontWeight: 800, color: ACCENT, lineHeight: 1, display: 'block' }}><E id={`diagnosis_why.stat${i}_num`} editMode={editMode}>{s.num}</E></span>
+                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 6, letterSpacing: '.04em' }}><E id={`diagnosis_why.stat${i}_label`} editMode={editMode}>{s.label}</E></p>
                   </div>
                 ))}
               </div>
@@ -660,7 +658,7 @@ export default function DiagnosisPageClient() {
                 onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#2ba876'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ACCENT; }}
               >
-                지금 바로 진단하기
+                <E id="diagnosis_why.cta" editMode={editMode}>지금 바로 진단하기</E>
                 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </a>
             </div>
@@ -675,9 +673,9 @@ export default function DiagnosisPageClient() {
               <div style={{ position: 'relative', width: 360, height: 360, margin: '0 auto' }}>
                 {/* 중앙 레이블 */}
                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', zIndex: 2 }}>
-                  <p style={{ fontSize: 10, fontWeight: 600, color: ACCENT, letterSpacing: '0.1em', marginBottom: 4 }}>DATAWARE™</p>
-                  <p style={{ fontSize: 16, fontWeight: 800, color: '#F9FAFB' }}>Data</p>
-                  <p style={{ fontSize: 16, fontWeight: 800, color: '#F9FAFB' }}>Governance</p>
+                  <p style={{ fontSize: 10, fontWeight: 600, color: ACCENT, letterSpacing: '0.1em', marginBottom: 4 }}><E id="diagnosis_wheel.brand" editMode={editMode}>DATAWARE™</E></p>
+                  <p style={{ fontSize: 16, fontWeight: 800, color: '#F9FAFB' }}><E id="diagnosis_wheel.title1" editMode={editMode}>Data</E></p>
+                  <p style={{ fontSize: 16, fontWeight: 800, color: '#F9FAFB' }}><E id="diagnosis_wheel.title2" editMode={editMode}>Governance</E></p>
                 </div>
                 {/* 원형 트랙 */}
                 <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} viewBox="0 0 360 360">
@@ -692,7 +690,7 @@ export default function DiagnosisPageClient() {
                   { label: '영향도', sub: '소스코드 분석', angle: 90, num: '04' },
                   { label: '데이터 흐름', sub: '시각화', angle: 150, num: '05' },
                   { label: '데이터 포털', sub: '검색 포털', angle: 210, num: '06' },
-                ].map((node) => {
+                ].map((node, i) => {
                   const rad = (node.angle * Math.PI) / 180;
                   const x = 180 + 140 * Math.cos(rad);
                   const y = 180 + 140 * Math.sin(rad);
@@ -703,8 +701,8 @@ export default function DiagnosisPageClient() {
                       width: 96, textAlign: 'center',
                     }}>
                       <span style={{ fontSize: 9, color: ACCENT, fontWeight: 600, display: 'block', marginBottom: 2 }}>{node.num}</span>
-                      <p style={{ fontSize: 12, fontWeight: 700, color: '#F9FAFB', lineHeight: 1.2 }}>{node.label}</p>
-                      <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)' }}>{node.sub}</p>
+                      <p style={{ fontSize: 12, fontWeight: 700, color: '#F9FAFB', lineHeight: 1.2 }}><E id={`diagnosis_wheel.node${i}_label`} editMode={editMode}>{node.label}</E></p>
+                      <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)' }}><E id={`diagnosis_wheel.node${i}_sub`} editMode={editMode}>{node.sub}</E></p>
                     </div>
                   );
                 })}
@@ -726,7 +724,7 @@ export default function DiagnosisPageClient() {
           <div style={{ marginBottom: 56 }}>
             <span data-anim style={{ fontSize: 10, fontWeight: 600, letterSpacing: '.12em', color: ACCENT, display: 'block', marginBottom: 12 }}>INSIGHT</span>
             <h2 data-anim style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 800, color: '#F9FAFB', lineHeight: 1.2, letterSpacing: '-0.03em' }}>
-              데이터는 많은데, 왜 활용이 어려울까<span style={{ color: ACCENT }}>?</span>
+              <E id="diagnosis_insight.title" editMode={editMode}>데이터는 많은데, 왜 활용이 어려울까</E><span style={{ color: ACCENT }}>?</span>
             </h2>
           </div>
 
@@ -743,14 +741,14 @@ export default function DiagnosisPageClient() {
                 padding: '36px 0',
                 borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.06)' : 'none',
               }}>
-                <span style={{ fontSize: 36, fontWeight: 900, color: '#F9FAFB', letterSpacing: '-0.03em' }}>{item.num}</span>
+                <span style={{ fontSize: 36, fontWeight: 900, color: '#F9FAFB', letterSpacing: '-0.03em' }}><E id={`diagnosis_insight${i}.num`} editMode={editMode}>{item.num}</E></span>
                 <div>
-                  <h3 style={{ fontSize: 17, fontWeight: 700, color: '#F9FAFB', marginBottom: 6 }}>{item.title}</h3>
-                  <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>{item.desc}</p>
+                  <h3 style={{ fontSize: 17, fontWeight: 700, color: '#F9FAFB', marginBottom: 6 }}><E id={`diagnosis_insight${i}.title`} editMode={editMode}>{item.title}</E></h3>
+                  <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}><E id={`diagnosis_insight${i}.desc`} editMode={editMode}>{item.desc}</E></p>
                 </div>
                 <Link href={`/products/${item.product.toLowerCase().replace('#', '-sharp')}`} style={{ textDecoration: 'none', textAlign: 'right', flexShrink: 0 }}>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: ACCENT, display: 'block' }}>{item.product}</span>
-                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{item.productSub}</span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: ACCENT, display: 'block' }}><E id={`diagnosis_insight${i}.product`} editMode={editMode}>{item.product}</E></span>
+                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}><E id={`diagnosis_insight${i}.product_sub`} editMode={editMode}>{item.productSub}</E></span>
                 </Link>
               </div>
             ))}
@@ -770,7 +768,7 @@ export default function DiagnosisPageClient() {
               <E id="diagnosis_products.title" editMode={editMode}>8종의 솔루션, 하나의 플랫폼</E><span style={{ color: ACCENT }}>.</span>
             </h2>
             <p data-anim style={{ fontSize: 15, color: '#676767', lineHeight: 1.8, marginTop: 14, maxWidth: 480, marginLeft: 'auto' }}>
-              수집부터 포털까지, 데이터 라이프사이클 전체를 커버합니다.
+              <E id="diagnosis_products.desc" editMode={editMode}>수집부터 포털까지, 데이터 라이프사이클 전체를 커버합니다.</E>
             </p>
           </div>
 
@@ -787,9 +785,9 @@ export default function DiagnosisPageClient() {
               ].map((s, i) => (
                 <div key={s.step} style={{ display: 'flex', alignItems: 'center' }}>
                   <div style={{ textAlign: 'center', flex: 1, padding: '16px 8px', borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
-                    <p style={{ fontSize: 14, fontWeight: 700, color: '#F9FAFB', marginBottom: 6, letterSpacing: '0.02em' }}>{s.step}</p>
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 8 }}>{s.label}</p>
-                    <span style={{ fontSize: 11, fontWeight: 600, color: ACCENT, letterSpacing: '0.04em' }}>{s.product}</span>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: '#F9FAFB', marginBottom: 6, letterSpacing: '0.02em' }}><E id={`diagnosis_lifecycle${i}.step`} editMode={editMode}>{s.step}</E></p>
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 8 }}><E id={`diagnosis_lifecycle${i}.label`} editMode={editMode}>{s.label}</E></p>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: ACCENT, letterSpacing: '0.04em' }}><E id={`diagnosis_lifecycle${i}.product`} editMode={editMode}>{s.product}</E></span>
                   </div>
                 </div>
               ))}
@@ -800,8 +798,8 @@ export default function DiagnosisPageClient() {
           <div data-anim style={{ marginBottom: 40, background: '#fff', border: '1px solid #e6e8ec', borderLeft: `3px solid ${ACCENT}`, padding: '32px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'center' }}>
             <div>
               <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '.1em', color: ACCENT, display: 'block', marginBottom: 12 }}>META# ARCHITECTURE</span>
-              <h3 style={{ fontSize: 20, fontWeight: 800, color: '#111', marginBottom: 12, letterSpacing: '-0.02em' }}>메타데이터 통합 관리 체계</h3>
-              <p style={{ fontSize: 13, color: '#676767', lineHeight: 1.7 }}>데이터 표준부터 모델, DB 관리, 영향도, 포털까지 — 전체 라이프사이클의 메타데이터를 하나의 플랫폼에서 관리합니다.</p>
+              <h3 style={{ fontSize: 20, fontWeight: 800, color: '#111', marginBottom: 12, letterSpacing: '-0.02em' }}><E id="diagnosis_arch.title" editMode={editMode}>메타데이터 통합 관리 체계</E></h3>
+              <p style={{ fontSize: 13, color: '#676767', lineHeight: 1.7 }}><E id="diagnosis_arch.desc" editMode={editMode}>데이터 표준부터 모델, DB 관리, 영향도, 포털까지 — 전체 라이프사이클의 메타데이터를 하나의 플랫폼에서 관리합니다.</E></p>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/images/encore/solutions_data3-img3.jpg" alt="META# 아키텍처" style={{ width: '100%', height: 'auto' }} />
@@ -809,7 +807,7 @@ export default function DiagnosisPageClient() {
 
           {/* ── 제품 라인업 전체 ── */}
           <div data-anim style={{ marginBottom: 40 }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#111', marginBottom: 20 }}>제품 라인업</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: '#111', marginBottom: 20 }}><E id="diagnosis_lineup.title" editMode={editMode}>제품 라인업</E></p>
 
             {/* DATAWARE: 대형 피처 카드 */}
             <Link
@@ -828,11 +826,11 @@ export default function DiagnosisPageClient() {
               onMouseLeave={(e) => { e.currentTarget.style.background = '#0B1220'; }}
             >
               <div>
-                <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>ALL-IN-ONE</span>
-                <h3 style={{ fontSize: 28, fontWeight: 800, color: '#F9FAFB', marginTop: 8, letterSpacing: '-0.03em' }}>DATAWARE</h3>
-                <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', marginTop: 8 }}>8개 솔루션을 하나의 패키지로</p>
+                <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}><E id="diagnosis_dataware.badge" editMode={editMode}>ALL-IN-ONE</E></span>
+                <h3 style={{ fontSize: 28, fontWeight: 800, color: '#F9FAFB', marginTop: 8, letterSpacing: '-0.03em' }}><E id="diagnosis_dataware.title" editMode={editMode}>DATAWARE</E></h3>
+                <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', marginTop: 8 }}><E id="diagnosis_dataware.desc" editMode={editMode}>8개 솔루션을 하나의 패키지로</E></p>
               </div>
-              <span style={{ fontSize: 13, fontWeight: 600, color: ACCENT }}>자세히 →</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: ACCENT }}><E id="diagnosis_dataware.link" editMode={editMode}>자세히 →</E></span>
             </Link>
 
             {/* 나머지: 컴팩트 라인 카드 */}
@@ -901,8 +899,8 @@ export default function DiagnosisPageClient() {
                 onMouseLeave={(e) => { e.currentTarget.style.paddingLeft = '0'; }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>{s.label}</span>
-                  <span style={{ fontSize: 12, color: '#b0b4bc' }}>{s.sub}</span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}><E id={`diagnosis_service${i}.label`} editMode={editMode}>{s.label}</E></span>
+                  <span style={{ fontSize: 12, color: '#b0b4bc' }}><E id={`diagnosis_service${i}.sub`} editMode={editMode}>{s.sub}</E></span>
                 </div>
                 <svg width="16" height="16" fill="none" stroke="#b0b4bc" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
               </Link>
@@ -926,10 +924,10 @@ export default function DiagnosisPageClient() {
                 borderLeft: i > 0 ? '1px solid #e6e8ec' : 'none',
               }}>
                 <span style={{ fontSize: 'clamp(36px, 5vw, 52px)', fontWeight: 900, color: '#111', lineHeight: 1, letterSpacing: '-0.03em' }}>
-                  {s.num}<span style={{ color: ACCENT }}>{s.suffix}</span>
+                  <E id={`diagnosis_stats${i}.num`} editMode={editMode}>{s.num}</E><span style={{ color: ACCENT }}><E id={`diagnosis_stats${i}.suffix`} editMode={editMode}>{s.suffix}</E></span>
                 </span>
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#475467', marginTop: 12 }}>{s.label}</p>
-                <p style={{ fontSize: 12, color: '#98A2B3', marginTop: 4 }}>{s.sub}</p>
+                <p style={{ fontSize: 14, fontWeight: 600, color: '#475467', marginTop: 12 }}><E id={`diagnosis_stats${i}.label`} editMode={editMode}>{s.label}</E></p>
+                <p style={{ fontSize: 12, color: '#98A2B3', marginTop: 4 }}><E id={`diagnosis_stats${i}.sub`} editMode={editMode}>{s.sub}</E></p>
               </div>
             ))}
           </div>
@@ -948,8 +946,8 @@ export default function DiagnosisPageClient() {
           <h3 style={{ fontSize: 22, fontWeight: 700, color: '#F9FAFB', lineHeight: 1.4 }}>
             <E id="diagnosis_cta.contact" editMode={editMode}>무료 상담 신청</E><span style={{ color: ACCENT }}>.</span>
           </h3>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', marginTop: 8 }}>전문 컨설턴트가 48시간 내 연락드립니다</p>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 20, fontSize: 14, fontWeight: 600, color: ACCENT }}>상담 신청하기 →</span>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', marginTop: 8 }}><E id="diagnosis_cta.contact_desc" editMode={editMode}>전문 컨설턴트가 48시간 내 연락드립니다</E></p>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 20, fontSize: 14, fontWeight: 600, color: ACCENT }}><E id="diagnosis_cta.contact_link" editMode={editMode}>상담 신청하기 →</E></span>
         </Link>
         <a
           href="#diagnosis-form"
@@ -962,8 +960,8 @@ export default function DiagnosisPageClient() {
           <h3 style={{ fontSize: 22, fontWeight: 700, color: '#fff', lineHeight: 1.4 }}>
             <E id="diagnosis_cta.diagnosis" editMode={editMode}>무료 진단 시작</E><span style={{ opacity: 0.5 }}>.</span>
           </h3>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginTop: 8 }}>30초 후 결과 확인 · 이메일 리포트 제공</p>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 20, fontSize: 14, fontWeight: 600, color: '#fff' }}>지금 진단하기 →</span>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginTop: 8 }}><E id="diagnosis_cta.diagnosis_desc" editMode={editMode}>30초 후 결과 확인 · 이메일 리포트 제공</E></p>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 20, fontSize: 14, fontWeight: 600, color: '#fff' }}><E id="diagnosis_cta.diagnosis_link" editMode={editMode}>지금 진단하기 →</E></span>
         </a>
       </div>
       {editMode && <style>{EDITABLE_STYLES}</style>}

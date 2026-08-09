@@ -1,5 +1,7 @@
 'use client';
 
+import { E } from '@/lib/editable';
+
 /*
  * SolutionDiagram.tsx — 방사형 5노드 구성도 (내가 디자인한 그 모양 그대로)
  * DATAWARE 솔루션 상세/구성도 자리에 이 컴포넌트를 그대로 사용.
@@ -189,7 +191,7 @@ export default function SolutionDiagram({
                 fontSize: 'clamp(8px,1vw,11px)', fontWeight: 700, color: accent, marginTop: 6, lineHeight: 1.2,
                 maxHeight: isHov ? 30 : 0, opacity: isHov ? 1 : 0, overflow: 'hidden',
                 transition: 'max-height .25s ease, opacity .2s ease',
-              }}>자세한 내용은 소개서에서 →</div>
+              }}><E id="solutiondiag.brochure_cta" editMode={false}>자세한 내용은 소개서에서 →</E></div>
             </div>
           );
         })}

@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  DATAWARE_OVERVIEW, DA_SHARP, META_SHARP, DQ_SHARP,
-  AP_SHARP, DP_SHARP, META_SHARP_AI, DA_AI_PACK,
-  DA_DQ_EDITION, DA_TOTAL_PACKAGE, ENCORE_IMAGES,
+  DA_SHARP, META_SHARP, DQ_SHARP,
+  AP_SHARP, DP_SHARP, ENCORE_IMAGES,
 } from '@/data';
 import { api, type ProductResponse } from '@/lib/api';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import EditMarker from '@/components/EditMarker';
 
 /* ── slug → product data (enriched) ── */
@@ -27,40 +27,27 @@ type ProductData = {
 
 /* 하드코딩 fallback — DB에 detailJson 입력 전까지 사용 */
 const PRODUCT_MAP: Record<string, ProductData> = {
-  'dataware': { name: DATAWARE_OVERVIEW.name, tagline: DATAWARE_OVERVIEW.tagline, subtitle: DATAWARE_OVERVIEW.description, description: DATAWARE_OVERVIEW.description, features: DATAWARE_OVERVIEW.components.map((c, i) => ({ num: String(i + 1).padStart(2, '0'), title: `${c.product} — ${c.desc}`, desc: c.features.join(', ') })) },
   'da-sharp': { name: DA_SHARP.name, tagline: DA_SHARP.tagline, subtitle: DA_SHARP.subtitle, features: Object.values(DA_SHARP.features).map((g, i) => ({ num: String(i + 1).padStart(2, '0'), title: g.label, desc: g.tabs.map(t => t.title).join(' · ') })) },
-  'da-dq-edition': { name: DA_DQ_EDITION.name, tagline: DA_DQ_EDITION.tagline, subtitle: DA_DQ_EDITION.subtitle, certification: DA_DQ_EDITION.certifications.join(' · '), features: Object.values(DA_DQ_EDITION.features).map((g, i) => ({ num: String(i + 1).padStart(2, '0'), title: g.label, desc: g.tabs.map(t => t.title).join(' · ') })) },
-  'da-total-package': { name: DA_TOTAL_PACKAGE.name, tagline: DA_TOTAL_PACKAGE.tagline, subtitle: DA_TOTAL_PACKAGE.subtitle, features: DA_TOTAL_PACKAGE.solutions.map(s => ({ num: s.num, title: s.title, desc: s.desc })) },
   'meta-sharp': { ...META_SHARP, features: META_SHARP.features },
   'dq-sharp': { ...DQ_SHARP, features: DQ_SHARP.features },
   'ap-sharp': { ...AP_SHARP, features: AP_SHARP.features },
   'dp-sharp': { ...DP_SHARP, features: DP_SHARP.features },
-  'meta-ai': { name: META_SHARP_AI.name, tagline: META_SHARP_AI.tagline, subtitle: META_SHARP_AI.subtitle, description: META_SHARP_AI.description, strengths: META_SHARP_AI.strengths, integrations: META_SHARP_AI.integrations, featuresSummary: META_SHARP_AI.featuresSummary, features: META_SHARP_AI.features },
-  'da-ai-pack': { name: DA_AI_PACK.name, tagline: DA_AI_PACK.headline, subtitle: 'AI 기반 업무 프로세스 자동화를 통해 80% 이상 공수 절감', features: DA_AI_PACK.features.map((f, i) => ({ num: String(i + 1).padStart(2, '0'), title: f.title, desc: f.desc })) },
 };
 
 const IMAGE_MAP: Record<string, { main?: string; screenshot?: string; architecture?: string; logo?: string }> = {
-  'dataware': { main: ENCORE_IMAGES.dataware.overview },
   'da-sharp': { main: ENCORE_IMAGES.da.main },
   'meta-sharp': { main: ENCORE_IMAGES.meta.screenshot, architecture: ENCORE_IMAGES.meta.architecture, logo: ENCORE_IMAGES.meta.logo },
   'dq-sharp': { main: ENCORE_IMAGES.dq.screenshot, architecture: ENCORE_IMAGES.dq.architecture, logo: ENCORE_IMAGES.dq.logo },
   'ap-sharp': { main: ENCORE_IMAGES.ap.screenshot, architecture: ENCORE_IMAGES.ap.architecture, logo: ENCORE_IMAGES.ap.logo },
   'dp-sharp': { main: ENCORE_IMAGES.dp.screenshot, architecture: ENCORE_IMAGES.dp.architecture, logo: ENCORE_IMAGES.dp.logo },
-  'meta-ai': { main: ENCORE_IMAGES.metaAi.main, architecture: ENCORE_IMAGES.metaAi.architecture, screenshot: ENCORE_IMAGES.metaAi.screenshot },
-  'da-ai-pack': { main: ENCORE_IMAGES.daAiPack.main, architecture: ENCORE_IMAGES.daAiPack.architecture, screenshot: ENCORE_IMAGES.daAiPack.screenshot },
 };
 
 const ACCENT_MAP: Record<string, string> = {
-  'dataware': '#36c88a',
   'da-sharp': '#6b8cae',
   'meta-sharp': '#8a7cb8',
   'dq-sharp': '#5b9a7d',
   'ap-sharp': '#c4975a',
   'dp-sharp': '#b8a060',
-  'da-dq-edition': '#5b9a7d',
-  'da-total-package': '#c4975a',
-  'meta-ai': '#7c5cbf',
-  'da-ai-pack': '#5a8cb0',
 };
 
 function apiToProductData(apiProduct: ProductResponse): ProductData | null {
@@ -84,6 +71,8 @@ function apiToProductData(apiProduct: ProductResponse): ProductData | null {
 }
 
 export default function ProductDetailPage() {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const params = useParams();
   const slug = params.slug as string;
   const [apiProduct, setApiProduct] = useState<ProductData | null>(null);
@@ -110,8 +99,8 @@ export default function ProductDetailPage() {
   if (!product) {
     return (
       <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px', paddingTop: '120px' }}>
-        <p style={{ color: '#98A2B3', fontSize: '16px' }}>제품을 찾을 수 없습니다.</p>
-        <Link href="/products" style={{ padding: '12px 24px', backgroundColor: '#101828', color: '#fff', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}>제품 목록으로</Link>
+        <p style={{ color: '#98A2B3', fontSize: '16px' }}><E id="product_detail.not_found" editMode={editMode}>제품을 찾을 수 없습니다.</E></p>
+        <Link href="/products" style={{ padding: '12px 24px', backgroundColor: '#101828', color: '#fff', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}><E id="product_detail.back_to_list" editMode={editMode}>제품 목록으로</E></Link>
       </div>
     );
   }
@@ -146,7 +135,7 @@ export default function ProductDetailPage() {
                 <Link href="/products" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', textDecoration: 'none', transition: 'color 0.2s' }}
                   onMouseEnter={e => { e.currentTarget.style.color = accent; }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.3)'; }}
-                >DATAWARE</Link>
+                ><E id="product_detail.breadcrumb" editMode={editMode}>DATAWARE</E></Link>
                 <svg width="12" height="12" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                 <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>{product.name}</span>
               </div>
@@ -156,9 +145,9 @@ export default function ProductDetailPage() {
           <div style={{ display: 'grid', gridTemplateColumns: '45% 55%', alignItems: 'center' }}>
             <div style={{ paddingLeft: '56px', paddingRight: '48px' }}>
               <h1 data-hero style={{ fontSize: 'clamp(52px, 7vw, 96px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.05em', lineHeight: 0.88, marginBottom: '24px' }}>
-                {product.name}<span style={{ color: accent, fontSize: '1.1em' }}>.</span>
+                <E id="product_detail.name" editMode={editMode}>{product.name}</E><span style={{ color: accent, fontSize: '1.1em' }}>.</span>
               </h1>
-              <p data-hero style={{ fontSize: '17px', fontWeight: 500, color: accent, marginBottom: '20px', lineHeight: 1.4 }}>{product.tagline}</p>
+              <p data-hero style={{ fontSize: '17px', fontWeight: 500, color: accent, marginBottom: '20px', lineHeight: 1.4 }}><E id="product_detail.tagline" editMode={editMode}>{product.tagline}</E></p>
               <div data-hero style={{ width: '48px', height: '2px', backgroundColor: accent, marginBottom: '24px', opacity: 0.6 }} />
               <p data-hero style={{ fontSize: '15px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.75, maxWidth: '420px', marginBottom: '32px' }}>{product.subtitle}</p>
 
@@ -175,16 +164,16 @@ export default function ProductDetailPage() {
                 <Link href="/download" style={{ padding: '14px 32px', backgroundColor: accent, color: '#fff', fontSize: '14px', fontWeight: 600, textDecoration: 'none', transition: 'all 0.25s' }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${accent}30`; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
-                >소개서 다운로드</Link>
+                ><E id="product_detail.download_btn" editMode={editMode}>소개서 다운로드</E></Link>
                 <Link href="/contact" style={{ padding: '14px 32px', border: '1px solid rgba(255,255,255,0.12)', color: '#F9FAFB', fontSize: '14px', fontWeight: 600, textDecoration: 'none', transition: 'border-color 0.2s' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = `${accent}50`; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; }}
-                >도입문의 →</Link>
+                ><E id="product_detail.contact_btn" editMode={editMode}>도입문의 →</E></Link>
               </div>
 
               <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <div style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: accent }} />
-                <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.2)', letterSpacing: '0.06em' }}>DATAWARE ALL-IN-ONE PACKAGE</span>
+                <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.2)', letterSpacing: '0.06em' }}><E id="product_detail.package_label" editMode={editMode}>DATAWARE ALL-IN-ONE PACKAGE</E></span>
                 <div style={{ width: '24px', height: '1px', backgroundColor: 'rgba(255,255,255,0.06)' }} />
               </div>
             </div>
@@ -213,17 +202,17 @@ export default function ProductDetailPage() {
             <div data-hero style={{ paddingTop: '28px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
               <div>
                 <span style={{ fontSize: '32px', fontWeight: 700, color: '#F9FAFB', letterSpacing: '-0.03em' }}>{featureCount}</span>
-                <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', marginTop: '2px' }}>핵심 기능</p>
+                <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', marginTop: '2px' }}><E id="product_detail.stat_features" editMode={editMode}>핵심 기능</E></p>
               </div>
               {product.certification && (
                 <div>
                   <span style={{ fontSize: '32px', fontWeight: 700, color: accent }}>1등급</span>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', marginTop: '2px' }}>GS인증</p>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', marginTop: '2px' }}><E id="product_detail.stat_cert" editMode={editMode}>GS인증</E></p>
                 </div>
               )}
               <div>
                 <span style={{ fontSize: '32px', fontWeight: 700, color: '#F9FAFB' }}>3,000+</span>
-                <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', marginTop: '2px' }}>도입 기업</p>
+                <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', marginTop: '2px' }}><E id="product_detail.stat_clients" editMode={editMode}>도입 기업</E></p>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
@@ -259,7 +248,7 @@ export default function ProductDetailPage() {
                 </div>
               )}
               <div>
-                <span data-anim style={{ fontSize: '10px', fontWeight: 500, color: '#98A2B3', letterSpacing: '0.14em', display: 'block', marginBottom: '12px' }}>ABOUT</span>
+                <span data-anim style={{ fontSize: '10px', fontWeight: 500, color: '#98A2B3', letterSpacing: '0.14em', display: 'block', marginBottom: '12px' }}><E id="product_detail_about.badge" editMode={editMode}>ABOUT</E></span>
                 <h2 data-anim style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em', marginBottom: '20px' }}>
                   DATAWARE™ {product.name}<span style={{ color: accent }}>.</span>
                 </h2>
@@ -295,7 +284,7 @@ export default function ProductDetailPage() {
             {/* Integrations */}
             {product.integrations && product.integrations.length > 0 && (
               <div data-anim style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '11px', fontWeight: 600, color: '#98A2B3', letterSpacing: '0.06em' }}>연계 솔루션</span>
+                <span style={{ fontSize: '11px', fontWeight: 600, color: '#98A2B3', letterSpacing: '0.06em' }}><E id="product_detail_about.integrations_label" editMode={editMode}>연계 솔루션</E></span>
                 <div style={{ width: '1px', height: '16px', backgroundColor: '#E4E7EC' }} />
                 {product.integrations.map((int, i) => (
                   <span key={i} style={{ padding: '4px 12px', backgroundColor: '#fff', border: '1px solid rgba(15,23,42,0.06)', fontSize: '12px', fontWeight: 500, color: '#475467' }}>{int}</span>
@@ -324,7 +313,7 @@ export default function ProductDetailPage() {
         <div style={{ padding: '80px 56px', position: 'relative', zIndex: 1, maxWidth: '1320px', margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px' }}>
             <div>
-              <span data-anim style={{ fontSize: '10px', fontWeight: 500, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.14em' }}>CORE FEATURES</span>
+              <span data-anim style={{ fontSize: '10px', fontWeight: 500, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.14em' }}><E id="product_detail_features.badge" editMode={editMode}>CORE FEATURES</E></span>
               <h2 data-anim style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 700, color: '#F9FAFB', marginTop: '8px', letterSpacing: '-0.02em' }}>
                 {product.featuresSummary || '핵심 기능'}<span style={{ color: accent }}>.</span>
               </h2>
@@ -361,11 +350,11 @@ export default function ProductDetailPage() {
             <Link href="/download" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', backgroundColor: `${accent}12`, border: `1px solid ${accent}25`, fontSize: '13px', fontWeight: 600, color: accent, textDecoration: 'none', transition: 'all 0.2s' }}
               onMouseEnter={e => { e.currentTarget.style.backgroundColor = `${accent}20`; }}
               onMouseLeave={e => { e.currentTarget.style.backgroundColor = `${accent}12`; }}
-            >소개서 받기 →</Link>
+            ><E id="product_detail_features.download_link" editMode={editMode}>소개서 받기 →</E></Link>
             <Link href="/contact" style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
               onMouseEnter={e => { e.currentTarget.style.color = accent; }}
               onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.4)'; }}
-            >도입문의</Link>
+            ><E id="product_detail_features.contact_link" editMode={editMode}>도입문의</E></Link>
           </div>
         </div>
       </section>
@@ -440,12 +429,12 @@ export default function ProductDetailPage() {
         <div style={{ padding: '80px 56px', position: 'relative', zIndex: 1, maxWidth: '1320px', margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px' }}>
             <div>
-              <span data-anim style={{ fontSize: '10px', fontWeight: 500, color: '#98A2B3', letterSpacing: '0.14em' }}>LINEUP</span>
+              <span data-anim style={{ fontSize: '10px', fontWeight: 500, color: '#98A2B3', letterSpacing: '0.14em' }}><E id="product_detail_related.badge" editMode={editMode}>LINEUP</E></span>
               <h2 data-anim style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 700, color: '#101828', marginTop: '8px', letterSpacing: '-0.02em' }}>
-                다른 제품도 살펴보세요<span style={{ color: '#36c88a' }}>.</span>
+                <E id="product_detail_related.title" editMode={editMode}>다른 제품도 살펴보세요</E><span style={{ color: '#36c88a' }}>.</span>
               </h2>
             </div>
-            <Link href="/products" style={{ fontSize: '12px', color: '#98A2B3', textDecoration: 'none' }}>전체 라인업 →</Link>
+            <Link href="/products" style={{ fontSize: '12px', color: '#98A2B3', textDecoration: 'none' }}><E id="product_detail_related.all_link" editMode={editMode}>전체 라인업 →</E></Link>
           </div>
 
           <div data-anim style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
@@ -455,9 +444,6 @@ export default function ProductDetailPage() {
               { name: 'DQ#', slug: 'dq-sharp', sub: '품질관리', color: '#5b9a7d' },
               { name: 'AP#', slug: 'ap-sharp', sub: '영향도 분석', color: '#c4975a' },
               { name: 'DP#', slug: 'dp-sharp', sub: '데이터 포털', color: '#b8a060' },
-              { name: 'DATAWARE', slug: 'dataware', sub: 'All-in-One', color: '#36c88a' },
-              { name: 'META# AI', slug: 'meta-ai', sub: 'AI 거버넌스', color: '#7c5cbf' },
-              { name: 'DA# AI Pack', slug: 'da-ai-pack', sub: 'AI 모델링', color: '#5a8cb0' },
             ].filter(p => p.slug !== slug).slice(0, 4).map((p) => (
               <Link key={p.slug} href={`/products/${p.slug}`} style={{
                 padding: '24px 20px', backgroundColor: '#fff', textDecoration: 'none', position: 'relative', overflow: 'hidden', display: 'block',
@@ -482,11 +468,11 @@ export default function ProductDetailPage() {
             onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#101828'; }}
           >
             <div style={{ position: 'relative', zIndex: 1 }}>
-              <span data-anim style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>CONSULTATION</span>
+              <span data-anim style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}><E id="product_detail_cta.contact_badge" editMode={editMode}>CONSULTATION</E></span>
               <h3 data-anim style={{ fontSize: '24px', fontWeight: 700, color: '#F9FAFB', marginTop: '12px', lineHeight: 1.2 }}>
                 {product.name} 도입을<br />검토하고 계신가요<span style={{ color: accent }}>?</span>
               </h3>
-              <div data-anim style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '20px', fontSize: '14px', fontWeight: 600, color: accent }}>도입문의 →</div>
+              <div data-anim style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '20px', fontSize: '14px', fontWeight: 600, color: accent }}><E id="product_detail_cta.contact_link" editMode={editMode}>도입문의 →</E></div>
             </div>
           </Link>
 
@@ -495,15 +481,16 @@ export default function ProductDetailPage() {
             onMouseLeave={e => { e.currentTarget.style.filter = ''; }}
           >
             <div style={{ position: 'relative', zIndex: 1 }}>
-              <span data-anim style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em' }}>DOWNLOAD</span>
+              <span data-anim style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em' }}><E id="product_detail_cta.download_badge" editMode={editMode}>DOWNLOAD</E></span>
               <h3 data-anim style={{ fontSize: '24px', fontWeight: 700, color: '#fff', marginTop: '12px', lineHeight: 1.2 }}>
-                소개서를<br />받아보세요<span style={{ opacity: 0.6 }}>.</span>
+                <E id="product_detail_cta.download_title" editMode={editMode}>소개서를{'\n'}받아보세요</E><span style={{ opacity: 0.6 }}>.</span>
               </h3>
-              <div data-anim style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '20px', fontSize: '14px', fontWeight: 600, color: '#fff' }}>무료 다운로드 →</div>
+              <div data-anim style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '20px', fontSize: '14px', fontWeight: 600, color: '#fff' }}><E id="product_detail_cta.download_link" editMode={editMode}>무료 다운로드 →</E></div>
             </div>
           </Link>
         </div>
       </section>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </>
   );
 }

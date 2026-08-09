@@ -2,8 +2,9 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { DATAWARE_PRODUCTS, AI_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS, NAV_ITEMS, QUICK_LINKS } from './header-data';
+import { DATAWARE_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS, NAV_ITEMS, QUICK_LINKS } from './header-data';
 import type { SsrMenuItem } from '@/app/layout';
+import { useEditMode, E } from '@/lib/editable';
 
 interface MobileMenuProps {
   onClose: () => void;
@@ -11,6 +12,7 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ onClose, ssrMenu }: MobileMenuProps) {
+  const editMode = useEditMode();
   const [datawareOpen, setDatawareOpen] = useState(false);
 
   // SSR 메뉴 기반 visibility — null이면 전부 노출 (fallback)
@@ -34,7 +36,7 @@ export default function MobileMenu({ onClose, ssrMenu }: MobileMenuProps) {
             className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold rounded-lg transition-colors"
             style={{ color: datawareOpen ? '#36c88a' : '#33363b' }}
           >
-            DATAWARE
+            <E id="mobilemenu_dataware.title" editMode={editMode}>DATAWARE</E>
             <svg
               className="w-4 h-4 transition-transform"
               style={{ transform: datawareOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
@@ -49,36 +51,8 @@ export default function MobileMenu({ onClose, ssrMenu }: MobileMenuProps) {
               className="ml-4 mt-1 space-y-1 pl-4"
               style={{ borderLeft: '2px solid #e6e8ec' }}
             >
-              <p className="text-xs font-bold mt-1 mb-1 px-3" style={{ color: '#94a3b8', letterSpacing: '0.08em' }}>DATA</p>
+              <p className="text-xs font-bold mt-1 mb-1 px-3" style={{ color: '#94a3b8', letterSpacing: '0.08em' }}><E id="mobilemenu_dataware.section_label" editMode={editMode}>DATA</E></p>
               {DATAWARE_PRODUCTS.map((product) => (
-                <Link
-                  key={product.slug}
-                  href={`/products/${product.slug}`}
-                  onClick={() => { onClose(); setDatawareOpen(false); }}
-                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors"
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#f6f8fa'; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'transparent'; }}
-                >
-                  <span
-                    className="w-7 h-7 flex items-center justify-center font-bold shrink-0"
-                    style={{
-                      color: product.color,
-                      backgroundColor: product.color + '18',
-                      fontSize: product.initial.length > 1 ? '9px' : '13px',
-                      letterSpacing: product.initial.length > 1 ? '-0.5px' : '0',
-                    }}
-                  >
-                    {product.initial}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold" style={{ color: '#111111' }}>{product.name}</span>
-                    <span className="text-xs" style={{ color: '#888d94' }}>{product.subtitle}</span>
-                  </div>
-                </Link>
-              ))}
-              <div style={{ margin: '8px 12px', height: 1, background: '#e6e8ec' }} />
-              <p className="text-xs font-bold mt-1 mb-1 px-3" style={{ color: '#94a3b8', letterSpacing: '0.08em' }}>AI</p>
-              {AI_PRODUCTS.map((product) => (
                 <Link
                   key={product.slug}
                   href={`/products/${product.slug}`}
@@ -111,7 +85,7 @@ export default function MobileMenu({ onClose, ssrMenu }: MobileMenuProps) {
         {/* Education */}
         {isVisible('/education') && (
         <div className="px-4 py-2">
-          <p className="text-xs font-bold mb-2" style={{ color: '#94a3b8' }}>교육</p>
+          <p className="text-xs font-bold mb-2" style={{ color: '#94a3b8' }}><E id="mobilemenu_education.title" editMode={editMode}>교육</E></p>
           {EDUCATION_LINKS.map((link) => (
             <Link key={link.href} href={link.href} onClick={onClose}
               className="block px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
@@ -124,7 +98,7 @@ export default function MobileMenu({ onClose, ssrMenu }: MobileMenuProps) {
         {/* Support */}
         {isVisible('/resources') && (
         <div className="px-4 py-2">
-          <p className="text-xs font-bold mb-2" style={{ color: '#94a3b8' }}>고객지원</p>
+          <p className="text-xs font-bold mb-2" style={{ color: '#94a3b8' }}><E id="mobilemenu_support.title" editMode={editMode}>고객지원</E></p>
           {SUPPORT_LINKS.map((link) => (
             <Link key={link.href} href={link.href} onClick={onClose}
               className="block px-3 py-2 text-sm font-semibold rounded-lg transition-colors"
@@ -159,7 +133,7 @@ export default function MobileMenu({ onClose, ssrMenu }: MobileMenuProps) {
           onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#2ba876'; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#36c88a'; }}
         >
-          도입문의
+          <E id="mobilemenu_cta.contact" editMode={editMode}>도입문의</E>
         </Link>
       </div>
 
@@ -168,7 +142,7 @@ export default function MobileMenu({ onClose, ssrMenu }: MobileMenuProps) {
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 pt-4"
         style={{ borderTop: '1px solid #e6e8ec' }}
       >
-        <p className="text-xs mb-2 px-4" style={{ color: '#888d94' }}>빠른 링크</p>
+        <p className="text-xs mb-2 px-4" style={{ color: '#888d94' }}><E id="mobilemenu_quick.title" editMode={editMode}>빠른 링크</E></p>
         <div className="grid grid-cols-2 gap-1">
           {QUICK_LINKS.map((link) => (
             <Link

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import { api, type PostResponse, type PageResponse } from '@/lib/api';
 import { formatDateDot as formatDate } from '@/lib/format';
 import EditMarker from '@/components/EditMarker';
@@ -19,6 +20,8 @@ function parseDetail(post: PostResponse): EventDetail {
 }
 
 export default function EventsPageClient() {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const PER_PAGE = 4;
   const [events, setEvents] = useState<PostResponse[]>([]);
   const [totalElements, setTotalElements] = useState(0);
@@ -60,21 +63,21 @@ export default function EventsPageClient() {
           <div data-hero style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '32px' }}>
             <span style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.12em' }}>01</span>
             <div style={{ width: '32px', height: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
-            <span style={{ fontSize: '11px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.14em' }}>EVENTS</span>
+            <span style={{ fontSize: '11px', fontWeight: 600, color: '#36c88a', letterSpacing: '0.14em' }}><E id="events_hero.badge" editMode={editMode}>EVENTS</E></span>
           </div>
 
           <h1 data-hero style={{ fontSize: 'clamp(40px, 5.5vw, 64px)', fontWeight: 800, color: '#F9FAFB', letterSpacing: '-0.04em', lineHeight: 0.95, marginBottom: '20px' }}>
-            이벤트<span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
+            <E id="events_hero.title" editMode={editMode}>이벤트</E><span style={{ color: '#36c88a', fontSize: '1.1em' }}>.</span>
           </h1>
           <p data-hero style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '460px' }}>
-            DATAWARE 최신 이벤트, 웨비나, 프로모션 소식을 확인하세요.
+            <E id="events_hero.desc" editMode={editMode}>DATAWARE 최신 이벤트, 웨비나, 프로모션 소식을 확인하세요.</E>
           </p>
 
           {/* Quick stats */}
           <div data-hero style={{ marginTop: '48px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', gap: '40px' }}>
             <div>
               <span style={{ fontSize: '28px', fontWeight: 700, color: '#F9FAFB' }}>{totalElements}</span>
-              <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', marginTop: '2px' }}>전체 이벤트</p>
+              <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', marginTop: '2px' }}><E id="events_hero.stat_label" editMode={editMode}>전체 이벤트</E></p>
             </div>
           </div>
         </div>
@@ -90,7 +93,7 @@ export default function EventsPageClient() {
         <div key={page} className="page-fade" style={{ minHeight: '600px' }}>
 
         {/* Events — clickable list with detail */}
-        {loading && <p style={{ textAlign: 'center', padding: 40, color: '#94a3b8' }}>불러오는 중...</p>}
+        {loading && <p style={{ textAlign: 'center', padding: 40, color: '#94a3b8' }}><E id="events_content.loading" editMode={editMode}>불러오는 중...</E></p>}
         <div style={{ borderTop: '1px solid rgba(15,23,42,0.08)' }}>
           {paged.map((event) => {
             const isOpen = openId === event.id;
@@ -147,16 +150,17 @@ export default function EventsPageClient() {
                           <span style={{ fontSize: 11, fontWeight: 600, color: '#fff', backgroundColor: tagColor, padding: '3px 10px' }}>{tag}</span>
                           <span style={{ fontSize: 11, fontWeight: 600, color: status === '진행중' ? '#fff' : '#98A2B3', backgroundColor: status === '진행중' ? '#5b9a7d' : '#f1f5f9', padding: '3px 10px' }}>{status}</span>
                         </div>
-                        <p style={{ fontSize: 15, color: '#475467', lineHeight: 1.8, whiteSpace: 'pre-line', marginBottom: 24 }}>{event.content}</p>
+                        <div className="rich-html" style={{ fontSize: 15, color: '#475467', lineHeight: 1.8, marginBottom: 24 }}
+                        dangerouslySetInnerHTML={{ __html: event.content || '' }} />
                         <div style={{ display: 'flex', gap: 12 }}>
                           <Link href="/contact" style={{ padding: '12px 24px', backgroundColor: '#101828', color: '#fff', fontSize: 14, fontWeight: 600, textDecoration: 'none', transition: 'opacity 0.2s' }}
                             onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; }}
                             onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
-                          >문의하기</Link>
+                          ><E id="events_detail.contact_btn" editMode={editMode}>문의하기</E></Link>
                           <Link href="/download" style={{ padding: '12px 24px', border: '1px solid rgba(15,23,42,0.08)', color: '#101828', fontSize: 14, fontWeight: 600, textDecoration: 'none', transition: 'border-color 0.2s' }}
                             onMouseEnter={e => { e.currentTarget.style.borderColor = '#36c88a'; }}
                             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(15,23,42,0.08)'; }}
-                          >소개서 다운로드</Link>
+                          ><E id="events_detail.download_btn" editMode={editMode}>소개서 다운로드</E></Link>
                         </div>
                       </div>
                     </div>
@@ -173,7 +177,7 @@ export default function EventsPageClient() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginTop: '56px' }}>
             <button onClick={() => { setPage(p => Math.max(0, p - 1)); }} disabled={page === 0}
               style={{ padding: '10px 20px', border: '1px solid rgba(15,23,42,0.1)', backgroundColor: page === 0 ? '#F7F7F5' : '#fff', color: page === 0 ? '#D0D5DD' : '#101828', fontSize: '13px', fontWeight: 600, cursor: page === 0 ? 'default' : 'pointer' }}
-            >이전</button>
+            ><E id="events_pagination.prev" editMode={editMode}>이전</E></button>
             {Array.from({ length: totalPages }, (_, i) => (
               <button key={i} onClick={() => { setPage(i); }}
                 style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: page === i ? 'none' : '1px solid rgba(15,23,42,0.1)', backgroundColor: page === i ? '#101828' : '#fff', color: page === i ? '#fff' : '#667085', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
@@ -181,7 +185,7 @@ export default function EventsPageClient() {
             ))}
             <button onClick={() => { setPage(p => Math.min(totalPages - 1, p + 1)); }} disabled={page === totalPages - 1}
               style={{ padding: '10px 20px', border: '1px solid rgba(15,23,42,0.1)', backgroundColor: page === totalPages - 1 ? '#F7F7F5' : '#fff', color: page === totalPages - 1 ? '#D0D5DD' : '#101828', fontSize: '13px', fontWeight: 600, cursor: page === totalPages - 1 ? 'default' : 'pointer' }}
-            >다음</button>
+            ><E id="events_pagination.next" editMode={editMode}>다음</E></button>
           </div>
         )}
       </div>
@@ -196,11 +200,11 @@ export default function EventsPageClient() {
         >
           <div aria-hidden="true" style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(255,255,255,0.01) 1px, transparent 1px)', backgroundSize: '20px 20px', pointerEvents: 'none' }} />
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>STAY UPDATED</span>
-            <h3 style={{ fontSize: '24px', fontWeight: 700, color: '#F9FAFB', marginTop: '12px', lineHeight: 1.3, letterSpacing: '-0.02em' }}>이벤트 소식을<br />놓치지 마세요</h3>
-            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.4)', marginTop: '12px', lineHeight: 1.6, maxWidth: '320px' }}>도입문의 신청 시 최신 이벤트 및 프로모션 정보를 먼저 받아보실 수 있습니다.</p>
+            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}><E id="events_cta.stay_updated_badge" editMode={editMode}>STAY UPDATED</E></span>
+            <h3 style={{ fontSize: '24px', fontWeight: 700, color: '#F9FAFB', marginTop: '12px', lineHeight: 1.3, letterSpacing: '-0.02em' }}><E id="events_cta.stay_updated" editMode={editMode}>이벤트 소식을 놓치지 마세요</E></h3>
+            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.4)', marginTop: '12px', lineHeight: 1.6, maxWidth: '320px' }}><E id="events_cta.stay_updated_desc" editMode={editMode}>도입문의 신청 시 최신 이벤트 및 프로모션 정보를 먼저 받아보실 수 있습니다.</E></p>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '24px', fontSize: '14px', fontWeight: 600, color: '#36c88a' }}>
-              도입문의 신청 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
+              <E id="events_cta.stay_updated_link" editMode={editMode}>도입문의 신청</E> <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
             </div>
           </div>
         </Link>
@@ -210,15 +214,16 @@ export default function EventsPageClient() {
           onMouseLeave={e => { e.currentTarget.style.filter = ''; }}
         >
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em' }}>DOWNLOAD</span>
-            <h3 style={{ fontSize: '24px', fontWeight: 700, color: '#fff', marginTop: '12px', lineHeight: 1.3 }}>무료 다운로드</h3>
+            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em' }}><E id="events_cta.download_badge" editMode={editMode}>DOWNLOAD</E></span>
+            <h3 style={{ fontSize: '24px', fontWeight: 700, color: '#fff', marginTop: '12px', lineHeight: 1.3 }}><E id="events_cta.download" editMode={editMode}>무료 다운로드</E></h3>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '24px', fontSize: '14px', fontWeight: 600, color: '#fff' }}>
-              소개서 받기 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
+              <E id="events_cta.download_link" editMode={editMode}>소개서 받기</E> <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
             </div>
           </div>
           <div aria-hidden="true" style={{ position: 'absolute', bottom: '-10px', right: '20px', fontSize: '120px', fontWeight: 900, color: 'rgba(255,255,255,0.1)', lineHeight: 1, pointerEvents: 'none' }}>DL</div>
         </Link>
       </div>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </main>
   );
 }

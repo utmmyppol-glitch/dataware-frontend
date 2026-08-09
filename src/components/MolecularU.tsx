@@ -1,5 +1,7 @@
 'use client';
 
+import { E } from '@/lib/editable';
+
 /*
  * MolecularU.tsx — DATAWARE 버전 (유니온 원본과 구조/애니메이션 100% 동일, 색상만 그린)
  *
@@ -68,8 +70,8 @@ function MicroStructure({ solution, onClose, onBrochure, onContact }: {
         <div style={{ maxWidth: 520, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           {/* 네비 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 18, fontSize: 13, fontWeight: 600, marginBottom: 26 }}>
-            <button onClick={() => { window.location.href = '/'; }} style={{ color: '#888d94', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>← 메인으로 돌아가기</button>
-            <button onClick={onClose} style={{ color: accent, background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>다른 솔루션 보기 →</button>
+            <button onClick={() => { window.location.href = '/'; }} style={{ color: '#888d94', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}><E id="molecular_nav.back" editMode={false}>← 메인으로 돌아가기</E></button>
+            <button onClick={onClose} style={{ color: accent, background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}><E id="molecular_nav.other" editMode={false}>다른 솔루션 보기 →</E></button>
           </div>
 
           {/* eyebrow */}
@@ -103,15 +105,15 @@ function MicroStructure({ solution, onClose, onBrochure, onContact }: {
 
           {/* 스탯 */}
           <div style={{ display: 'flex', gap: 40, marginTop: 30 }}>
-            <div><div style={{ fontSize: 32, fontWeight: 900, color: '#111' }}>3,000<span style={{ color: accent }}>+</span></div><div style={{ fontSize: 13, color: '#888d94', marginTop: 2 }}>도입 기업</div></div>
-            <div><div style={{ fontSize: 32, fontWeight: 900, color: '#111' }}>20<span style={{ color: accent }}>+</span></div><div style={{ fontSize: 13, color: '#888d94', marginTop: 2 }}>업력</div></div>
-            <div><div style={{ fontSize: 32, fontWeight: 900, color: '#111' }}>GS 1등급</div><div style={{ fontSize: 13, color: '#888d94', marginTop: 2 }}>인증</div></div>
+            <div><div style={{ fontSize: 32, fontWeight: 900, color: '#111' }}><E id="molecular_stat0.num" editMode={false}>3,000<span style={{ color: accent }}>+</span></E></div><div style={{ fontSize: 13, color: '#888d94', marginTop: 2 }}><E id="molecular_stat0.label" editMode={false}>도입 기업</E></div></div>
+            <div><div style={{ fontSize: 32, fontWeight: 900, color: '#111' }}><E id="molecular_stat1.num" editMode={false}>20<span style={{ color: accent }}>+</span></E></div><div style={{ fontSize: 13, color: '#888d94', marginTop: 2 }}><E id="molecular_stat1.label" editMode={false}>업력</E></div></div>
+            <div><div style={{ fontSize: 32, fontWeight: 900, color: '#111' }}><E id="molecular_stat2.num" editMode={false}>GS 1등급</E></div><div style={{ fontSize: 13, color: '#888d94', marginTop: 2 }}><E id="molecular_stat2.label" editMode={false}>인증</E></div></div>
           </div>
 
           {/* CTA */}
           <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
-            <button onClick={onContact} style={{ background: accent, color: '#fff', fontWeight: 700, fontFamily: 'inherit', fontSize: 15, padding: '14px 28px', border: 'none', borderRadius: 4, boxShadow: '0 6px 18px rgba(54,200,138,.28)', cursor: 'pointer' }}>도입문의하기 →</button>
-            <button onClick={onBrochure} style={{ background: '#fff', color: '#111', fontWeight: 700, fontFamily: 'inherit', fontSize: 15, padding: '14px 26px', borderRadius: 4, border: '1px solid #d5d8dd', cursor: 'pointer' }}>소개서 요청</button>
+            <button onClick={onContact} style={{ background: accent, color: '#fff', fontWeight: 700, fontFamily: 'inherit', fontSize: 15, padding: '14px 28px', border: 'none', borderRadius: 4, boxShadow: '0 6px 18px rgba(54,200,138,.28)', cursor: 'pointer' }}><E id="molecular_cta.contact" editMode={false}>도입문의하기 →</E></button>
+            <button onClick={onBrochure} style={{ background: '#fff', color: '#111', fontWeight: 700, fontFamily: 'inherit', fontSize: 15, padding: '14px 26px', borderRadius: 4, border: '1px solid #d5d8dd', cursor: 'pointer' }}><E id="molecular_cta.brochure" editMode={false}>소개서 요청</E></button>
           </div>
         </div>
 

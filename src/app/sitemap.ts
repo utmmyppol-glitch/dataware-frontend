@@ -3,8 +3,8 @@ import { MetadataRoute } from 'next';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://dataware.unionsystems.co.kr';
 
 const PRODUCT_SLUGS = [
-  'dataware', 'da-sharp', 'meta-sharp', 'dq-sharp',
-  'ap-sharp', 'dp-sharp', 'meta-ai', 'da-ai-pack',
+  'da-sharp', 'meta-sharp', 'dq-sharp',
+  'ap-sharp', 'dp-sharp',
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

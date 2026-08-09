@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { IMAGES } from '@/data';
+import { E } from '@/lib/editable';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
 
@@ -37,12 +38,12 @@ export default async function Footer() {
         <div style={{ maxWidth: '1300px', margin: '0 auto', padding: '32px clamp(20px, 4vw, 52px)' }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '17px', fontWeight: 700, color: '#f1f5f9', marginBottom: '4px' }}>DATAWARE로 데이터 거버넌스를 시작하세요</h3>
-              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', margin: 0 }}>DA# 개인용 무료 다운로드 · 전문 컨설팅 제공 · GS인증 1등급</p>
+              <h3 style={{ fontSize: '17px', fontWeight: 700, color: '#f1f5f9', marginBottom: '4px' }}><E id="footer_cta.headline" editMode={false}>DATAWARE로 데이터 거버넌스를 시작하세요</E></h3>
+              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', margin: 0 }}><E id="footer_cta.desc" editMode={false}>DA# 개인용 무료 다운로드 · 전문 컨설팅 제공 · GS인증 1등급</E></p>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <Link href="/download" style={{ padding: '10px 22px', backgroundColor: '#36c88a', color: '#fff', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}>무료 다운로드</Link>
-              <Link href="/contact" style={{ padding: '10px 22px', backgroundColor: '#36c88a', color: '#fff', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}>도입문의</Link>
+              <Link href="/download" style={{ padding: '10px 22px', backgroundColor: '#36c88a', color: '#fff', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}><E id="footer_cta.download" editMode={false}>무료 다운로드</E></Link>
+              <Link href="/contact" style={{ padding: '10px 22px', backgroundColor: '#36c88a', color: '#fff', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}><E id="footer_cta.contact" editMode={false}>도입문의</E></Link>
             </div>
           </div>
         </div>
@@ -93,7 +94,7 @@ export default async function Footer() {
                 {copyright}
               </p>
               <Link href="/privacy" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', textDecoration: 'none', borderLeft: '1px solid rgba(255,255,255,0.15)', paddingLeft: '16px' }}>
-                개인정보처리방침
+                <E id="footer_legal.privacy" editMode={false}>개인정보처리방침</E>
               </Link>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import { api, type PostResponse, type PageResponse } from '@/lib/api';
 import { formatDateDot as formatDate } from '@/lib/format';
 import EditMarker from '@/components/EditMarker';
 
 export default function NoticesPageClient() {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const PER_PAGE = 6;
   const [page, setPage] = useState(0);
   const [notices, setNotices] = useState<PostResponse[]>([]);
@@ -36,16 +39,16 @@ export default function NoticesPageClient() {
       >
         <div ref={heroRef} className="wrap" style={{ width: '100%' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-            <Link href="/" style={{ fontSize: 13, color: 'rgba(255,255,255,.35)', textDecoration: 'none' }}>홈</Link>
+            <Link href="/" style={{ fontSize: 13, color: 'rgba(255,255,255,.35)', textDecoration: 'none' }}><E id="notices_breadcrumb.home" editMode={editMode}>홈</E></Link>
             <span style={{ fontSize: 12, color: 'rgba(255,255,255,.2)' }}>›</span>
-            <Link href="/resources" style={{ fontSize: 13, color: 'rgba(255,255,255,.35)', textDecoration: 'none' }}>자료실</Link>
+            <Link href="/resources" style={{ fontSize: 13, color: 'rgba(255,255,255,.35)', textDecoration: 'none' }}><E id="notices_breadcrumb.resources" editMode={editMode}>자료실</E></Link>
             <span style={{ fontSize: 12, color: 'rgba(255,255,255,.2)' }}>›</span>
-            <span style={{ fontSize: 13, color: '#36c88a', fontWeight: 600 }}>공지사항</span>
+            <span style={{ fontSize: 13, color: '#36c88a', fontWeight: 600 }}><E id="notices_breadcrumb.current" editMode={editMode}>공지사항</E></span>
           </div>
-          <p data-hero className="eyebrow" style={{ marginBottom: 16 }}>NOTICES</p>
-          <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}>공지사항</h1>
+          <p data-hero className="eyebrow" style={{ marginBottom: 16 }}><E id="notices_hero.badge" editMode={editMode}>NOTICES</E></p>
+          <h1 data-hero className="headline-lg" style={{ color: '#ffffff', marginBottom: 16 }}><E id="notices_hero.title" editMode={editMode}>공지사항</E></h1>
           <p data-hero style={{ color: 'rgba(255,255,255,0.6)', fontSize: 17, maxWidth: 480 }}>
-            DA# 및 DATAWARE 관련 공지사항, 업데이트, 점검 안내
+            <E id="notices_hero.desc" editMode={editMode}>DA# 및 DATAWARE 관련 공지사항, 업데이트, 점검 안내</E>
           </p>
         </div>
       </section>
@@ -55,8 +58,8 @@ export default function NoticesPageClient() {
         <EditMarker path="/dataware/posts" label="N" />
         <div ref={listRef} style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
           <div key={page} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 24 }}>
-            {loading && <p style={{ color: '#94a3b8', gridColumn: '1 / -1', textAlign: 'center', padding: 40 }}>불러오는 중...</p>}
-            {!loading && notices.length === 0 && <p style={{ color: '#94a3b8', gridColumn: '1 / -1', textAlign: 'center', padding: 40 }}>등록된 공지사항이 없습니다.</p>}
+            {loading && <p style={{ color: '#94a3b8', gridColumn: '1 / -1', textAlign: 'center', padding: 40 }}><E id="notices_content.loading" editMode={editMode}>불러오는 중...</E></p>}
+            {!loading && notices.length === 0 && <p style={{ color: '#94a3b8', gridColumn: '1 / -1', textAlign: 'center', padding: 40 }}><E id="notices_content.empty" editMode={editMode}>등록된 공지사항이 없습니다.</E></p>}
             {notices.map((notice) => (
               <Link
                 key={notice.id}
@@ -107,7 +110,7 @@ export default function NoticesPageClient() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginTop: '48px' }}>
               <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}
                 style={{ padding: '10px 20px', border: '1px solid rgba(15,23,42,0.1)', backgroundColor: page === 0 ? '#F7F7F5' : '#fff', color: page === 0 ? '#D0D5DD' : '#101828', fontSize: '13px', fontWeight: 600, cursor: page === 0 ? 'default' : 'pointer' }}
-              >이전</button>
+              ><E id="notices_pagination.prev" editMode={editMode}>이전</E></button>
               {Array.from({ length: totalPages }, (_, i) => (
                 <button key={i} onClick={() => setPage(i)}
                   style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: page === i ? 'none' : '1px solid rgba(15,23,42,0.1)', backgroundColor: page === i ? '#101828' : '#fff', color: page === i ? '#fff' : '#667085', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
@@ -115,11 +118,12 @@ export default function NoticesPageClient() {
               ))}
               <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}
                 style={{ padding: '10px 20px', border: '1px solid rgba(15,23,42,0.1)', backgroundColor: page === totalPages - 1 ? '#F7F7F5' : '#fff', color: page === totalPages - 1 ? '#D0D5DD' : '#101828', fontSize: '13px', fontWeight: 600, cursor: page === totalPages - 1 ? 'default' : 'pointer' }}
-              >다음</button>
+              ><E id="notices_pagination.next" editMode={editMode}>다음</E></button>
             </div>
           )}
         </div>
       </section>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </div>
   );
 }

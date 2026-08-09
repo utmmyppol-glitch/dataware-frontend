@@ -6,12 +6,15 @@ import { useState, FormEvent } from 'react';
 import { api } from '@/lib/api';
 import { EDUCATION_SESSIONS, getSessionStatus } from '@/data/education-sessions';
 import ConsentSection from '@/components/forms/ConsentSection';
+import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 
 const ACCENT = '#36c88a';
 
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
 export default function EducationDetailPage() {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
   const params = useParams();
   const id = Number(params.id);
   const session = EDUCATION_SESSIONS.find((s) => s.id === id);
@@ -57,8 +60,8 @@ export default function EducationDetailPage() {
     return (
       <main style={{ backgroundColor: '#fff', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', padding: '60px 24px' }}>
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111', marginBottom: 10 }}>교육을 찾을 수 없습니다</h2>
-          <Link href="/education" style={{ color: ACCENT, textDecoration: 'none', fontWeight: 600 }}>교육 목록으로</Link>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111', marginBottom: 10 }}><E id="edudetail_notfound.title" editMode={editMode}>교육을 찾을 수 없습니다</E></h2>
+          <Link href="/education" style={{ color: ACCENT, textDecoration: 'none', fontWeight: 600 }}><E id="edudetail_notfound.link" editMode={editMode}>교육 목록으로</E></Link>
         </div>
       </main>
     );
@@ -71,9 +74,9 @@ export default function EducationDetailPage() {
           <div style={{ width: 64, height: 64, backgroundColor: `${ACCENT}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
             <svg width="28" height="28" fill="none" stroke={ACCENT} strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
           </div>
-          <h2 style={{ fontSize: 28, fontWeight: 700, color: '#F9FAFB', marginBottom: 12 }}>신청이 완료되었습니다</h2>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, marginBottom: 32 }}>담당자가 일정을 확인 후 연락드리겠습니다.</p>
-          <Link href="/education" style={{ padding: '14px 28px', backgroundColor: ACCENT, color: '#fff', fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>교육 목록으로</Link>
+          <h2 style={{ fontSize: 28, fontWeight: 700, color: '#F9FAFB', marginBottom: 12 }}><E id="edudetail_success.title" editMode={editMode}>신청이 완료되었습니다</E></h2>
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, marginBottom: 32 }}><E id="edudetail_success.desc" editMode={editMode}>담당자가 일정을 확인 후 연락드리겠습니다.</E></p>
+          <Link href="/education" style={{ padding: '14px 28px', backgroundColor: ACCENT, color: '#fff', fontSize: 14, fontWeight: 600, textDecoration: 'none' }}><E id="edudetail_success.link" editMode={editMode}>교육 목록으로</E></Link>
         </div>
       </main>
     );
@@ -94,7 +97,7 @@ export default function EducationDetailPage() {
             {session.title}
           </h1>
           {isClosed && (
-            <p style={{ fontSize: 14, color: '#ef4444', marginTop: 16, fontWeight: 600 }}>교육 신청이 마감되었습니다</p>
+            <p style={{ fontSize: 14, color: '#ef4444', marginTop: 16, fontWeight: 600 }}><E id="edudetail_hero.closed" editMode={editMode}>교육 신청이 마감되었습니다</E></p>
           )}
         </div>
       </section>
@@ -102,11 +105,11 @@ export default function EducationDetailPage() {
       {/* ── 2. 브레드크럼 ── */}
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '20px 24px 0' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#94a3b8' }}>
-          <Link href="/" style={{ color: '#94a3b8', textDecoration: 'none' }}>홈</Link>
+          <Link href="/" style={{ color: '#94a3b8', textDecoration: 'none' }}><E id="edudetail_breadcrumb.home" editMode={editMode}>홈</E></Link>
           <span>›</span>
-          <Link href="/education" style={{ color: '#94a3b8', textDecoration: 'none' }}>무료교육</Link>
+          <Link href="/education" style={{ color: '#94a3b8', textDecoration: 'none' }}><E id="edudetail_breadcrumb.edu" editMode={editMode}>무료교육</E></Link>
           <span>›</span>
-          <span style={{ color: '#101828', fontWeight: 600 }}>상세</span>
+          <span style={{ color: '#101828', fontWeight: 600 }}><E id="edudetail_breadcrumb.detail" editMode={editMode}>상세</E></span>
         </div>
       </div>
 
@@ -127,13 +130,13 @@ export default function EducationDetailPage() {
 
           {/* 교육일정 */}
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: ACCENT, letterSpacing: '0.06em', marginBottom: 8 }}>교육시간</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: ACCENT, letterSpacing: '0.06em', marginBottom: 8 }}><E id="edudetail_info.time_label" editMode={editMode}>교육시간</E></p>
             <p style={{ fontSize: 18, fontWeight: 600 }}>{session.date}</p>
           </div>
 
           {/* 교육내용 */}
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: ACCENT, letterSpacing: '0.06em', marginBottom: 12 }}>교육내용 및 신청</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: ACCENT, letterSpacing: '0.06em', marginBottom: 12 }}><E id="edudetail_info.content_label" editMode={editMode}>교육내용 및 신청</E></p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'left', maxWidth: 480, margin: '0 auto' }}>
               {session.curriculum.map((item, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 14, color: 'rgba(255,255,255,0.8)' }}>
@@ -146,7 +149,7 @@ export default function EducationDetailPage() {
 
           {/* 대상 */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: ACCENT, letterSpacing: '0.06em', marginBottom: 8 }}>교육 대상</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: ACCENT, letterSpacing: '0.06em', marginBottom: 8 }}><E id="edudetail_info.target_label" editMode={editMode}>교육 대상</E></p>
             <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>{session.target.join(' / ')}</p>
           </div>
         </div>
@@ -154,12 +157,13 @@ export default function EducationDetailPage() {
 
       {/* ── 5. 상세 설명 ── */}
       <section style={{ maxWidth: 700, margin: '40px auto 0', padding: '0 24px' }}>
-        <p style={{ fontSize: 15, color: '#475467', lineHeight: 1.8, textAlign: 'center' }}>{session.content}</p>
+        <div className="rich-html" style={{ fontSize: 15, color: '#475467', lineHeight: 1.8, textAlign: 'center' }}
+          dangerouslySetInnerHTML={{ __html: session.content || '' }} />
       </section>
 
       {/* ── 6. 신청 STEP ── */}
       <section style={{ maxWidth: 700, margin: '48px auto 0', padding: '0 24px' }}>
-        <h3 style={{ fontSize: 16, fontWeight: 700, color: '#101828', textAlign: 'center', marginBottom: 24 }}>무료교육 신청</h3>
+        <h3 style={{ fontSize: 16, fontWeight: 700, color: '#101828', textAlign: 'center', marginBottom: 24 }}><E id="edudetail_step.heading" editMode={editMode}>무료교육 신청</E></h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
           {[
             { step: 1, icon: <svg width="24" height="24" fill="none" stroke={ACCENT} strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>, label: '교육 일정 확인' },
@@ -171,7 +175,7 @@ export default function EducationDetailPage() {
                 {s.icon}
               </div>
               <p style={{ fontSize: 13, fontWeight: 700, color: '#101828' }}>STEP {s.step}</p>
-              <p style={{ fontSize: 13, color: '#667085', marginTop: 4 }}>{s.label}</p>
+              <p style={{ fontSize: 13, color: '#667085', marginTop: 4 }}><E id={`edudetail_step${s.step}.label`} editMode={editMode}>{s.label}</E></p>
             </div>
           ))}
         </div>
@@ -181,34 +185,34 @@ export default function EducationDetailPage() {
       <section style={{ maxWidth: 700, margin: '48px auto', padding: '0 24px 64px' }}>
         {isClosed ? (
           <div style={{ padding: '48px', backgroundColor: '#f9fafb', border: '1px solid #e6e8ec', textAlign: 'center' }}>
-            <h3 style={{ fontSize: 20, fontWeight: 700, color: '#101828', marginBottom: 8 }}>교육 신청이 마감되었습니다</h3>
-            <p style={{ fontSize: 14, color: '#667085', marginBottom: 24 }}>다른 교육 일정을 확인해보세요.</p>
+            <h3 style={{ fontSize: 20, fontWeight: 700, color: '#101828', marginBottom: 8 }}><E id="edudetail_closed.title" editMode={editMode}>교육 신청이 마감되었습니다</E></h3>
+            <p style={{ fontSize: 14, color: '#667085', marginBottom: 24 }}><E id="edudetail_closed.desc" editMode={editMode}>다른 교육 일정을 확인해보세요.</E></p>
             <Link href="/education" style={{ display: 'inline-flex', padding: '12px 28px', backgroundColor: ACCENT, color: '#fff', fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>
-              다른 교육 보기
+              <E id="edudetail_closed.link" editMode={editMode}>다른 교육 보기</E>
             </Link>
           </div>
         ) : (
           <div style={{ border: '1px solid #e6e8ec', padding: 'clamp(28px, 5vw, 48px)' }}>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: ACCENT, textAlign: 'center', marginBottom: 32 }}>교육 신청서</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: ACCENT, textAlign: 'center', marginBottom: 32 }}><E id="edudetail_form.heading" editMode={editMode}>교육 신청서</E></h2>
             <form onSubmit={handleSubmit} noValidate>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4" style={{ marginBottom: 20 }}>
                 <div>
-                  <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>이름 <span style={{ color: '#ef4444' }}>*</span></label>
+                  <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}><E id="edudetail_form.label_name" editMode={editMode}>이름</E> <span style={{ color: '#ef4444' }}>*</span></label>
                   <input name="name" placeholder="이름을 입력해주세요." className={errors.name ? inputError : inputBase} />
                   {errors.name && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.name}</p>}
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>회사명 <span style={{ color: '#ef4444' }}>*</span></label>
+                  <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}><E id="edudetail_form.label_company" editMode={editMode}>회사명</E> <span style={{ color: '#ef4444' }}>*</span></label>
                   <input name="company" placeholder="회사명을 입력해주세요." className={errors.company ? inputError : inputBase} />
                   {errors.company && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.company}</p>}
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>연락처 <span style={{ color: '#ef4444' }}>*</span></label>
+                  <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}><E id="edudetail_form.label_phone" editMode={editMode}>연락처</E> <span style={{ color: '#ef4444' }}>*</span></label>
                   <input name="phone" placeholder="ex) 010-0000-0000" className={errors.phone ? inputError : inputBase} />
                   {errors.phone && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.phone}</p>}
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}>이메일 <span style={{ color: '#ef4444' }}>*</span></label>
+                  <label className="block text-[13px] font-bold mb-1" style={{ color: '#101828' }}><E id="edudetail_form.label_email" editMode={editMode}>이메일</E> <span style={{ color: '#ef4444' }}>*</span></label>
                   <input name="email" type="email" placeholder="이메일을 입력해주세요." className={errors.email ? inputError : inputBase} />
                   {errors.email && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{errors.email}</p>}
                 </div>
@@ -223,13 +227,14 @@ export default function EducationDetailPage() {
                   padding: '16px 56px', backgroundColor: loading ? '#94a3b8' : ACCENT, color: '#fff',
                   fontSize: 16, fontWeight: 700, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
                 }}>
-                  {loading ? '신청 중...' : '무료교육 신청'}
+                  {loading ? <E id="edudetail_form.loading" editMode={editMode}>신청 중...</E> : <E id="edudetail_form.submit_btn" editMode={editMode}>무료교육 신청</E>}
                 </button>
               </div>
             </form>
           </div>
         )}
       </section>
+      {editMode && <style>{EDITABLE_STYLES}</style>}
     </main>
   );
 }

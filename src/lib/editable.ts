@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
 import { usePathname } from 'next/navigation';
 
@@ -8,6 +8,13 @@ import { usePathname } from 'next/navigation';
 export function safeParse<T>(json: string | undefined | null, fallback: T): T {
   if (!json) return fallback;
   try { return JSON.parse(json); } catch { return fallback; }
+}
+
+/* ── SSR 콘텐츠 오버라이드 Context ── */
+const ContentContext = createContext<Record<string, string>>({});
+
+export function ContentProvider({ content, children }: { content: Record<string, string>; children: React.ReactNode }) {
+  return React.createElement(ContentContext.Provider, { value: content }, children);
 }
 
 /* ── 편집모드 감지 훅 (sessionStorage로 클라이언트 네비게이션 시에도 유지) ── */
@@ -141,9 +148,13 @@ interface EProps {
 }
 
 export function E({ id, editMode, children }: EProps) {
+  const overrides = useContext(ContentContext);
+  const override = overrides[id];
+  const display = override !== undefined ? override : children;
+
   const sanitized = useMemo(
-    () => (containsHtml(children) ? DOMPurify.sanitize(children) : null),
-    [children],
+    () => (containsHtml(display) ? DOMPurify.sanitize(display) : null),
+    [display],
   );
 
   if (!editMode) {
@@ -151,10 +162,14 @@ export function E({ id, editMode, children }: EProps) {
       return React.createElement('span', {
         className: 'rich-html',
         style: { whiteSpace: 'pre-wrap' },
+        suppressHydrationWarning: true,
         dangerouslySetInnerHTML: { __html: sanitized },
       });
     }
-    return React.createElement('span', { style: { whiteSpace: 'pre-wrap' } }, children);
+    return React.createElement('span', {
+      style: { whiteSpace: 'pre-wrap' },
+      suppressHydrationWarning: true,
+    }, display);
   }
 
   if (sanitized !== null) {
@@ -162,6 +177,7 @@ export function E({ id, editMode, children }: EProps) {
       'data-editable': id,
       className: 'editable-field rich-html',
       style: { cursor: 'pointer', position: 'relative', whiteSpace: 'pre-wrap' },
+      suppressHydrationWarning: true,
       dangerouslySetInnerHTML: { __html: sanitized },
       onClick: (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -175,12 +191,13 @@ export function E({ id, editMode, children }: EProps) {
     'data-editable': id,
     className: 'editable-field',
     style: { cursor: 'pointer', position: 'relative', whiteSpace: 'pre-wrap' },
+    suppressHydrationWarning: true,
     onClick: (e: React.MouseEvent) => {
       e.stopPropagation();
       const value = (e.currentTarget as HTMLElement).innerHTML || '';
       window.parent.postMessage({ type: 'field-click', id, fieldType: 'text', value }, '*');
     },
-  }, children);
+  }, display);
 }
 
 /* ── 편집모드 CSS (editMode일 때만 렌더) ── */

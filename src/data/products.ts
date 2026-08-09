@@ -353,19 +353,11 @@ export const META_SHARP_AI = {
   ],
 };
 
-/* ─── 제품 라인업 (GNB 메뉴 순서) ─── */
-export const PRODUCT_LINEUP = [
-  { name: 'DA#', slug: 'da-shop', subtitle: '데이터 모델링', isNew: false },
-  { name: 'DA# 통합 패키지', slug: 'da-shop-total-package', subtitle: '4-in-1 패키지', isNew: false },
-] as const;
-
-/* ─── DATAWARE 라인업 (TO-BE, 엔코아 기반 신규) ─── */
+/* ─── DATAWARE 제품 라인업 (5개) ─── */
 export const DATAWARE_LINEUP = [
-  { name: 'DATAWARE', slug: 'dataware', subtitle: 'All-in-One Package', isNew: false },
   { name: 'DA#', slug: 'da-sharp', subtitle: '데이터 모델링', isNew: false },
   { name: 'META#', slug: 'meta-sharp', subtitle: '메타데이터 관리', isNew: true, gs: true },
   { name: 'DQ#', slug: 'dq-sharp', subtitle: '데이터 품질관리', isNew: true, gs: true },
   { name: 'AP#', slug: 'ap-sharp', subtitle: '애플리케이션 영향도 분석', isNew: true, gs: true },
   { name: 'DP#', slug: 'dp-sharp', subtitle: '데이터 포털', isNew: true },
-  { name: 'META# AI', slug: 'meta-ai', subtitle: 'AI 거버넌스 자동화', isNew: true },
 ] as const;

@@ -2,10 +2,12 @@
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { NAV_ITEMS, DATAWARE_PRODUCTS, AI_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS } from './header-data';
+import { NAV_ITEMS, DATAWARE_PRODUCTS, EDUCATION_LINKS, SUPPORT_LINKS } from './header-data';
 import type { SsrMenuItem } from '@/app/layout';
+import { useEditMode, E } from '@/lib/editable';
 
 export default function DesktopNav({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null }) {
+  const editMode = useEditMode();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLUListElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -86,22 +88,10 @@ export default function DesktopNav({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null
                   <div style={{ background: '#f8f9fa', borderRight: '1px solid #e6e8ec', padding: '20px 0' }}>
                     <Link href="/products" onClick={closeDropdown}
                       style={{ display: 'block', padding: '10px 20px', fontSize: 13, fontWeight: 700, color: '#36c88a', textDecoration: 'none' }}>
-                      전체보기 &rarr;
+                      <E id="desktopnav_dataware.view_all" editMode={editMode}>전체보기 &rarr;</E>
                     </Link>
                     <div style={{ margin: '8px 20px', height: 1, background: '#e6e8ec' }} />
-                    <p style={{ padding: '10px 20px 6px', fontSize: 10, fontWeight: 600, color: '#98A2B3', letterSpacing: '0.08em' }}>DATA</p>
                     {DATAWARE_PRODUCTS.map(p => (
-                      <Link key={p.slug} href={`/products/${p.slug}`} onClick={closeDropdown}
-                        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 20px', fontSize: 13, fontWeight: 600, color: '#33363b', textDecoration: 'none', transition: 'background 0.15s' }}
-                        onMouseEnter={e => { e.currentTarget.style.background = '#eef0f2'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>
-                        <span style={{ width: 4, height: 4, background: p.color, flexShrink: 0 }} />
-                        {p.name}
-                      </Link>
-                    ))}
-                    <div style={{ margin: '8px 20px', height: 1, background: '#e6e8ec' }} />
-                    <p style={{ padding: '10px 20px 6px', fontSize: 10, fontWeight: 600, color: '#98A2B3', letterSpacing: '0.08em' }}>AI</p>
-                    {AI_PRODUCTS.map(p => (
                       <Link key={p.slug} href={`/products/${p.slug}`} onClick={closeDropdown}
                         style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 20px', fontSize: 13, fontWeight: 600, color: '#33363b', textDecoration: 'none', transition: 'background 0.15s' }}
                         onMouseEnter={e => { e.currentTarget.style.background = '#eef0f2'; }}
@@ -112,8 +102,8 @@ export default function DesktopNav({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null
                     ))}
                   </div>
                   <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column' }}>
-                    <p style={{ fontSize: 14, fontWeight: 700, color: '#111', marginBottom: 4 }}>DATAWARE&trade;</p>
-                    <p style={{ fontSize: 12, color: '#888d94', marginBottom: 16 }}>데이터 거버넌스 All-in-One Package</p>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: '#111', marginBottom: 4 }}><E id="desktopnav_dataware.brand" editMode={editMode}>DATAWARE&trade;</E></p>
+                    <p style={{ fontSize: 12, color: '#888d94', marginBottom: 16 }}><E id="desktopnav_dataware.tagline" editMode={editMode}>데이터 거버넌스 All-in-One Package</E></p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 0, marginBottom: 'auto' }}>
                       {[
                         { label: '데이터 진단', href: '/diagnosis', desc: '거버넌스 성숙도 진단' },
@@ -124,8 +114,8 @@ export default function DesktopNav({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null
                           style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < 2 ? '1px solid #f0f1f3' : 'none', textDecoration: 'none', transition: 'padding-left 0.15s' }}
                           onMouseEnter={e => { e.currentTarget.style.paddingLeft = '4px'; }}
                           onMouseLeave={e => { e.currentTarget.style.paddingLeft = '0'; }}>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: '#33363b' }}>{link.label}</span>
-                          <span style={{ fontSize: 11, color: '#b0b4bc' }}>{link.desc}</span>
+                          <span style={{ fontSize: 13, fontWeight: 600, color: '#33363b' }}><E id={`desktopnav_dataware_link${i}.label`} editMode={editMode}>{link.label}</E></span>
+                          <span style={{ fontSize: 11, color: '#b0b4bc' }}><E id={`desktopnav_dataware_link${i}.desc`} editMode={editMode}>{link.desc}</E></span>
                         </Link>
                       ))}
                     </div>
@@ -133,7 +123,7 @@ export default function DesktopNav({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null
                       style={{ display: 'block', marginTop: 16, padding: '12px', background: '#0B1220', textAlign: 'center', fontSize: 13, fontWeight: 700, color: '#fff', textDecoration: 'none', transition: 'background 0.2s' }}
                       onMouseEnter={e => { e.currentTarget.style.background = '#36c88a'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = '#0B1220'; }}>
-                      도입문의 &rarr;
+                      <E id="desktopnav_dataware.contact_cta" editMode={editMode}>도입문의 &rarr;</E>
                     </Link>
                   </div>
                 </div>
@@ -154,7 +144,7 @@ export default function DesktopNav({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null
                 onMouseLeave={handleDropdownLeave}
               >
                 <div className="px-5 py-3" style={{ borderBottom: '1px solid #e6e8ec' }}>
-                  <p className="font-bold text-sm" style={{ color: '#111111' }}>교육</p>
+                  <p className="font-bold text-sm" style={{ color: '#111111' }}><E id="desktopnav_education.title" editMode={editMode}>교육</E></p>
                 </div>
                 <div className="py-2">
                   {EDUCATION_LINKS.map((link) => (
@@ -191,7 +181,7 @@ export default function DesktopNav({ ssrMenu }: { ssrMenu?: SsrMenuItem[] | null
                 onMouseLeave={handleDropdownLeave}
               >
                 <div className="px-5 py-3" style={{ borderBottom: '1px solid #e6e8ec' }}>
-                  <p className="font-bold text-sm" style={{ color: '#111111' }}>고객지원</p>
+                  <p className="font-bold text-sm" style={{ color: '#111111' }}><E id="desktopnav_support.title" editMode={editMode}>고객지원</E></p>
                 </div>
                 <div className="py-2">
                   {SUPPORT_LINKS.map((link) => (
