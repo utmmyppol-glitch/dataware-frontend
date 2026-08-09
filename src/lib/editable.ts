@@ -140,6 +140,16 @@ function containsHtml(v: React.ReactNode): v is string {
   return typeof v === 'string' && /<[a-z][\s\S]*>/i.test(v);
 }
 
+/* ── 블록 태그를 인라인 안전하게 변환 (p/div → br) ── */
+function stripBlockTags(html: string): string {
+  return html
+    .replace(/<\/p>\s*<p[^>]*>/gi, '<br>')   // </p><p> → <br>
+    .replace(/<\/?p[^>]*>/gi, '')             // 남은 <p> / </p> 제거
+    .replace(/<\/?div[^>]*>/gi, '')           // <div> / </div> 제거
+    .replace(/(<br\s*\/?>)+$/i, '')           // 끝의 불필요한 <br> 제거
+    .trim();
+}
+
 /* ── E component (EditableText — HTML 서식 지원) ── */
 interface EProps {
   id: string;
@@ -153,7 +163,7 @@ export function E({ id, editMode, children }: EProps) {
   const display = override !== undefined ? override : children;
 
   const sanitized = useMemo(
-    () => (containsHtml(display) ? DOMPurify.sanitize(display) : null),
+    () => (containsHtml(display) ? stripBlockTags(DOMPurify.sanitize(display)) : null),
     [display],
   );
 
