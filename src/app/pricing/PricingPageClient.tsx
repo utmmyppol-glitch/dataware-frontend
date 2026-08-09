@@ -31,10 +31,29 @@ const Check = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Dash = () => <span style={{ color: 'rgba(255,255,255,0.12)' }}>—</span>;
 
-export default function PricingPageClient() {
+interface DbPlan {
+  id: number; name: string; licenseType: string; price: number | null;
+  originalPrice: number | null; priceDisplay: string; features: string;
+  badge: string; isPopular: boolean; sortOrder: number; isActive: boolean;
+}
+
+export default function PricingPageClient({ dbPlans }: { dbPlans?: DbPlan[] | null }) {
   const editMode = useEditMode();
   useEditableManifest(editMode);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  // DB 데이터가 있으면 하드코딩 플랜에 이름/가격 오버라이드
+  const plans = PRICING_PLANS.map((plan, i) => {
+    const db = dbPlans?.[i];
+    if (!db) return plan;
+    return {
+      ...plan,
+      name: db.name || plan.name,
+      license: db.licenseType || plan.license,
+      price: db.price ?? plan.price,
+      priceDisplay: db.priceDisplay || plan.priceDisplay,
+    };
+  });
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
   const cardsRef = useGsapReveal() as React.RefObject<HTMLDivElement>;
   const compareRef = useGsapReveal() as React.RefObject<HTMLDivElement>;
@@ -93,7 +112,7 @@ export default function PricingPageClient() {
           </div>
 
           <div data-anim style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, alignItems: 'start' }}>
-            {PRICING_PLANS.map((plan, i) => (
+            {plans.map((plan, i) => (
               <div key={plan.name} style={{
                 backgroundColor: '#fff', padding: '48px 36px', display: 'flex', flexDirection: 'column',
                 border: i === 1 ? `2px solid ${G}` : '1px solid rgba(15,23,42,0.06)',
