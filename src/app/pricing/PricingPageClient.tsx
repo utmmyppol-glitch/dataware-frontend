@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { PRICING_PLANS, SYSTEM_REQUIREMENTS, PROCUREMENT } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
@@ -37,23 +37,44 @@ interface DbPlan {
   badge: string; isPopular: boolean; sortOrder: number; isActive: boolean;
 }
 
-export default function PricingPageClient({ dbPlans }: { dbPlans?: DbPlan[] | null }) {
+export default function PricingPageClient() {
   const editMode = useEditMode();
   useEditableManifest(editMode);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [dbPlans, setDbPlans] = useState<DbPlan[] | null>(null);
 
-  // DB 데이터가 있으면 하드코딩 플랜에 이름/가격 오버라이드
-  const plans = PRICING_PLANS.map((plan, i) => {
-    const db = dbPlans?.[i];
-    if (!db) return plan;
-    return {
-      ...plan,
-      name: db.name || plan.name,
-      license: db.licenseType || plan.license,
-      price: db.price ?? plan.price,
-      priceDisplay: db.priceDisplay || plan.priceDisplay,
-    };
-  });
+  useEffect(() => {
+    const base = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware').replace(/\/api\/dataware\/?$/, '');
+    fetch(`${base}/api/dataware/pricing-plans`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => { if (data) setDbPlans(data); })
+      .catch(() => {});
+  }, []);
+
+  // DB 데이터가 있으면 이름 기반 매칭 + isActive 필터링
+  const plans = (() => {
+    if (!dbPlans || dbPlans.length === 0) return PRICING_PLANS.map(p => ({ ...p, isPopular: false, dbFeatures: null as string[] | null }));
+    return dbPlans
+      .filter(db => db.isActive)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map(db => {
+        const base = PRICING_PLANS.find(p => p.name === db.name) || PRICING_PLANS[0];
+        let dbFeatures: string[] | null = null;
+        if (db.features) {
+          try { const parsed = JSON.parse(db.features); if (Array.isArray(parsed)) dbFeatures = parsed; } catch { /* ignore */ }
+        }
+        return {
+          ...base,
+          name: db.name || base.name,
+          license: db.licenseType || base.license,
+          price: db.price ?? base.price,
+          priceDisplay: db.priceDisplay || base.priceDisplay,
+          originalDisplay: db.originalPrice ? `${db.originalPrice.toLocaleString()}원` : base.originalDisplay,
+          isPopular: db.isPopular,
+          dbFeatures,
+        };
+      });
+  })();
   const heroRef = useHeroAnim() as React.RefObject<HTMLElement>;
   const cardsRef = useGsapReveal() as React.RefObject<HTMLDivElement>;
   const compareRef = useGsapReveal() as React.RefObject<HTMLDivElement>;
@@ -111,18 +132,26 @@ export default function PricingPageClient({ dbPlans }: { dbPlans?: DbPlan[] | nu
             <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: '#101828', letterSpacing: '-0.02em' }}><E id="pricing_plans.title" editMode={editMode}>조직의 규모에 맞는 요금제를 선택하세요</E></h2>
           </div>
 
-          <div data-anim style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, alignItems: 'start' }}>
-            {plans.map((plan, i) => (
+          <div data-anim style={{ display: 'grid', gridTemplateColumns: `repeat(${plans.length}, 1fr)`, gap: 32, alignItems: 'start' }}>
+            {plans.map((plan, i) => {
+              const pop = plan.isPopular;
+              const defaultFeatures: Record<string, string[]> = {
+                'DA# Architecture': ['개념/논리/물리 모델링', '표준 관리', '100+ DBMS 지원', '리포트 출력'],
+                'DA# 통합 패키지': ['Architecture 전 기능 포함', 'DQ Edition', 'Contents Builder', 'Repository 포함'],
+                'DA# Repository': ['중앙 모델 저장소', '버전 관리', '팀 협업/권한', '100+ DBMS 지원'],
+              };
+              const features = plan.dbFeatures || defaultFeatures[plan.name] || defaultFeatures['DA# Architecture'];
+              return (
               <div key={plan.name} style={{
                 backgroundColor: '#fff', padding: '48px 36px', display: 'flex', flexDirection: 'column',
-                border: i === 1 ? `2px solid ${G}` : '1px solid rgba(15,23,42,0.06)',
+                border: pop ? `2px solid ${G}` : '1px solid rgba(15,23,42,0.06)',
                 position: 'relative', transition: 'transform 0.12s, border-color 0.12s',
               }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; if (i !== 1) e.currentTarget.style.borderColor = 'rgba(15,23,42,0.12)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = ''; if (i !== 1) e.currentTarget.style.borderColor = 'rgba(15,23,42,0.06)'; }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; if (!pop) e.currentTarget.style.borderColor = 'rgba(15,23,42,0.12)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = ''; if (!pop) e.currentTarget.style.borderColor = 'rgba(15,23,42,0.06)'; }}
               >
-                {i === 1 && <span style={{ position: 'absolute', top: -1, left: 36, right: 36, height: 3, backgroundColor: G }} />}
-                {i === 1 && <span style={{ position: 'absolute', top: 16, right: 20, fontSize: 11, fontWeight: 600, color: G, backgroundColor: `${G}10`, padding: '3px 10px', letterSpacing: '0.04em' }}>RECOMMENDED</span>}
+                {pop && <span style={{ position: 'absolute', top: -1, left: 36, right: 36, height: 3, backgroundColor: G }} />}
+                {pop && <span style={{ position: 'absolute', top: 16, right: 20, fontSize: 11, fontWeight: 600, color: G, backgroundColor: `${G}10`, padding: '3px 10px', letterSpacing: '0.04em' }}>RECOMMENDED</span>}
 
                 <p style={{ fontSize: 13, color: '#98A2B3', fontWeight: 500, letterSpacing: '0.06em', marginBottom: 8 }}>{plan.license}</p>
                 <h3 style={{ fontSize: 22, fontWeight: 700, color: '#101828', marginBottom: 32 }}>{plan.name}</h3>
@@ -134,9 +163,7 @@ export default function PricingPageClient({ dbPlans }: { dbPlans?: DbPlan[] | nu
                 </div>
 
                 <div style={{ borderTop: '1px solid rgba(15,23,42,0.06)', paddingTop: 24, marginBottom: 32, flex: 1 }}>
-                  {(i === 0 ? ['개념/논리/물리 모델링', '표준 관리', '100+ DBMS 지원', '리포트 출력'] :
-                    i === 1 ? ['Architecture 전 기능 포함', 'DQ Edition', 'Contents Builder', 'Repository 포함'] :
-                    ['중앙 모델 저장소', '버전 관리', '팀 협업/권한', '100+ DBMS 지원']).map((f, fi) => (
+                  {features.map((f, fi) => (
                     <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                       <Check />
                       <span style={{ fontSize: 15, color: '#475467' }}><E id={`pricing_plan${i}_feature${fi}`} editMode={editMode}>{f}</E></span>
@@ -146,7 +173,7 @@ export default function PricingPageClient({ dbPlans }: { dbPlans?: DbPlan[] | nu
 
                 {plan.ctaType === 'external' ? (
                   <a href={plan.ctaLink} target="_blank" rel="noopener noreferrer"
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', backgroundColor: i === 1 ? G : '#101828', color: '#fff', fontSize: 15, fontWeight: 600, textDecoration: 'none', transition: 'opacity 0.15s' }}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', backgroundColor: pop ? G : '#101828', color: '#fff', fontSize: 15, fontWeight: 600, textDecoration: 'none', transition: 'opacity 0.15s' }}
                     onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; }}
                     onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
                   >{plan.ctaLabel}</a>
@@ -158,7 +185,8 @@ export default function PricingPageClient({ dbPlans }: { dbPlans?: DbPlan[] | nu
                   >{plan.ctaLabel}</Link>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32 }}>
