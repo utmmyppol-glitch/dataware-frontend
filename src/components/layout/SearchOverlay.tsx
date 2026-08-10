@@ -166,7 +166,7 @@ interface SearchOverlayProps {
   onClose: () => void;
 }
 
-export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
+export default function SearchOverlay({ open, onClose }: Readonly<SearchOverlayProps>) {
   const editMode = useEditMode();
   const router = useRouter();
   const [query, setQuery] = useState('');

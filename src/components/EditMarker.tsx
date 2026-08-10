@@ -24,7 +24,7 @@ interface EditMarkerProps {
   style?: React.CSSProperties;
 }
 
-export default function EditMarker({ path, id, label, style }: EditMarkerProps) {
+export default function EditMarker({ path, id, label, style }: Readonly<EditMarkerProps>) {
   const href = id ? `${BACKOFFICE_URL}${path}/${id}` : `${BACKOFFICE_URL}${path}`;
 
   return (

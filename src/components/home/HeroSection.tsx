@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { COPY } from '@/data';
 import type { Solution } from '@/data/molecular-data';
 import { E } from '@/lib/editable';
+import OptImg from '@/components/OptImg';
 
 const MolecularU = dynamic(() => import('@/components/MolecularU'), { ssr: false });
 
@@ -34,7 +35,7 @@ interface HeroSectionProps {
   content?: { title?: string; desc?: string };
 }
 
-export default function HeroSection({ heroRef, editMode = false, content }: HeroSectionProps) {
+export default function HeroSection({ heroRef, editMode = false, content }: Readonly<HeroSectionProps>) {
   const [zoomedSolution, setZoomedSolution] = useState<Solution | null>(null);
   const [explorerMode, setExplorerMode] = useState(false);
   const isZoomed = zoomedSolution !== null;
@@ -46,7 +47,7 @@ export default function HeroSection({ heroRef, editMode = false, content }: Hero
   return (
     <section ref={heroRef} style={{ minHeight: '100vh', background: '#fff', position: 'relative', overflow: 'hidden' }}>
       <div aria-hidden="true" style={{ position: 'absolute', bottom: '-5%', right: '-2%', zIndex: 1, opacity: 0.04, pointerEvents: 'none' }}>
-        <img src="/images/da-watermark.png" alt="" style={{ width: 'clamp(300px, 35vw, 500px)', height: 'auto' }} />
+        <OptImg src="/images/da-watermark.png" alt="" style={{ width: 'clamp(300px, 35vw, 500px)', height: 'auto' }} />
       </div>
       <div style={{ position: 'relative', minHeight: '100vh', zIndex: 2 }}>
         <div

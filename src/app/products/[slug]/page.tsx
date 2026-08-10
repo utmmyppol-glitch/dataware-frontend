@@ -11,6 +11,7 @@ import { api, type ProductResponse } from '@/lib/api';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import EditMarker from '@/components/EditMarker';
+import OptImg from '@/components/OptImg';
 
 /* ── slug → product data (enriched) ── */
 type ProductData = {
@@ -184,7 +185,7 @@ export default function ProductDetailPage() {
                   <div style={{ position: 'absolute', inset: '-12px', border: `1px solid ${accent}12`, pointerEvents: 'none', zIndex: 1 }} />
                   <div style={{ position: 'absolute', top: '-12px', left: '-12px', width: '24px', height: '24px', borderTop: `2px solid ${accent}`, borderLeft: `2px solid ${accent}`, zIndex: 2 }} />
                   <div style={{ position: 'absolute', bottom: '-12px', right: '24px', width: '24px', height: '24px', borderBottom: `2px solid ${accent}`, borderRight: `2px solid ${accent}`, zIndex: 2 }} />
-                  <img src={images.main} alt={product.name} style={{ width: '100%', height: 'auto', maxHeight: '480px', objectFit: 'contain', position: 'relative', zIndex: 1, filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.3))' }} />
+                  <OptImg src={images.main} alt={product.name} style={{ width: '100%', height: 'auto', maxHeight: '480px', objectFit: 'contain', position: 'relative', zIndex: 1, filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.3))' }} />
                   <div style={{ position: 'absolute', bottom: '-24px', left: '20px', zIndex: 3, backgroundColor: accent, padding: '6px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <div style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#fff', animation: 'pulse-ring 2s infinite' }} />
                     <span style={{ fontSize: '10px', fontWeight: 700, color: '#fff', letterSpacing: '0.06em' }}>DATAWARE LINEUP</span>
@@ -244,7 +245,7 @@ export default function ProductDetailPage() {
             <div style={{ display: 'grid', gridTemplateColumns: images?.logo ? '200px 1fr' : '1fr', gap: '48px', alignItems: 'start', marginBottom: '56px' }}>
               {images?.logo && (
                 <div data-anim style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-                  <img src={images.logo} alt={`${product.name} logo`} style={{ width: '160px', height: 'auto' }} />
+                  <OptImg src={images.logo} alt={`${product.name} logo`} style={{ width: '160px', height: 'auto' }} />
                 </div>
               )}
               <div>
@@ -383,7 +384,7 @@ export default function ProductDetailPage() {
                   <span style={{ fontSize: '10px', color: '#D0D5DD', letterSpacing: '0.08em' }}>{product.name} SYSTEM</span>
                 </div>
                 <div data-anim style={{ position: 'relative', border: '1px solid rgba(15,23,42,0.06)' }}>
-                  <img src={images.architecture} alt={`${product.name} 아키텍처`} style={{ width: '100%', height: 'auto', display: 'block' }} loading="lazy" />
+                  <OptImg src={images.architecture} alt={`${product.name} 아키텍처`} style={{ width: '100%', height: 'auto', display: 'block' }} loading="lazy" />
                 </div>
               </div>
             )}
@@ -408,7 +409,7 @@ export default function ProductDetailPage() {
                       <span style={{ fontSize: '9px', color: '#98A2B3' }}>{product.name.toLowerCase().replace('#', '')}.dataware.co.kr</span>
                     </div>
                   </div>
-                  <img src={images.screenshot} alt={`${product.name} 화면`} style={{ width: '100%', height: 'auto', display: 'block' }} loading="lazy" />
+                  <OptImg src={images.screenshot} alt={`${product.name} 화면`} style={{ width: '100%', height: 'auto', display: 'block' }} loading="lazy" />
                 </div>
               </div>
             )}

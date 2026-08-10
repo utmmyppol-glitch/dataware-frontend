@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import { api } from '@/lib/api';
+import OptImg from '@/components/OptImg';
 
 const ACCENT = '#36c88a';
 
@@ -360,8 +361,7 @@ export default function DiagnosisPageClient() {
 
           {/* 우: 제품 목업 — 블리드 */}
           <div data-hero style={{ marginRight: -56, position: 'relative' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <OptImg
               src="/images/uniondata/main_01-da_img.png"
               alt="DA# 데이터 모델링"
               style={{ width: '100%', height: 'auto', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.4))' }}
@@ -801,8 +801,7 @@ export default function DiagnosisPageClient() {
               <h3 style={{ fontSize: 20, fontWeight: 800, color: '#111', marginBottom: 12, letterSpacing: '-0.02em' }}><E id="diagnosis_arch.title" editMode={editMode}>메타데이터 통합 관리 체계</E></h3>
               <p style={{ fontSize: 13, color: '#676767', lineHeight: 1.7 }}><E id="diagnosis_arch.desc" editMode={editMode}>데이터 표준부터 모델, DB 관리, 영향도, 포털까지 — 전체 라이프사이클의 메타데이터를 하나의 플랫폼에서 관리합니다.</E></p>
             </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/encore/solutions_data3-img3.jpg" alt="META# 아키텍처" style={{ width: '100%', height: 'auto' }} />
+            <OptImg src="/images/encore/solutions_data3-img3.jpg" alt="META# 아키텍처" style={{ width: '100%', height: 'auto' }} />
           </div>
 
           {/* ── 제품 라인업 전체 ── */}

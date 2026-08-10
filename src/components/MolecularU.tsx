@@ -165,7 +165,7 @@ function getContainedRect(containerW: number, containerH: number) {
 }
 
 /* ═══ Main Component ═══ */
-export default function MolecularU({ onZoom, onClose, onBrochure, onContact, zoomedSolution }: Props) {
+export default function MolecularU({ onZoom, onClose, onBrochure, onContact, zoomedSolution }: Readonly<Props>) {
   const [phase, setPhase] = useState<Phase>('idle');
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [suckOrigin, setSuckOrigin] = useState('50% 50%');

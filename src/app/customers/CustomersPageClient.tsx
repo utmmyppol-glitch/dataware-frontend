@@ -6,6 +6,7 @@ import { CustomerStoryResponse, api } from '@/lib/api';
 import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import EditMarker from '@/components/EditMarker';
+import OptImg from '@/components/OptImg';
 
 const ACCENT = '#36c88a';
 const INDUSTRIES = ['전체', '공공기관', '금융', '유통'];
@@ -93,7 +94,7 @@ export default function CustomersPageClient({ initialStories }: { initialStories
                   {/* 썸네일 */}
                   <div style={{ height: 240, backgroundColor: '#f0f2f5', overflow: 'hidden' }}>
                     {story.thumbnailUrl ? (
-                      <img src={story.thumbnailUrl} alt={story.company} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                      <OptImg src={story.thumbnailUrl} alt={story.company} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                     ) : (
                       <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#e6e8ec' }}>
                         <span style={{ fontSize: 48, fontWeight: 800, color: '#d0d5dd' }}>{story.company.charAt(0)}</span>
@@ -137,7 +138,7 @@ export default function CustomersPageClient({ initialStories }: { initialStories
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '48px 24px', alignItems: 'center', maxWidth: 1120, margin: '0 auto' }}>
               {logos.map((logo, i) => (
                 <div key={logo.id} className="client-logo-float" style={{ height: 96, width: 'calc(25% - 18px)', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: `clientFloat ${3 + (i % 5) * 0.45}s ease-in-out ${(i % 6) * 0.3}s infinite alternate` }}>
-                  <img src={logo.image} alt={logo.name}
+                  <OptImg src={logo.image} alt={logo.name}
                     style={{ maxHeight: 64, maxWidth: 210, objectFit: 'contain', opacity: 0.85, transition: 'transform 0.3s, opacity 0.3s' }}
                     onMouseEnter={e => { const t = e.currentTarget as HTMLImageElement; t.style.opacity = '1'; t.style.transform = 'scale(1.1) translateY(-2px)'; t.style.filter = 'drop-shadow(0 10px 20px rgba(16,24,40,0.14))'; }}
                     onMouseLeave={e => { const t = e.currentTarget as HTMLImageElement; t.style.opacity = '0.9'; t.style.transform = ''; t.style.filter = 'drop-shadow(0 2px 6px rgba(16,24,40,0.05))'; }}

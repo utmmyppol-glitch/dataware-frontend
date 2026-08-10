@@ -7,6 +7,7 @@ import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/edit
 import { api, type PostResponse, type PageResponse } from '@/lib/api';
 import { formatDateDot as formatDate } from '@/lib/format';
 import EditMarker from '@/components/EditMarker';
+import OptImg from '@/components/OptImg';
 
 interface EventDetail {
   tag?: string;
@@ -140,8 +141,7 @@ export default function EventsPageClient() {
                   <div style={{ padding: '0 0 32px 16px', animation: 'fadeInUp 0.3s ease-out' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: event.thumbnailUrl ? '280px 1fr' : '1fr', gap: '32px', alignItems: 'start' }}>
                       {event.thumbnailUrl && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={event.thumbnailUrl} alt={event.title} style={{ width: '100%', height: 'auto', border: '1px solid rgba(15,23,42,0.06)' }} loading="lazy"
+                        <OptImg src={event.thumbnailUrl} alt={event.title} style={{ width: '100%', height: 'auto', border: '1px solid rgba(15,23,42,0.06)' }} loading="lazy"
                           onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                         />
                       )}

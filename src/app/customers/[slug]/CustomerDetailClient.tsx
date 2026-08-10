@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { api, type CustomerStoryResponse } from '@/lib/api';
 import EditMarker from '@/components/EditMarker';
 import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
+import OptImg from '@/components/OptImg';
 
 const ACCENT = '#36c88a';
 
@@ -124,8 +125,7 @@ export default function CustomerDetailClient({ slug }: { slug: string }) {
               {detail.pageHeading || story.title}
             </h2>
             {(detail.mainImage || story.thumbnailUrl) && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={detail.mainImage || story.thumbnailUrl} alt={story.company} style={{ width: '100%', height: 'auto', display: 'block' }} />
+              <OptImg src={detail.mainImage || story.thumbnailUrl} alt={story.company} style={{ width: '100%', height: 'auto', display: 'block' }} />
             )}
           </div>
         </div>
@@ -164,8 +164,7 @@ export default function CustomerDetailClient({ slug }: { slug: string }) {
 
         {detail.detailImage && (
           <div style={{ marginBottom: 40 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={detail.detailImage} alt={`${story.company} 시스템 구성`} style={{ width: '100%', height: 'auto', display: 'block' }} />
+            <OptImg src={detail.detailImage} alt={`${story.company} 시스템 구성`} style={{ width: '100%', height: 'auto', display: 'block' }} />
           </div>
         )}
 

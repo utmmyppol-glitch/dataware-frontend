@@ -7,6 +7,7 @@ import { api } from '@/lib/api';
 import { EDUCATION_SESSIONS, getSessionStatus } from '@/data/education-sessions';
 import ConsentSection from '@/components/forms/ConsentSection';
 import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
+import OptImg from '@/components/OptImg';
 
 const ACCENT = '#36c88a';
 
@@ -116,9 +117,9 @@ export default function EducationDetailPage() {
       {/* ── 3. 배너 이미지들 (원본처럼 크게 쭉 나열) ── */}
       <section style={{ maxWidth: 700, margin: '32px auto 0', padding: '0 24px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-          <img src={session.thumbnail} alt={session.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
+          <OptImg src={session.thumbnail} alt={session.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
           {session.detailImages.map((img, i) => (
-            <img key={i} src={img} alt={`${session.title} 상세 ${i + 1}`} style={{ width: '100%', height: 'auto', display: 'block' }} />
+            <OptImg key={i} src={img} alt={`${session.title} 상세 ${i + 1}`} style={{ width: '100%', height: 'auto', display: 'block' }} />
           ))}
         </div>
       </section>

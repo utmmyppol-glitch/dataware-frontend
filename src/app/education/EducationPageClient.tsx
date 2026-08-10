@@ -8,6 +8,7 @@ import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapRevea
 import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import ConsentSection from '@/components/forms/ConsentSection';
 import { EDUCATION_SESSIONS, getSessionStatus } from '@/data/education-sessions';
+import OptImg from '@/components/OptImg';
 
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
@@ -279,8 +280,7 @@ export default function EducationPageClient() {
                       onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = ''; }}
                     >
                       <div style={{ height: 190, overflow: 'hidden', backgroundColor: '#0b1220', position: 'relative' }}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={session.thumbnail} alt={session.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                        <OptImg src={session.thumbnail} alt={session.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
                           onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
                           onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
                           loading="lazy"
@@ -591,8 +591,7 @@ export default function EducationPageClient() {
                   onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = ''; }}
                 >
                   <div style={{ position: 'relative', height: 180, backgroundColor: '#0b1220', overflow: 'hidden' }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg`} alt={v.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                    <OptImg src={`https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg`} alt={v.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                     <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <div style={{ width: 52, height: 52, borderRadius: '50%', backgroundColor: 'rgba(54,200,138,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 16px rgba(54,200,138,0.4)' }}>
                         <svg width="20" height="20" fill="#fff" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>

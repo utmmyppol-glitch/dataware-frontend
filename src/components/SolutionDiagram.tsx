@@ -49,7 +49,7 @@ export default function SolutionDiagram({
   size = '560px',
   accent = GREEN,
   showHeader = true,
-}: Props) {
+}: Readonly<Props>) {
   const [play, setPlay] = useState(false);
   const [hovIdx, setHovIdx] = useState<number | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);

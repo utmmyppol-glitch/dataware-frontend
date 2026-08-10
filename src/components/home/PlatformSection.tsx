@@ -11,7 +11,7 @@ interface PlatformSectionProps {
   content?: { title?: string };
 }
 
-export default function PlatformSection({ sectionRef, editMode = false, content }: PlatformSectionProps) {
+export default function PlatformSection({ sectionRef, editMode = false, content }: Readonly<PlatformSectionProps>) {
   return (
     <section ref={sectionRef} style={{ position: 'relative', backgroundColor: '#fcfbf8', overflow: 'hidden' }}>
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: 'clamp(80px, 10vw, 140px) clamp(24px, 4vw, 56px)', position: 'relative', zIndex: 1 }}>

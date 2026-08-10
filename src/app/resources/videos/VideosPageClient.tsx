@@ -6,6 +6,7 @@ import { api, type PostResponse, type PageResponse } from '@/lib/api';
 import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import { formatDateDot as formatDate } from '@/lib/format';
 import EditMarker from '@/components/EditMarker';
+import OptImg from '@/components/OptImg';
 
 interface VideoDetail {
   youtubeId?: string;
@@ -191,8 +192,7 @@ export default function VideosPageClient() {
                 ) : (
                   <>
                     {/* YouTube thumbnail */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <OptImg
                       src={youtubeId ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg` : (video.thumbnailUrl || '')}
                       alt={video.title}
                       style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}

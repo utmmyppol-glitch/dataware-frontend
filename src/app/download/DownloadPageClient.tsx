@@ -7,6 +7,7 @@ import { DOWNLOAD_CARDS, DOWNLOAD_PAGE, IMAGES } from '@/data';
 import { useGsapReveal, useHeroAnim } from '@/components/animations/useGsapReveal';
 import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
 import ConsentSection from '@/components/forms/ConsentSection';
+import OptImg from '@/components/OptImg';
 
 import { validateCommonFields, inputBase, inputError, type FieldErrors } from '@/lib/form-validation';
 
@@ -144,8 +145,7 @@ export default function DownloadPageClient() {
                       className="card"
                       style={{ borderRadius: 0, padding: '28px 24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={thumbMap[card.id]} alt={card.title} style={{ width: '100%', height: 80, objectFit: 'contain', marginBottom: 16 }} loading="lazy" />
+                      <OptImg src={thumbMap[card.id]} alt={card.title} style={{ width: '100%', height: 80, objectFit: 'contain', marginBottom: 16 }} loading="lazy" />
                       <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', marginBottom: 6, minHeight: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{card.title}</h3>
                       <p style={{ fontSize: 13, color: '#64748b', flex: 1 }}>{card.desc}</p>
                       <a

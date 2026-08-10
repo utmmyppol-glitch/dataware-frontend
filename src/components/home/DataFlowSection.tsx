@@ -17,7 +17,7 @@ interface DataFlowSectionProps {
   content?: { title?: string };
 }
 
-export default function DataFlowSection({ sectionRef, editMode = false, content }: DataFlowSectionProps) {
+export default function DataFlowSection({ sectionRef, editMode = false, content }: Readonly<DataFlowSectionProps>) {
   return (
     <section ref={sectionRef} style={{ position: 'relative', backgroundColor: '#0B1220', overflow: 'hidden' }}>
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: 'clamp(80px, 10vw, 120px) clamp(24px, 4vw, 56px)', position: 'relative', zIndex: 2 }}>

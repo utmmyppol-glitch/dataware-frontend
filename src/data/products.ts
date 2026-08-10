@@ -151,26 +151,6 @@ export const DA_DQ_EDITION = {
   ],
 };
 
-/* ─── DA# AI Powered Pack (DATAWARE AI HUB) ─── */
-export const DA_AI_PACK = {
-  name: 'DA# AI Powered Pack',
-  headline: '기업 DATA 활용의 극대화를 위해 DATA와 생성형 AI를 연결',
-  features: [
-    {
-      title: '편리한 데이터 확보',
-      desc: '자연어 검색으로 IT 지원 없이 신속하게 데이터를 조회하고, 문서검색 기능으로 다양한 정형·비정형 데이터를 확보합니다.',
-    },
-    {
-      title: 'AI 활용 극대화',
-      desc: 'LLM 선택 옵션과 안전한 AI 서비스를 제공하며, ChatService & API를 통해 기업 맞춤형 AI 활용을 지원합니다.',
-    },
-    {
-      title: '다양한 IT 기술 지원',
-      desc: 'RDBMS, Data Lake, Vector DB, Knowledge Graph 등 다중 DB 환경을 지원하고, 온프레미스/클라우드 환경 모두 대응합니다.',
-    },
-  ],
-};
-
 /* ─── DA# Contents Builder Edition ─── */
 export const DA_CONTENTS_BUILDER = {
   name: 'DA# Contents Builder Edition',
@@ -183,7 +163,7 @@ export const DA_TOTAL_PACKAGE = {
   slug: 'da-shop-total-package',
   tagline: '하나의 라이선스로 4개 제품 스펙 제공!',
   subtitle: '더욱 강력해진 데이터 자산화 솔루션',
-  products: ['DA#', 'DA# AI Powered Pack', 'DA# DQ Edition', 'DA# Contents Builder'],
+  products: ['DA#', 'DA# DQ Edition', 'DA# Contents Builder'],
   solutions: [
     { num: '01', title: '데이터 모델링의 Full Spec 제공', desc: '' },
     { num: '02', title: 'LLM 기반의 자동화 기능 제공', desc: '' },

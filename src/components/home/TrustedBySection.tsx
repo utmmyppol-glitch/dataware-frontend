@@ -9,7 +9,7 @@ interface TrustedBySectionProps {
   content?: { title?: string };
 }
 
-export default function TrustedBySection({ sectionRef, editMode = false, content }: TrustedBySectionProps) {
+export default function TrustedBySection({ sectionRef, editMode = false, content }: Readonly<TrustedBySectionProps>) {
   return (
     <section ref={sectionRef} style={{ backgroundColor: '#fff', borderTop: '1px solid #E7E2D8', borderBottom: '1px solid #E7E2D8' }}>
       <div style={{ maxWidth: '1080px', margin: '0 auto', padding: 'clamp(56px, 8vw, 96px) clamp(24px, 4vw, 56px)' }}>

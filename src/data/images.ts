@@ -222,7 +222,7 @@ export const ENCORE_IMAGES = {
     ],
   },
   da: {
-    main: `${ENCORE}/data2_tmb1_3.jpg`,
+    main: `${ENCORE}/da-sharp-package.png`,
     tmb1: `${ENCORE}/data2_tmb1_1.jpg`,
     tmb2: `${ENCORE}/data2_tmb1_2.jpg`,
     tmb3: `${ENCORE}/data2_tmb1_3.jpg`,
@@ -253,10 +253,5 @@ export const ENCORE_IMAGES = {
     main: `${ENCORE}/ai/solutions_ai4-tbl-img1.jpg`,
     screenshot: `${ENCORE}/ai/unified-meta-img2.jpg`,
     architecture: `${ENCORE}/ai/unified-meta-img3.jpg`,
-  },
-  daAiPack: {
-    main: `${ENCORE}/ai/dataware-ai-hub-arch1.jpg`,
-    architecture: `${ENCORE}/ai/dataware-ai-hub-arch2.jpg`,
-    screenshot: `${ENCORE}/ai/solutions_ai5-img3.jpg`,
   },
 } as const;

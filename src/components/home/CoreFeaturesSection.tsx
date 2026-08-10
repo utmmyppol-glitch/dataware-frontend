@@ -37,7 +37,7 @@ interface CoreFeaturesSectionProps {
   content?: { title?: string };
 }
 
-export default function CoreFeaturesSection({ sectionRef, editMode = false, content }: CoreFeaturesSectionProps) {
+export default function CoreFeaturesSection({ sectionRef, editMode = false, content }: Readonly<CoreFeaturesSectionProps>) {
   const c3 = useCountUp(80);
 
   return (

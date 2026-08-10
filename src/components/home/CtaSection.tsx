@@ -10,7 +10,7 @@ interface CtaSectionProps {
   content?: { title?: string; title2?: string };
 }
 
-export default function CtaSection({ editMode = false, content }: CtaSectionProps) {
+export default function CtaSection({ editMode = false, content }: Readonly<CtaSectionProps>) {
   return (
     <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
       <div style={{ backgroundColor: '#0B1220', padding: 'clamp(80px, 10vw, 120px) clamp(24px, 4vw, 56px)', position: 'relative', overflow: 'hidden' }}>

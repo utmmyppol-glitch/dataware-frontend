@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api, type PostResponse, type PageResponse } from '@/lib/api';
 import { E } from '@/lib/editable';
+import OptImg from '@/components/OptImg';
 
 interface VideoDetail {
   youtubeId?: string;
@@ -21,7 +22,7 @@ interface NewsSectionProps {
   content?: { title?: string };
 }
 
-export default function NewsSection({ sectionRef, editMode = false, content }: NewsSectionProps) {
+export default function NewsSection({ sectionRef, editMode = false, content }: Readonly<NewsSectionProps>) {
   const [lectures, setLectures] = useState<PostResponse[]>([]);
   const [notices, setNotices] = useState<PostResponse[]>([]);
 
@@ -61,8 +62,7 @@ export default function NewsSection({ sectionRef, editMode = false, content }: N
                   onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = ''; }}
                 >
                   <div style={{ position: 'relative', height: 180, overflow: 'hidden', backgroundColor: '#0b1220' }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <OptImg
                       src={youtubeId ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg` : (lecture.thumbnailUrl || '/images/uniondata/board__notice.png')}
                       alt={lecture.title}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -95,8 +95,7 @@ export default function NewsSection({ sectionRef, editMode = false, content }: N
               >
                 <div style={{ height: 160, overflow: 'hidden', backgroundColor: '#f0f2f5' }}>
                   {a.thumbnailUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={a.thumbnailUrl} alt={a.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                    <OptImg src={a.thumbnailUrl} alt={a.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                   )}
                 </div>
                 <div style={{ padding: '18px 22px' }}>

@@ -11,7 +11,7 @@ interface MobileMenuProps {
   ssrMenu?: SsrMenuItem[] | null;
 }
 
-export default function MobileMenu({ onClose, ssrMenu }: MobileMenuProps) {
+export default function MobileMenu({ onClose, ssrMenu }: Readonly<MobileMenuProps>) {
   const editMode = useEditMode();
   const [datawareOpen, setDatawareOpen] = useState(false);
 

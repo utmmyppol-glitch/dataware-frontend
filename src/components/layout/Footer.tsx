@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { IMAGES } from '@/data';
 import { E } from '@/lib/editable';
+import OptImg from '@/components/OptImg';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
 
@@ -54,8 +55,7 @@ export default async function Footer() {
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px clamp(20px, 4vw, 40px) 24px' }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: '32px', marginBottom: '32px' }}>
             <div style={{ flexShrink: 0 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={IMAGES.footerLogo} alt="DATAWARE" style={{ height: '28px', objectFit: 'contain', opacity: 0.9 }} />
+              <OptImg src={IMAGES.footerLogo} alt="DATAWARE" width={120} height={28} style={{ objectFit: 'contain', opacity: 0.9 }} />
             </div>
 
             <div style={{ flex: 1, minWidth: '300px' }}>
@@ -73,14 +73,12 @@ export default async function Footer() {
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
               {snsBlog && (
                 <a href={snsBlog} target="_blank" rel="noopener noreferrer" style={{ display: 'block', opacity: 0.7 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={IMAGES.sns.blog} alt="블로그 바로가기" style={{ width: '36px', height: '36px', objectFit: 'contain' }} />
+                  <OptImg src={IMAGES.sns.blog} alt="블로그 바로가기" width={36} height={36} style={{ objectFit: 'contain' }} />
                 </a>
               )}
               {snsFacebook && (
                 <a href={snsFacebook} target="_blank" rel="noopener noreferrer" style={{ display: 'block', opacity: 0.7 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={IMAGES.sns.facebook} alt="페이스북 바로가기" style={{ width: '36px', height: '36px', objectFit: 'contain' }} />
+                  <OptImg src={IMAGES.sns.facebook} alt="페이스북 바로가기" width={36} height={36} style={{ objectFit: 'contain' }} />
                 </a>
               )}
             </div>
@@ -97,8 +95,7 @@ export default async function Footer() {
                 <E id="footer_legal.privacy" editMode={false}>개인정보처리방침</E>
               </Link>
             </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={IMAGES.footerLogo} alt="DA DQ Edition" style={{ height: '20px', objectFit: 'contain', opacity: 0.5 }} />
+            <OptImg src={IMAGES.footerLogo} alt="DA DQ Edition" width={86} height={20} style={{ objectFit: 'contain', opacity: 0.5 }} />
           </div>
         </div>
       </div>

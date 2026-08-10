@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { COPY, TRUSTED_LOGOS } from '@/data';
 import { api } from '@/lib/api';
 import { E } from '@/lib/editable';
+import OptImg from '@/components/OptImg';
 
 interface CustomersSectionProps {
   sectionRef: React.RefObject<HTMLElement>;
@@ -15,7 +16,7 @@ interface CustomersSectionProps {
 type Logo = { id: string | number; name: string; image: string };
 const FALLBACK_LOGOS: Logo[] = TRUSTED_LOGOS.map(l => ({ id: l.id, name: l.name, image: l.image }));
 
-export default function CustomersSection({ sectionRef, editMode = false, content }: CustomersSectionProps) {
+export default function CustomersSection({ sectionRef, editMode = false, content }: Readonly<CustomersSectionProps>) {
   // 백오피스(고객사 로고 관리) → API 로 불러오고, 실패/비어있으면 기존 로고로 폴백
   const [logos, setLogos] = useState<Logo[]>(FALLBACK_LOGOS);
 
@@ -51,7 +52,7 @@ export default function CustomersSection({ sectionRef, editMode = false, content
         <div data-anim style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '44px 24px', alignItems: 'center', maxWidth: 1200, margin: '0 auto', padding: '20px 0 8px' }}>
           {logos.map((logo, i) => (
             <div key={logo.id} className="client-logo-float" style={{ height: 92, width: 'calc(25% - 18px)', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: `clientFloat ${2.6 + (i % 4) * 0.5}s ease-in-out ${(i % 5) * 0.35}s infinite alternate` }}>
-              <img
+              <OptImg
                 src={logo.image}
                 alt={logo.name}
                 style={{ maxHeight: 72, maxWidth: 220, objectFit: 'contain', opacity: 0.85, transition: 'transform 0.25s, opacity 0.25s' }}

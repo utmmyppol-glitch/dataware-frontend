@@ -9,7 +9,7 @@ interface ConsentSectionProps {
   showThirdParty?: boolean;
 }
 
-export default function ConsentSection({ errors = {}, showThirdParty = false }: ConsentSectionProps) {
+export default function ConsentSection({ errors = {}, showThirdParty = false }: Readonly<ConsentSectionProps>) {
   const [consentMarketing, setConsentMarketing] = useState<'yes' | 'no' | null>(null);
 
   return (

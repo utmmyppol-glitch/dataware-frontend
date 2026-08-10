@@ -12,8 +12,6 @@ export const DATAWARE_PRODUCTS = [
   { name: 'DP#',      slug: 'dp-sharp',  subtitle: '데이터 포털',           color: '#b8a060', isNew: true,  initial: 'DP' },
 ];
 
-export const AI_PRODUCTS: { name: string; slug: string; subtitle: string; color: string; isNew: boolean; initial: string }[] = [];
-
 export const SUPPORT_LINKS = [
   { label: '공지사항', href: '/resources/notices', desc: '최신 소식 및 업데이트' },
   { label: '다운로드 신청', href: '/download', desc: 'DA# 무료 다운로드 · 소개서' },

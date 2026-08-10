@@ -3,6 +3,7 @@
 import React from 'react';
 import { COPY, IMAGES } from '@/data';
 import { E } from '@/lib/editable';
+import OptImg from '@/components/OptImg';
 
 interface WhySectionProps {
   sectionRef: React.RefObject<HTMLElement>;
@@ -10,7 +11,7 @@ interface WhySectionProps {
   content?: { title?: string };
 }
 
-export default function WhySection({ sectionRef, editMode = false, content }: WhySectionProps) {
+export default function WhySection({ sectionRef, editMode = false, content }: Readonly<WhySectionProps>) {
   return (
     <section ref={sectionRef} style={{ position: 'relative', backgroundColor: '#FBFAF7', overflow: 'hidden' }}>
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: 'clamp(80px, 10vw, 140px) clamp(24px, 4vw, 56px)', position: 'relative', zIndex: 1 }}>
@@ -34,7 +35,7 @@ export default function WhySection({ sectionRef, editMode = false, content }: Wh
           </div>
           <div data-anim style={{ position: 'relative' }}>
             <div style={{ border: '1px solid #E7E2D8', backgroundColor: '#fff', padding: '24px', boxShadow: '0 10px 30px rgba(15,23,42,0.08)' }}>
-              <img src={IMAGES.hero.da.img} alt="DA# Architecture" style={{ width: '100%', height: 'auto', display: 'block' }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} loading="lazy" />
+              <OptImg src={IMAGES.hero.da.img} alt="DA# Architecture" style={{ width: '100%', height: 'auto', display: 'block' }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} loading="lazy" />
             </div>
             <div style={{ position: 'absolute', top: '-16px', right: '-16px', backgroundColor: '#36c88a', padding: '12px 20px', boxShadow: '0 4px 12px rgba(54,200,138,0.2)' }}>
               <span style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}><E id="home_why.gs_badge" editMode={editMode}>GS인증 1등급</E></span>

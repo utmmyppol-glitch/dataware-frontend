@@ -29,7 +29,7 @@ interface HomePageClientProps {
   ssrContent?: Record<string, string>;
 }
 
-export default function HomePageClient({ ssrContent = {} }: HomePageClientProps) {
+export default function HomePageClient({ ssrContent = {} }: Readonly<HomePageClientProps>) {
   const editMode = useEditMode();
   useEditableManifest(editMode);
 

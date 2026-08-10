@@ -7,6 +7,7 @@ import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/edit
 import { api, type PostResponse, type PageResponse } from '@/lib/api';
 import { formatDateDot as formatDate } from '@/lib/format';
 import EditMarker from '@/components/EditMarker';
+import OptImg from '@/components/OptImg';
 
 export default function NoticesPageClient() {
   const editMode = useEditMode();
@@ -80,8 +81,7 @@ export default function NoticesPageClient() {
                 {/* 썸네일 */}
                 <div style={{ height: 180, backgroundColor: '#f0f2f5', overflow: 'hidden' }}>
                   {notice.thumbnailUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={notice.thumbnailUrl} alt={notice.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                    <OptImg src={notice.thumbnailUrl} alt={notice.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
                       onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
                       onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
                       loading="lazy"

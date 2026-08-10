@@ -7,6 +7,7 @@ import { api, type PostResponse } from '@/lib/api';
 import { formatDateDot as formatDate } from '@/lib/format';
 import EditMarker from '@/components/EditMarker';
 import { useEditMode, useEditableManifest, EDITABLE_STYLES, E } from '@/lib/editable';
+import OptImg from '@/components/OptImg';
 
 const ACCENT = '#36c88a';
 
@@ -70,8 +71,7 @@ export default function NoticeDetailPage() {
       <section style={{ maxWidth: 800, margin: '0 auto', padding: '48px 24px 64px' }}>
         {notice.thumbnailUrl && (
           <div style={{ marginBottom: 36 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={notice.thumbnailUrl} alt={notice.title} style={{ width: '100%', maxHeight: 400, objectFit: 'contain', backgroundColor: '#f8fafc', border: '1px solid #e6e8ec' }} />
+            <OptImg src={notice.thumbnailUrl} alt={notice.title} style={{ width: '100%', maxHeight: 400, objectFit: 'contain', backgroundColor: '#f8fafc', border: '1px solid #e6e8ec' }} />
           </div>
         )}
 
