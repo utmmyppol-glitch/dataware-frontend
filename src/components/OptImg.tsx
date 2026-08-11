@@ -1,7 +1,11 @@
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
 
+const BACKOFFICE_ORIGIN = process.env.NEXT_PUBLIC_BACKOFFICE_URL || 'http://localhost:3002';
+
 interface OptImgProps {
+  id?: string;
+  editMode?: boolean;
   src: string;
   alt: string;
   width?: number;
@@ -20,20 +24,30 @@ interface OptImgProps {
  * 외부 이미지는 네이티브 <img>로 폴백.
  */
 export default function OptImg({
-  src, alt, width, height, style, className, loading, priority,
+  id, editMode, src, alt, width, height, style, className, loading, priority,
   onError, onMouseEnter, onMouseLeave,
 }: Readonly<OptImgProps>) {
   const isLocal = src.startsWith('/');
 
-  if (!isLocal) {
+  const editProps = editMode && id ? {
+    'data-editable': id,
+    className: `${className || ''} editable-field editable-image`.trim(),
+    onClick: (e: React.MouseEvent) => {
+      e.stopPropagation();
+      window.parent.postMessage({ type: 'field-click', id, fieldType: 'image', value: src }, BACKOFFICE_ORIGIN);
+    },
+  } : { className };
+
+  if (!isLocal || (editMode && id)) {
     return (
       <img
         src={src} alt={alt}
-        style={style} className={className}
+        style={style}
         loading={loading || 'lazy'}
         onError={onError}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        {...editProps}
       />
     );
   }
@@ -44,12 +58,13 @@ export default function OptImg({
       <Image
         src={src} alt={alt}
         width={width} height={height}
-        style={style} className={className}
+        style={style}
         loading={priority ? undefined : (loading || 'lazy')}
         priority={priority}
         onError={onError}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        {...editProps}
       />
     );
   }
@@ -60,12 +75,12 @@ export default function OptImg({
       src={src} alt={alt}
       width={0} height={0} sizes="100vw"
       style={{ width: '100%', height: 'auto', ...style }}
-      className={className}
       loading={priority ? undefined : (loading || 'lazy')}
       priority={priority}
       onError={onError}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      {...editProps}
     />
   );
 }

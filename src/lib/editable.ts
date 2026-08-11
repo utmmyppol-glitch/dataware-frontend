@@ -1,8 +1,11 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
 import { usePathname } from 'next/navigation';
+
+/* ── postMessage origin (보안: "*" 대신 명시) ── */
+const BACKOFFICE_ORIGIN = process.env.NEXT_PUBLIC_BACKOFFICE_URL || 'http://localhost:3002';
 
 /* ── JSON 안전 파싱 ── */
 export function safeParse<T>(json: string | undefined | null, fallback: T): T {
@@ -35,7 +38,7 @@ export function useEditMode(): boolean {
   return editMode;
 }
 
-/* ── content-update → DOM 직접 반영 ── */
+/* ── content-update → React 스토어 (DOM 직접 조작 제거) ── */
 function flattenToFields(prefix: string, obj: unknown): Array<{ id: string; value: string }> {
   const result: Array<{ id: string; value: string }> = [];
   if (Array.isArray(obj)) {
@@ -60,22 +63,36 @@ function flattenToFields(prefix: string, obj: unknown): Array<{ id: string; valu
   return result;
 }
 
-function applyContentUpdate(section: string, data: unknown) {
-  const fields = flattenToFields(section, data);
-  for (const { id, value } of fields) {
-    const el = document.querySelector(`[data-editable="${id}"]`) as HTMLElement | null;
-    if (!el) continue;
-    if (el.classList.contains('editable-image')) {
-      (el as HTMLImageElement).src = value;
-    } else {
-      // HTML 태그 포함 여부에 따라 innerHTML 또는 textContent 사용
-      if (/<[a-z][\s\S]*>/i.test(value)) {
-        el.innerHTML = value;
-      } else {
-        el.textContent = value;
-      }
-    }
-  }
+/* ── 편집 오버라이드 스토어 (content-update ↔ E 컴포넌트 연결) ── */
+let _editOverrides: Record<string, string> = {};
+const _overrideListeners = new Set<() => void>();
+
+function _notifyOverrides() {
+  _overrideListeners.forEach(l => l());
+}
+
+function _setEditOverrides(updates: Record<string, string>) {
+  _editOverrides = { ..._editOverrides, ...updates };
+  _notifyOverrides();
+}
+
+function _resetEditOverrides() {
+  _editOverrides = {};
+  _notifyOverrides();
+}
+
+function _subscribeOverrides(listener: () => void) {
+  _overrideListeners.add(listener);
+  return () => { _overrideListeners.delete(listener); };
+}
+
+function _getOverridesSnapshot() {
+  return _editOverrides;
+}
+
+const _emptyOverrides: Record<string, string> = {};
+function _getServerSnapshot() {
+  return _emptyOverrides;
 }
 
 /* ── 편집모드 매니페스트 전송 훅 (pathname 변화마다 재전송) ── */
@@ -97,11 +114,12 @@ export function useEditableManifest(editMode: boolean) {
         type: 'editable-manifest',
         fields,
         path: pathname,
-      }, '*');
+      }, BACKOFFICE_ORIGIN);
     };
 
     const timer = setTimeout(sendManifest, 400);
     const handler = (e: MessageEvent) => {
+      if (e.origin !== BACKOFFICE_ORIGIN) return;
       if (e.data?.type === 'request-manifest') sendManifest();
       if (e.data?.type === 'highlight-field') {
         const el = document.querySelector(`[data-editable="${e.data.id}"]`) as HTMLElement | null;
@@ -123,7 +141,12 @@ export function useEditableManifest(editMode: boolean) {
         const section = e.data.section as string;
         const data = e.data.data;
         if (section && data != null) {
-          applyContentUpdate(section, data);
+          const fields = flattenToFields(section, data);
+          const updates: Record<string, string> = {};
+          for (const { id, value } of fields) {
+            updates[id] = value;
+          }
+          _setEditOverrides(updates);
         }
       }
     };
@@ -131,8 +154,50 @@ export function useEditableManifest(editMode: boolean) {
     return () => {
       clearTimeout(timer);
       window.removeEventListener('message', handler);
+      _resetEditOverrides();
     };
   }, [editMode, pathname]);
+}
+
+/* ── 편집 콘텐츠 통합 훅 ──
+ *  safeParse 초기화 + useEditMode + useEditableManifest + content-update 리스너를 한 줄로.
+ *
+ *  사용법:
+ *    const DEFAULTS = { home_hero: DEFAULT_HERO, home_cta: DEFAULT_CTA } as const;
+ *    const [content, editMode] = useEditableContent(DEFAULTS, ssrContent);
+ */
+export function useEditableContent<D extends Record<string, unknown>>(
+  defaults: D,
+  ssrContent: Record<string, string>,
+): [D, boolean] {
+  const editMode = useEditMode();
+  useEditableManifest(editMode);
+
+  const [values, setValues] = useState<D>(() => {
+    const parsed = {} as Record<string, unknown>;
+    for (const key of Object.keys(defaults)) {
+      parsed[key] = safeParse(ssrContent[key], defaults[key]);
+    }
+    return parsed as D;
+  });
+
+  useEffect(() => {
+    if (!editMode) return;
+    const handler = (e: MessageEvent) => {
+      if (e.origin !== BACKOFFICE_ORIGIN) return;
+      if (e.data?.type === 'content-update') {
+        const section = e.data.section as string;
+        if (section in defaults) {
+          setValues(prev => ({ ...prev, [section]: e.data.data }));
+        }
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editMode]);
+
+  return [values, editMode];
 }
 
 /* ── HTML 태그 포함 여부 판별 ── */
@@ -140,14 +205,10 @@ function containsHtml(v: React.ReactNode): v is string {
   return typeof v === 'string' && /<[a-z][\s\S]*>/i.test(v);
 }
 
-/* ── 블록 태그를 인라인 안전하게 변환 (p/div → br) ── */
-function stripBlockTags(html: string): string {
-  return html
-    .replace(/<\/p>\s*<p[^>]*>/gi, '<br>')   // </p><p> → <br>
-    .replace(/<\/?p[^>]*>/gi, '')             // 남은 <p> / </p> 제거
-    .replace(/<\/?div[^>]*>/gi, '')           // <div> / </div> 제거
-    .replace(/(<br\s*\/?>)+$/i, '')           // 끝의 불필요한 <br> 제거
-    .trim();
+/* ── 블록 레벨 HTML 태그 포함 여부 (hydration 안전 래퍼 선택용) ── */
+const BLOCK_RE = /<(?:p|div|ul|ol|table|h[1-6]|blockquote|section|article|header|footer|nav|pre|hr|dl|figure)[\s>/]/i;
+function hasBlockHtml(html: string): boolean {
+  return BLOCK_RE.test(html);
 }
 
 /* ── E component (EditableText — HTML 서식 지원) ── */
@@ -158,18 +219,23 @@ interface EProps {
 }
 
 export function E({ id, editMode, children }: EProps) {
-  const overrides = useContext(ContentContext);
-  const override = overrides[id];
+  const contextOverrides = useContext(ContentContext);
+  const editOverrides = useSyncExternalStore(_subscribeOverrides, _getOverridesSnapshot, _getServerSnapshot);
+  const override = contextOverrides[id] ?? editOverrides[id];
   const display = override !== undefined ? override : children;
 
   const sanitized = useMemo(
-    () => (containsHtml(display) ? stripBlockTags(DOMPurify.sanitize(display)) : null),
+    () => (containsHtml(display) ? DOMPurify.sanitize(display) : null),
     [display],
   );
 
+  /* 블록 HTML이 포함된 경우 <div>로 래핑해야 hydration 오류 방지 */
+  const useDiv = sanitized !== null && hasBlockHtml(sanitized);
+
   if (!editMode) {
     if (sanitized !== null) {
-      return React.createElement('span', {
+      const Tag = useDiv ? 'div' : 'span';
+      return React.createElement(Tag, {
         className: 'rich-html',
         style: { whiteSpace: 'pre-wrap' },
         suppressHydrationWarning: true,
@@ -183,7 +249,8 @@ export function E({ id, editMode, children }: EProps) {
   }
 
   if (sanitized !== null) {
-    return React.createElement('span', {
+    const Tag = useDiv ? 'div' : 'span';
+    return React.createElement(Tag, {
       'data-editable': id,
       className: 'editable-field rich-html',
       style: { cursor: 'pointer', position: 'relative', whiteSpace: 'pre-wrap' },
@@ -192,7 +259,7 @@ export function E({ id, editMode, children }: EProps) {
       onClick: (e: React.MouseEvent) => {
         e.stopPropagation();
         const value = (e.currentTarget as HTMLElement).innerHTML || '';
-        window.parent.postMessage({ type: 'field-click', id, fieldType: 'text', value }, '*');
+        window.parent.postMessage({ type: 'field-click', id, fieldType: 'text', value }, BACKOFFICE_ORIGIN);
       },
     });
   }
@@ -205,7 +272,7 @@ export function E({ id, editMode, children }: EProps) {
     onClick: (e: React.MouseEvent) => {
       e.stopPropagation();
       const value = (e.currentTarget as HTMLElement).innerHTML || '';
-      window.parent.postMessage({ type: 'field-click', id, fieldType: 'text', value }, '*');
+      window.parent.postMessage({ type: 'field-click', id, fieldType: 'text', value }, BACKOFFICE_ORIGIN);
     },
   }, display);
 }

@@ -45,10 +45,6 @@ export const api = {
   getPostBySlug: (slug: string) =>
     fetchApi<PostResponse>(`/posts/slug/${slug}`),
 
-  // Banners
-  getBanners: (position?: string) =>
-    fetchApi<BannerResponse[]>(`/banners${position ? `?position=${position}` : ''}`),
-
   // Client Logos
   getClientLogos: () =>
     fetchApi<ClientLogoResponse[]>('/client-logos'),
@@ -142,14 +138,6 @@ interface CustomerStoryResponse {
   createdAt: string;
 }
 
-interface BannerResponse {
-  id: number;
-  title: string;
-  imageUrl: string;
-  linkUrl: string;
-  position: string;
-}
-
 interface ClientLogoResponse {
   id: number;
   name: string;
@@ -218,7 +206,6 @@ export type {
   ProductResponse,
   PostResponse,
   CustomerStoryResponse,
-  BannerResponse,
   ClientLogoResponse,
   InquiryRequest,
   InquiryResponse,
