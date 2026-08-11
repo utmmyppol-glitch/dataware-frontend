@@ -169,17 +169,22 @@ export default function DiagnosisQuiz({
               {/* 우: 스텝 인디케이터 + 컨텍스트 */}
               <div style={{ paddingTop: 80 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0, marginBottom: 48 }}>
-                  {['보유 DB', '데이터 표준', '메타데이터', '품질 진단'].map((label, i: number) => (
+                  {['보유 DB', '데이터 표준', '메타데이터', '품질 진단'].map((label, i: number) => {
+                    const isCurrent = i === diagStep;
+                    const isPast = i < diagStep;
+                    const stepColor = isCurrent ? '#F9FAFB' : (isPast ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.3)');
+                    return (
                     <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 0', borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
-                      <div style={{ width: 8, height: 8, background: i <= diagStep ? ACCENT : 'rgba(255,255,255,0.08)', boxShadow: i === diagStep ? `0 0 12px ${ACCENT}60` : 'none', transition: 'all 0.3s' }} />
-                      <span style={{ fontSize: 15, fontWeight: i === diagStep ? 600 : 400, color: i === diagStep ? '#F9FAFB' : i < diagStep ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.3)', transition: 'color 0.3s' }}>
+                      <div style={{ width: 8, height: 8, background: i <= diagStep ? ACCENT : 'rgba(255,255,255,0.08)', boxShadow: isCurrent ? `0 0 12px ${ACCENT}60` : 'none', transition: 'all 0.3s' }} />
+                      <span style={{ fontSize: 15, fontWeight: isCurrent ? 600 : 400, color: stepColor, transition: 'color 0.3s' }}>
                         <E id={`diagnosis_step${i}.label`} editMode={editMode}>{label}</E>
                       </span>
                       {i < diagStep && (
                         <span style={{ marginLeft: 'auto', fontSize: 11, color: ACCENT }}>✓</span>
                       )}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div style={{ padding: '20px', background: `linear-gradient(135deg, ${ACCENT}08, transparent 60%)`, border: `1px solid ${ACCENT}15`, borderLeft: `2px solid ${ACCENT}` }}>

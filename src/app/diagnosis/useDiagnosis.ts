@@ -62,7 +62,9 @@ function diagnose(
       : !hasMeta
         ? '메타데이터 관리'
         : '품질 진단';
-    const product = !hasStandard ? 'DA#' : !hasMeta ? 'META#' : 'DQ#';
+    let product = 'DQ#';
+    if (!hasStandard) product = 'DA#';
+    else if (!hasMeta) product = 'META#';
     return {
       level: 3,
       title: '체계 구축 단계',
