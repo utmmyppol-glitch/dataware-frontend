@@ -41,12 +41,12 @@ interface Props {
 }
 
 /* ═══ Micro Structure (zoomed) — 좌우 2단 + SolutionDiagram ═══ */
-function MicroStructure({ solution, onClose, onBrochure, onContact }: {
+function MicroStructure({ solution, onClose, onBrochure, onContact }: Readonly<{
   solution: Solution;
   onClose: () => void;
   onBrochure: () => void;
   onContact: () => void;
-}) {
+}>) {
   const feats = solution.feats;
   const accent = ACCENT;
 
@@ -55,7 +55,10 @@ function MicroStructure({ solution, onClose, onBrochure, onContact }: {
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onKeyDown={(e) => { if (e.key === 'Escape' || e.key === 'Enter') onClose(); }}
       style={{
         position: 'fixed', inset: 0, zIndex: 40,
         cursor: 'default', overflowY: 'auto',
@@ -82,7 +85,7 @@ function MicroStructure({ solution, onClose, onBrochure, onContact }: {
 
           {/* 대형 타이틀 */}
           <h1 style={{ fontSize: 'clamp(38px, 4.4vw, 58px)', fontWeight: 900, color: '#111', letterSpacing: '-0.035em', lineHeight: 1.12, marginTop: 16 }}>
-            {solution.area.split(' ').map((w, i, a) => <span key={i}>{w}{i < a.length - 1 ? <br /> : ''}</span>)}
+            {solution.area.split(' ').map((w, i, a) => <span key={w}>{w}{i < a.length - 1 ? <br /> : ''}</span>)}
             <span style={{ color: accent }}>.</span>
           </h1>
 
@@ -91,15 +94,15 @@ function MicroStructure({ solution, onClose, onBrochure, onContact }: {
 
           {/* 태그칩 5개 */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 9, marginTop: 26 }}>
-            {feats.map((f, k) => (
-              <span key={k} style={{ fontSize: 13, fontWeight: 700, color: '#111', padding: '8px 15px', border: '1px solid #d5d8dd', borderRadius: 999 }}>{f.n}</span>
+            {feats.map((f) => (
+              <span key={f.n} style={{ fontSize: 13, fontWeight: 700, color: '#111', padding: '8px 15px', border: '1px solid #d5d8dd', borderRadius: 999 }}>{f.n}</span>
             ))}
           </div>
 
           {/* 체크리스트 혜택 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 26, paddingTop: 24, borderTop: '1px solid #e6e8ec' }}>
-            {solution.gain.map((g, k) => (
-              <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 11, fontSize: 15, color: '#333' }}>{checkSvg}{g}</div>
+            {solution.gain.map((g) => (
+              <div key={g} style={{ display: 'flex', alignItems: 'center', gap: 11, fontSize: 15, color: '#333' }}>{checkSvg}{g}</div>
             ))}
           </div>
 
@@ -134,13 +137,13 @@ function MicroStructure({ solution, onClose, onBrochure, onContact }: {
 }
 
 /* ═══ Portal Burst Effect ═══ */
-function PortalBurst({ x, y }: { x: number; y: number }) {
+function PortalBurst({ x, y }: Readonly<{ x: number; y: number }>) {
   return (
     <div style={{ position: 'absolute', inset: 0, zIndex: 20, pointerEvents: 'none' }}>
       <div style={{ position: 'absolute', left: x, top: y, width: 120, height: 120, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,.98) 0%, rgba(54,200,138,.6) 40%, transparent 72%)', animation: 'pCore .9s cubic-bezier(.4,0,.2,1) forwards' }} />
       <div style={{ position: 'absolute', left: x, top: y, width: 120, height: 120, borderRadius: '50%', border: '2px solid rgba(54,200,138,.7)', animation: 'pRing .85s cubic-bezier(.2,.7,.3,1) forwards' }} />
       {Array.from({ length: 8 }).map((_, a) => (
-        <div key={a} style={{
+        <div key={`ray-${a * 45}`} style={{
           position: 'absolute', left: x, top: y, width: 5, height: 90, borderRadius: 3,
           background: 'linear-gradient(to bottom, rgba(54,200,138,.8), transparent)',
           // @ts-expect-error CSS custom property
@@ -242,18 +245,19 @@ export default function MolecularU({ onZoom, onClose, onBrochure, onContact, zoo
     setTimeout(() => setPhase('zoomed'), 1100);
   }, [phase, imgRect, containerSize, onZoom]);
 
-  const stageStyle = (() => {
-    if (phase === 'sucking') {
-      return { transformOrigin: suckOrigin, animation: 'uSuck 1.1s cubic-bezier(.4,0,.2,1) forwards' as const, willChange: 'transform, opacity' as const, pointerEvents: 'none' as const };
+  const stageStyle = useMemo(() => {
+    const base = { transformOrigin: suckOrigin };
+    switch (phase) {
+      case 'sucking':
+        return { ...base, animation: 'uSuck 1.1s cubic-bezier(.4,0,.2,1) forwards' as const, willChange: 'transform, opacity' as const, pointerEvents: 'none' as const };
+      case 'unsucking':
+        return { ...base, animation: 'uUnsuck 1s cubic-bezier(.25,.46,.45,.94) forwards' as const, willChange: 'transform, opacity' as const, pointerEvents: 'none' as const };
+      case 'zoomed':
+        return { ...base, visibility: 'hidden' as const, pointerEvents: 'none' as const };
+      default:
+        return { transformOrigin: '50% 50%', transform: `rotateY(${tilt.x.toFixed(2)}deg) rotateX(${tilt.y.toFixed(2)}deg)`, transition: 'transform .3s ease-out', willChange: 'transform' as const, pointerEvents: 'auto' as const };
     }
-    if (phase === 'unsucking') {
-      return { transformOrigin: suckOrigin, animation: 'uUnsuck 1s cubic-bezier(.25,.46,.45,.94) forwards' as const, willChange: 'transform, opacity' as const, pointerEvents: 'none' as const };
-    }
-    if (phase === 'zoomed') {
-      return { transformOrigin: suckOrigin, visibility: 'hidden' as const, pointerEvents: 'none' as const };
-    }
-    return { transformOrigin: '50% 50%', transform: `rotateY(${tilt.x.toFixed(2)}deg) rotateX(${tilt.y.toFixed(2)}deg)`, transition: 'transform .3s ease-out', willChange: 'transform' as const, pointerEvents: 'auto' as const };
-  })();
+  }, [phase, suckOrigin, tilt.x, tilt.y]);
 
   return (
     <div ref={containerRef} style={{ position: 'absolute', inset: 0, perspective: 1500, overflow: 'visible' }}>
@@ -266,8 +270,8 @@ export default function MolecularU({ onZoom, onClose, onBrochure, onContact, zoo
             { w: '76%', h: 68, b: 32, delay: '1.5s', color: 'rgba(150,170,160,.28)' },
             { w: '52%', h: 46, b: 40, delay: '3s', color: 'rgba(150,170,160,.36)' },
             { w: '34%', h: 30, b: 48, delay: '4.5s', color: 'rgba(54,200,138,.28)' },
-          ].map((r, i) => (
-            <div key={i} style={{ position: 'absolute', left: '50%', bottom: r.b, width: r.w, height: r.h, borderRadius: '50%', border: `1px solid ${r.color}`, transform: 'translateX(-50%)', animation: `uRip 6s cubic-bezier(.33,0,.2,1) infinite ${r.delay}` }} />
+          ].map((r) => (
+            <div key={r.delay} style={{ position: 'absolute', left: '50%', bottom: r.b, width: r.w, height: r.h, borderRadius: '50%', border: `1px solid ${r.color}`, transform: 'translateX(-50%)', animation: `uRip 6s cubic-bezier(.33,0,.2,1) infinite ${r.delay}` }} />
           ))}
         </div>
 
@@ -286,7 +290,9 @@ export default function MolecularU({ onZoom, onClose, onBrochure, onContact, zoo
             const px = imgRect.offsetX + sol.x / 100 * imgRect.w;
             const py = imgRect.offsetY + sol.y / 100 * imgRect.h;
             const isHovered = hoveredIdx === i;
-            const side: 'r' | 'l' | 'b' = sol.x < 40 ? 'r' : sol.x > 60 ? 'l' : 'b';
+            let side: 'r' | 'l' | 'b' = 'b';
+            if (sol.x < 40) side = 'r';
+            else if (sol.x > 60) side = 'l';
 
             return (
               <button
@@ -326,11 +332,11 @@ export default function MolecularU({ onZoom, onClose, onBrochure, onContact, zoo
 
                 <div style={{
                   position: 'absolute',
-                  ...(side === 'r' ? { right: '108%', top: '50%', transform: 'translateY(-50%)' }
-                    : side === 'l' ? { left: '108%', top: '50%', transform: 'translateY(-50%)' }
-                    : { top: '112%', left: '50%', transform: 'translateX(-50%)' }),
+                  ...(side === 'r' && { right: '108%', top: '50%', transform: 'translateY(-50%)' }),
+                  ...(side === 'l' && { left: '108%', top: '50%', transform: 'translateY(-50%)' }),
+                  ...(side === 'b' && { top: '112%', left: '50%', transform: 'translateX(-50%)' }),
                   whiteSpace: 'nowrap',
-                  opacity: hoveredIdx === null ? 1 : isHovered ? 1 : 0.3,
+                  opacity: (hoveredIdx === null || isHovered) ? 1 : 0.3,
                   transition: 'opacity .3s ease', pointerEvents: 'none',
                 }}>
                   <div style={{
