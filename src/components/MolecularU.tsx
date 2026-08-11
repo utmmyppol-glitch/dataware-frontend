@@ -51,12 +51,11 @@ function MicroStructure({ solution, onClose, onBrochure, onContact }: Readonly<{
   const accent = ACCENT;
 
   /* ── 데스크톱: 좌/우 2단 레이아웃 (DC 레퍼런스 그대로) ── */
-  const checkSvg = <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#36c88a" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>;
+  const checkSvg = <svg role="img" aria-label="체크" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#36c88a" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>;
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       onKeyDown={(e) => { if (e.key === 'Escape' || e.key === 'Enter') onClose(); }}
       style={{
@@ -65,6 +64,7 @@ function MicroStructure({ solution, onClose, onBrochure, onContact }: Readonly<{
         background: '#ffffff',
         display: 'flex', alignItems: 'center',
         padding: '96px clamp(24px, 4vw, 64px) 40px',
+        border: 'none', width: '100%', textAlign: 'left', font: 'inherit',
       }}
     >
       <div style={{ width: '100%', maxWidth: 1320, margin: '0 auto', display: 'grid', gridTemplateColumns: 'minmax(0,0.42fr) minmax(0,0.58fr)', gap: 'clamp(32px,4vw,64px)', alignItems: 'center', minHeight: 'calc(100vh - 200px)' }}>
@@ -132,7 +132,7 @@ function MicroStructure({ solution, onClose, onBrochure, onContact }: Readonly<{
           />
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
