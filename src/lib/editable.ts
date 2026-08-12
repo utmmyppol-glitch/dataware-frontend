@@ -1,7 +1,22 @@
 'use client';
 
 import React, { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import DOMPurify from 'isomorphic-dompurify';
+/* DOMPurify: 클라이언트에서만 사용, SSG 시에는 fallback */
+function sanitize(html: string): string {
+  if (typeof window === 'undefined') return html;
+  try {
+    const DOMPurify = (window as unknown as Record<string, unknown>).__DOMPurify as { sanitize: (s: string) => string } | undefined;
+    if (DOMPurify) return DOMPurify.sanitize(html);
+  } catch { /* ignore */ }
+  return html;
+}
+
+/* DOMPurify 초기화 (클라이언트 전용) */
+if (typeof window !== 'undefined') {
+  import('dompurify').then(mod => {
+    (window as unknown as Record<string, unknown>).__DOMPurify = mod.default;
+  }).catch(() => { /* ignore */ });
+}
 import { usePathname } from 'next/navigation';
 import { ContentProvider, useContent } from '@/lib/content-provider';
 
@@ -221,7 +236,7 @@ export function E({ id, editMode, children }: EProps) {
   const display = override !== undefined ? override : children;
 
   const sanitized = useMemo(
-    () => (containsHtml(display) ? DOMPurify.sanitize(display) : null),
+    () => (containsHtml(display) ? sanitize(display) : null),
     [display],
   );
 
