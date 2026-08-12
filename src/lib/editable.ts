@@ -1,8 +1,11 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import React, { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
 import { usePathname } from 'next/navigation';
+import { ContentProvider, useContent } from '@/lib/content-provider';
+
+export { ContentProvider };
 
 /* ── postMessage origin (보안: "*" 대신 명시) ── */
 const BACKOFFICE_ORIGIN = process.env.NEXT_PUBLIC_BACKOFFICE_URL || 'http://localhost:3002';
@@ -11,13 +14,6 @@ const BACKOFFICE_ORIGIN = process.env.NEXT_PUBLIC_BACKOFFICE_URL || 'http://loca
 export function safeParse<T>(json: string | undefined | null, fallback: T): T {
   if (!json) return fallback;
   try { return JSON.parse(json); } catch { return fallback; }
-}
-
-/* ── SSR 콘텐츠 오버라이드 Context ── */
-const ContentContext = createContext<Record<string, string>>({});
-
-export function ContentProvider({ content, children }: { content: Record<string, string>; children: React.ReactNode }) {
-  return React.createElement(ContentContext.Provider, { value: content }, children);
 }
 
 /* ── 편집모드 감지 훅 (sessionStorage로 클라이언트 네비게이션 시에도 유지) ── */
@@ -219,7 +215,7 @@ interface EProps {
 }
 
 export function E({ id, editMode, children }: EProps) {
-  const contextOverrides = useContext(ContentContext);
+  const contextOverrides = useContent();
   const editOverrides = useSyncExternalStore(_subscribeOverrides, _getOverridesSnapshot, _getServerSnapshot);
   const override = contextOverrides[id] ?? editOverrides[id];
   const display = override !== undefined ? override : children;

@@ -4,7 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ChatBot from "@/components/layout/ChatBot";
-import { ContentProvider } from "@/lib/editable";
+import { ContentProvider } from "@/lib/content-provider";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/dataware";
 
