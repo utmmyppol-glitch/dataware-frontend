@@ -8,7 +8,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors 'self' http://localhost:3002 https://admin.unionsystems.co.kr",
+            value: "frame-ancestors 'self' http://localhost:3002 http://43.203.100.180:3002 https://admin.unionsystems.co.kr",
           },
           {
             key: 'X-Content-Type-Options',
@@ -34,7 +34,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.BACKEND_URL || 'http://localhost:8080'}/api/:path*`,
+        destination: `${process.env.BACKEND_URL || 'http://localhost:8081'}/api/:path*`,
       },
     ];
   },
