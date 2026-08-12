@@ -1,6 +1,34 @@
+import {
+  USE_MOCK,
+  mockProducts,
+  mockPosts,
+  mockCustomerStories,
+  mockBanners,
+  mockClientLogos,
+  mockInquiryResponse,
+  mockSubmitResponse,
+} from './mock';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
 
+function getMockForEndpoint<T>(endpoint: string): T | null {
+  if (!USE_MOCK) return null;
+  if (endpoint.startsWith('/products')) return mockProducts as unknown as T;
+  if (endpoint.startsWith('/posts')) return { content: mockPosts, totalElements: mockPosts.length, totalPages: 1, number: 0, size: 10 } as unknown as T;
+  if (endpoint.startsWith('/customer-stories')) return { content: mockCustomerStories, totalElements: mockCustomerStories.length, totalPages: 1, number: 0, size: 10 } as unknown as T;
+  if (endpoint.startsWith('/banners')) return mockBanners as unknown as T;
+  if (endpoint.startsWith('/client-logos')) return mockClientLogos as unknown as T;
+  if (endpoint.startsWith('/inquiries')) return mockInquiryResponse as unknown as T;
+  if (endpoint.startsWith('/downloads')) return mockSubmitResponse as unknown as T;
+  if (endpoint.startsWith('/educations')) return mockSubmitResponse as unknown as T;
+  if (endpoint.startsWith('/seminars')) return mockSubmitResponse as unknown as T;
+  return null;
+}
+
 async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const mock = getMockForEndpoint<T>(endpoint);
+  if (mock) return mock;
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -58,6 +86,7 @@ export const api = {
 
   // Inquiry with file attachment
   submitInquiryWithFile: async (formData: FormData): Promise<InquiryResponse> => {
+    if (USE_MOCK) return mockInquiryResponse;
     const response = await fetch(`${API_BASE_URL}/inquiries`, {
       method: 'POST',
       body: formData,

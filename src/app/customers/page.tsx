@@ -1,15 +1,7 @@
 import { Metadata } from 'next';
 import { CustomerStoryResponse } from '@/lib/api';
 import CustomersPageClient from './CustomersPageClient';
-
-export const metadata: Metadata = {
-  title: '고객사례 | UNION DATAWARE',
-  description: 'SSG닷컴, 카카오뱅크, 아모레퍼시픽 등 3,000+ 기업이 선택한 DATAWARE 도입 사례',
-  openGraph: {
-    title: '고객사례 | UNION DATAWARE',
-    description: 'SSG닷컴, 카카오뱅크, 아모레퍼시픽 등 3,000+ 기업이 선택한 DATAWARE 도입 사례',
-  },
-};
+import { USE_MOCK, mockCustomerStories, getMockContent } from '@/lib/mock';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
 
@@ -24,6 +16,7 @@ const STATIC_STORIES: CustomerStoryResponse[] = [
 ];
 
 async function getCustomerStories(): Promise<CustomerStoryResponse[]> {
+  if (USE_MOCK) return mockCustomerStories;
   try {
     const res = await fetch(`${API_BASE_URL}/customer-stories?page=0&size=100`, {
       next: { revalidate: 60 },
@@ -36,8 +29,31 @@ async function getCustomerStories(): Promise<CustomerStoryResponse[]> {
   }
 }
 
-export default async function CustomersPage() {
+const CONTENT_KEYS = ['customers_hero', 'customers_cta', 'customers_seo_title', 'customers_seo_description'];
 
-  const stories = await getCustomerStories();
-  return <CustomersPageClient initialStories={stories} />;
+async function getContent(): Promise<Record<string, string>> {
+  if (USE_MOCK) return getMockContent(CONTENT_KEYS);
+  try {
+    const base = API_BASE_URL.replace(/\/api\/dataware\/?$/, '');
+    const res = await fetch(
+      `${base}/api/dataware/content?keys=${CONTENT_KEYS.join(',')}`,
+      { next: { revalidate: 60 } },
+    );
+    if (!res.ok) return {};
+    return res.json();
+  } catch {
+    return {};
+  }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const c = await getContent();
+  const title = c.customers_seo_title || '고객사례 | UNION DATAWARE';
+  const description = c.customers_seo_description || 'SSG닷컴, 카카오뱅크, 아모레퍼시픽 등 3,000+ 기업이 선택한 DATAWARE 도입 사례';
+  return { title, description, openGraph: { title, description } };
+}
+
+export default async function CustomersPage() {
+  const [stories, content] = await Promise.all([getCustomerStories(), getContent()]);
+  return <CustomersPageClient initialStories={stories} ssrContent={content} />;
 }

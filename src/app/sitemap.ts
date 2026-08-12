@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { USE_MOCK, mockCustomerStories } from '@/lib/mock';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://dataware.unionsystems.co.kr';
 
@@ -30,6 +31,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Dynamically add customer story pages
   let storyPages: MetadataRoute.Sitemap = [];
+  if (USE_MOCK) {
+    storyPages = mockCustomerStories.map((story) => ({
+      url: `${SITE_URL}/customers/${story.id}`,
+      lastModified: story.createdAt,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }));
+    return [...staticPages, ...storyPages];
+  }
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
     const res = await fetch(`${apiUrl}/customer-stories?page=0&size=100`, {

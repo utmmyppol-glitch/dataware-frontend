@@ -5,6 +5,10 @@ import { COMPANY } from '@/data';
 export const metadata: Metadata = {
   title: '개인정보처리방침 | UNION DATAWARE',
   description: '유니온시스템즈 개인정보처리방침',
+  openGraph: {
+    title: '개인정보처리방침 | UNION DATAWARE',
+    description: '유니온시스템즈 개인정보처리방침',
+  },
 };
 
 const ACCENT = '#36c88a';
