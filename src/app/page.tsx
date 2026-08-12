@@ -1,6 +1,6 @@
 import HomePageClient from "./HomePageClient";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api/dataware';
 const CONTENT_KEYS = [
   'home_hero','home_trusted','home_why','home_dataflow',
   'home_platform','home_features','home_customers','home_news','home_cta',

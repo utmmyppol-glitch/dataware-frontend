@@ -3,7 +3,7 @@ import { IMAGES } from '@/data';
 import { E } from '@/lib/editable';
 import OptImg from '@/components/OptImg';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api/dataware';
 
 async function fetchConfig(): Promise<Record<string, string>> {
   try {

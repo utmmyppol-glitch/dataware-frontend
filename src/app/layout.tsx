@@ -6,7 +6,7 @@ import Footer from "@/components/layout/Footer";
 import ChatBot from "@/components/layout/ChatBot";
 import { ContentProvider } from "@/lib/content-provider";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/dataware";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081/api/dataware";
 
 export interface SsrMenuItem {
   url: string;

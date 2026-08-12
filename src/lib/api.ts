@@ -9,7 +9,11 @@ import {
   mockSubmitResponse,
 } from './mock';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+    ? `${window.location.protocol}//${window.location.hostname}:8081/api/dataware`
+    : 'http://localhost:8081/api/dataware');
 
 function getMockForEndpoint<T>(endpoint: string): T | null {
   if (!USE_MOCK) return null;

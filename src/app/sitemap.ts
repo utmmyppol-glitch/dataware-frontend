@@ -41,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [...staticPages, ...storyPages];
   }
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api/dataware';
     const res = await fetch(`${apiUrl}/customer-stories?page=0&size=100`, {
       next: { revalidate: 3600 },
     });

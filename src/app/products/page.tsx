@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   },
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/dataware';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api/dataware';
 
 async function getProducts(): Promise<ProductResponse[]> {
   try {
