@@ -1,7 +1,11 @@
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
 
-const BACKOFFICE_ORIGIN = process.env.NEXT_PUBLIC_BACKOFFICE_URL || 'http://localhost:3002';
+const BACKOFFICE_ORIGIN =
+  process.env.NEXT_PUBLIC_BACKOFFICE_URL ||
+  (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+    ? `${window.location.protocol}//${window.location.hostname}:3002`
+    : 'http://localhost:3002');
 
 interface OptImgProps {
   id?: string;
